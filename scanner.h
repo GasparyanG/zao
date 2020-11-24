@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 typedef struct {
     const char* sourceCode;
@@ -13,5 +14,7 @@ typedef struct {
 extern Scanner scanner;
 
 void initScanner(const char* sourceCode);
+const char* fileInput(const char* fileName);
+const char* cmdInput();
 
 #endif

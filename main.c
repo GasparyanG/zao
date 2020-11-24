@@ -1,16 +1,17 @@
 #include "compiler.h"
 #include "vm.h"
+#include "scanner.h"
+#include <stdio.h>
 
-int main() {
+int main(int argc, char* argv[]) {
     initCompiler();
     initVM();
 
-    addInstruction(OP_CONSTANT);
-    uint8_t position = addConstant(8.5);
-    addInstruction(position);
-    addInstruction(OP_PRINT);
+    if (argc > 1)
+        initScanner(fileInput(argv[1]));
+    else
+        initScanner(cmdInput());
 
-    run();
 
     return 0;
 }
