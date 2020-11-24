@@ -21,7 +21,10 @@
 
 
 ## Debugger
-Just prints info about instructions while instructions are being processed by `run()` function (a.k.a. interpreter).
+- Just prints info about:
+    - instructions while instructions are being processed by `run()` function (a.k.a. interpreter).
+    - tokens while tokens are being processed by `compile()` function (a.k.a parser).
+
 
 ## Memory
 * ALLOCATE
@@ -51,3 +54,31 @@ Just prints info about instructions while instructions are being processed by `r
 * OP_PRINT
     - effect: -1
     - description: pop value from stack and print it 
+
+### Scanner
+* protperties
+    - `sourceCode`      - self-explanatory.
+    - `position`        - index to current character.
+    - `size`            - length of source code.
+    
+#### Token
+* properties
+    - `type`            - enum.
+    - `string`          - meant for strings, identifiers, etc.
+    - `number`          - meant for numbers.
+
+* bool advance(int)
+    - description
+        - traverse scanner via position.
+    - retrn value       
+        - Are we at the end of sourceCode or not.
+    - arguments
+        - amount to go forward of backward.
+
+* char getChar(bool)
+    - description
+        - get next character from scanner and get rid of whitespaces.
+    - arguments
+        - do we need to consume whitespaces or not.
+    - return value
+        - desired character.
