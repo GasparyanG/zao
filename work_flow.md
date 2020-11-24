@@ -19,8 +19,17 @@
 - [x] 12:30 - 13:30       - VM
     - Stack
     - Interpreter - OP_PRINT
-- [] 13:30 - 14:30       - Debugger
+- [x] 13:30 - 14:30       - Debugger
     - Print opCode
+
+
+### 11/24/2020
+- [] 09:10 - 10:00      - Design.
+- [] 10:00 - 11:00      - Read source code from stream.
+- [] 11:00 - 12:00      - Prepare regular tokens.
+- [] 12:00 - 13:00      - Prepare keywords.
+- [] 13:00 - 14:00      - Implement `consume`, and `advance` functions.
+
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine
