@@ -29,3 +29,11 @@ void addInstruction(uint8_t instruction) {
 
     compiler.chunk.chunk[compiler.chunk.size++] = instruction;
 }
+
+
+// Generating bytecode.
+void compile() {
+    for (;;) {
+        // TODO: parse tokens!
+    }
+}

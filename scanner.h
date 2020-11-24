@@ -4,8 +4,43 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
 #include "memory.h"
 
+
+// Token section.
+typedef enum {
+    // BLOCKS AND GROUPINGS
+    TOKEN_LEFT_PAREN, TOKEN_RIGHT_PAREN, TOKEN_LEFT_CURLY, TOKEN_RIGHT_CURLY,
+    
+    // ARITHMETICS
+    TOKEN_STAR, TOKEN_PLUS, TOKEN_MINUS, TOKEN_MODULO, TOKEN_FRD_SLASH, TOKEN_BCK_SLASH,
+
+    // COMPARISIONS
+    TOKEN_GREATER_THAN, TOKEN_LESS_THAN, TOKEN_EQUAL,
+
+    // COMPARISION COMBINATIONS
+    TOKEN_EQUAL_EQUAL, TOKEN_GREATER_EQUAL, TOKEN_LESS_EQUAL,
+
+    // PUNCTUATIONS
+    TOKEN_QUESTION, TOKEN_COLON, TOKEN_SEMI_COLON, TOKEN_BANG /* ! */, TOKEN_QUESTION
+
+    // UNDERSCORE AND HYPHEN
+    TOKEN_UNDERSCORE, TOKEN_HYPHEN
+
+    // KEYWORDS 
+    // (coming soon)
+
+} TokenType;
+
+typedef struct {
+    TokenType type;
+    const char* string;
+    double number;
+} Token;
+
+
+// Scanner section.
 typedef struct {
     const char* sourceCode;
     size_t position;

@@ -6,6 +6,7 @@
 
 #include "chunk.h"
 #include "value.h"
+#include "scanner"
 
 typedef struct {
     Chunk chunk;
@@ -20,5 +21,8 @@ uint8_t addConstant(Value value);
 void addInstruction(uint8_t instruction);
 
 extern Compiler compiler;
+
+// Generating bytecode.
+void compile();
 
 #endif
