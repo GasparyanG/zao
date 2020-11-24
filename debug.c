@@ -35,8 +35,15 @@ static void simpleToken(const char* name) {
     printf("token - %s\n", name);
 }
 
+static void stringToken(Token* token) {
+    printf("token - %d, string - '%s'\n", token->type, token->string);
+}
+
 void displayToken(Token* token) {
     switch(token->type) {
+        case TOKEN_STRING:
+            stringToken(token);
+            break;
         case TOKEN_LEFT_CURLY:
             simpleToken("{");
             break;

@@ -41,7 +41,7 @@ typedef enum {
 
 typedef struct {
     TokenType type;
-    const char* string;
+    char* string;
     double number;
 } Token;
 
@@ -60,10 +60,11 @@ extern Scanner scanner;
 void initScanner(const char* sourceCode);
 const char* fileInput(const char* fileName);
 const char* cmdInput();
-char getChar();
-bool advance(int n);
+
 
 // Token scanning section.
 Token scanToken();
+char getChar();
+bool advance(int n);
 
 #endif

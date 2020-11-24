@@ -96,6 +96,41 @@ Token prepToken(TokenType type) {
     return token;
 }
 
+static Token prepString() {
+    Token token;
+    token.type = TOKEN_STRING;
+    token.number = 0;           // Isn't required.
+
+    token.string = ALLOCATE(char, token.string, 0);
+    size_t size = 0;
+    size_t capacity = ARRAY_INITIAL_SIZE;
+
+    // Heavy lifting.
+    for (;;) {
+        // EOF checking.
+        if (!advance(0))
+            return prepToken(TOKEN_EOF);
+        advance(-1);                        // EOF is checked now go back again.
+
+        char ch;
+        if ((ch = getChar()) == '"') { // End of string is reached, so terminate.
+            if (size == capacity) {
+                token.string = (char*)reallocate((void*)token.string, size + 1);
+                token.string[size] = '\0';
+            }
+
+            return token;
+        }
+        
+        if (size == capacity) {
+            token.string = ALLOCATE(char, token.string, size);
+            capacity *= ENLARGEMENT_FACTOR;
+        }
+
+        token.string[size++] = ch;
+    }
+}
+
 // Token scanning section.
 Token scanToken() {
     if (!advance(0))
@@ -105,6 +140,8 @@ Token scanToken() {
     char ch = getChar();
 
     switch(ch) {
+        case '"':
+            return prepString();
         case '{':
             return prepToken(TOKEN_LEFT_CURLY);
         case '}':
