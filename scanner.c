@@ -57,12 +57,14 @@ const char* cmdInput() {
     return sourceCode;
 }
 
-char getChar() {
-    // Get rid of comments and whitespaces
-
+char getChar(bool noWS) {
     char ch;
     ch = scanner.sourceCode[scanner.position];
     scanner.position++;
+
+    // Get rid of whitespaces.
+    while (noWS && isspace(ch))
+        ch = scanner.sourceCode[scanner.position++];
 
     return ch;
 }
@@ -113,7 +115,7 @@ static Token prepString() {
         advance(-1);                        // EOF is checked now go back again.
 
         char ch;
-        if ((ch = getChar()) == '"') { // End of string is reached, so terminate.
+        if ((ch = getChar(false)) == '"') { // End of string is reached, so terminate.
             if (size == capacity) {
                 token.string = (char*)reallocate((void*)token.string, size + 1);
                 token.string[size] = '\0';
@@ -137,7 +139,7 @@ Token scanToken() {
         return prepToken(TOKEN_EOF);
     
     advance(-1);
-    char ch = getChar();
+    char ch = getChar(true);
 
     switch(ch) {
         case '"':

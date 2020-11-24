@@ -1,6 +1,7 @@
 #ifndef ZAO_SCANNER_H
 #define ZAO_SCANNER_H
 
+#include "ctype.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -64,7 +65,7 @@ const char* cmdInput();
 
 // Token scanning section.
 Token scanToken();
-char getChar();
+char getChar(bool noWS);
 bool advance(int n);
 
 #endif
