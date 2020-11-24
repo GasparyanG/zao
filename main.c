@@ -12,6 +12,7 @@ int main(int argc, char* argv[]) {
     else
         initScanner(cmdInput());
 
+    compile();
 
     return 0;
 }

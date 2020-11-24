@@ -23,10 +23,16 @@ typedef enum {
     TOKEN_EQUAL_EQUAL, TOKEN_GREATER_EQUAL, TOKEN_LESS_EQUAL,
 
     // PUNCTUATIONS
-    TOKEN_QUESTION, TOKEN_COLON, TOKEN_SEMI_COLON, TOKEN_BANG /* ! */, TOKEN_QUESTION
+    TOKEN_QUESTION, TOKEN_COLON, TOKEN_SEMI_COLON, TOKEN_BANG /* ! */,
 
     // UNDERSCORE AND HYPHEN
-    TOKEN_UNDERSCORE, TOKEN_HYPHEN
+    TOKEN_UNDERSCORE, TOKEN_HYPHEN,
+
+    // EXTREAM CASE TOKENS
+    TOKEN_EOF,
+
+    // MULTICHARACTER TOKENS
+    TOKEN_STRING, TOKEN_IDENTIFIER, TOKEN_NUMBER
 
     // KEYWORDS 
     // (coming soon)
@@ -40,6 +46,8 @@ typedef struct {
 } Token;
 
 
+Token prepToken(TokenType type);
+
 // Scanner section.
 typedef struct {
     const char* sourceCode;
@@ -52,5 +60,10 @@ extern Scanner scanner;
 void initScanner(const char* sourceCode);
 const char* fileInput(const char* fileName);
 const char* cmdInput();
+char getChar();
+bool advance(int n);
+
+// Token scanning section.
+Token scanToken();
 
 #endif

@@ -8,6 +8,9 @@
 - [] vm.c       : display `empty stack` error.
 - [] vm.c       : display `stack overflow` error.
 - [] compiler.c : display `constants table overflow` error.
+- [] scanner.c  : display `unknown token` error.
+- [] scanner.c  : deal with other tokens too.
+- [] debug.c    : implement other tokens debugging too.
 
 ### In Progress
 

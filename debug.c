@@ -28,3 +28,28 @@ void displayInstruction(uint8_t* ip) {
             return;
     } 
 }
+
+
+// TOKENS DEBUGGING SECTION.
+static void simpleToken(const char* name) {
+    printf("token - %s\n", name);
+}
+
+void displayToken(Token* token) {
+    switch(token->type) {
+        case TOKEN_LEFT_CURLY:
+            simpleToken("{");
+            break;
+        case TOKEN_RIGHT_CURLY:
+            simpleToken("}");
+            break;
+        case TOKEN_EOF:
+            simpleToken("EOF");
+            break;
+        // TODO: implement other tokens debugging too.
+        default:
+            printf("Token %d is not handled yet.\n", token->type);
+            break;
+
+    }
+}

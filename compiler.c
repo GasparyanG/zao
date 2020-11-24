@@ -34,6 +34,13 @@ void addInstruction(uint8_t instruction) {
 // Generating bytecode.
 void compile() {
     for (;;) {
-        // TODO: parse tokens!
+        Token token = scanToken();
+
+#ifdef ZAO_TOKEN_DEBUGGER
+    displayToken(&token);
+#endif
+
+        if (token.type == TOKEN_EOF)
+            break;
     }
 }

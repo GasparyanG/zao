@@ -56,3 +56,66 @@ const char* cmdInput() {
 
     return sourceCode;
 }
+
+char getChar() {
+    // Get rid of comments and whitespaces
+
+    char ch;
+    ch = scanner.sourceCode[scanner.position];
+    scanner.position++;
+
+    return ch;
+}
+
+bool advance(int n) {
+    if (scanner.size == 0) return false;
+
+    if (n < 0 && (scanner.position + n) < 0)
+        scanner.position = 0;
+    else if (n < 0) {
+        scanner.position += n;
+    } else if (n > 0 && (scanner.position + n) >= scanner.size)
+        return false;
+    else if (n > 0)
+        scanner.position += n;
+    else if (n == 0)
+        scanner.position += 1;
+    
+    return true;
+}
+
+Token prepToken(TokenType type) {
+    Token token;
+    token.type = type;
+
+    // This two will never be used, 
+    // but it's bad practice to leave them uninitialized.
+    token.string = NULL;
+    token.number = 0;
+
+    return token;
+}
+
+// Token scanning section.
+Token scanToken() {
+    if (!advance(0))
+        return prepToken(TOKEN_EOF);
+    
+    advance(-1);
+    char ch = getChar();
+
+    switch(ch) {
+        case '{':
+            return prepToken(TOKEN_LEFT_CURLY);
+        case '}':
+            return prepToken(TOKEN_RIGHT_CURLY);
+        case '(':
+            return prepToken(TOKEN_LEFT_PAREN);
+        case ')':
+            return prepToken(TOKEN_RIGHT_PAREN);
+        // TODO: deal with other tokens too.
+        default:
+            // TODO: display `unknown token` error
+            return prepToken(TOKEN_EOF);
+    }
+}

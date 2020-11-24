@@ -5,8 +5,10 @@
 #include <stdlib.h>
 
 #include "chunk.h"
+#include "common.h"
+#include "debug.h"
+#include "scanner.h"
 #include "value.h"
-#include "scanner"
 
 typedef struct {
     Chunk chunk;
