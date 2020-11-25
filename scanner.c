@@ -177,6 +177,55 @@ static Token prepIdentifier() {
     return token;
 }
 
+static Token prepNumber() {
+    advance(-1);                // Get the previous character as well.
+    Token token;
+    token.type = TOKEN_NUMBER;
+    size_t size = 0;
+    size_t capacity = ARRAY_INITIAL_SIZE;
+    // Collect digits here and then convert to double.
+    token.string = ALLOCATE(char, token.string, size);
+
+    // Heavy lifting
+    for(;;) {
+        if (isEof()) break;
+        char ch = getChar(false);
+
+        if (ch != '.' && !isdigit(ch)) {
+            advance(-1);        // Don't lose any character.
+            break;
+        }
+
+        // Make sure that dot (.) is meant for double precision and not for anything else.
+        if (ch == '.') {
+            if (isEof()) {
+                advance(-1);
+                break;
+            }
+
+            if (!isdigit(getChar(false))) {
+                advance(-2);
+                break;
+            }
+        }
+
+        if (size == capacity) {
+            token.string = ALLOCATE(char, token.string, size);
+            capacity *= ENLARGEMENT_FACTOR;
+        }
+
+        token.string[size++] = ch;
+    }
+
+    token.number = strtod(token.string, NULL);  // Convert string to double.
+
+    // Free resources back to memory.
+    free(token.string);
+    token.string = NULL;
+
+    return token;
+}
+
 static bool isEof() {
     if (!advance(0)) return true;
     advance(-1);
@@ -204,6 +253,8 @@ Token scanToken() {
     // Identifiers and numbers praparation.
     if (isalpha(ch))
         return prepIdentifier();
+    else if (isdigit(ch))
+        return prepNumber();
 
     switch(ch) {
         case '"':

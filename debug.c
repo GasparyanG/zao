@@ -32,11 +32,15 @@ void displayInstruction(uint8_t* ip) {
 
 // TOKENS DEBUGGING SECTION.
 static void simpleToken(const char* name) {
-    printf("token - %s\n", name);
+    printf("Token - %s\n", name);
 }
 
 static void stringToken(Token* token) {
-    printf("token - %d, string - '%s'\n", token->type, token->string);
+    printf("Token - %d, string - '%s'\n", token->type, token->string);
+}
+
+static void numberToken(Token* token) {
+    printf("Token - %d, number - '%g'\n", token->type, token->number);
 }
 
 void displayToken(Token* token) {
@@ -46,6 +50,9 @@ void displayToken(Token* token) {
             break;
         case TOKEN_IDENTIFIER:
             stringToken(token);
+            break;
+        case TOKEN_NUMBER:
+            numberToken(token);
             break;
         case TOKEN_LEFT_CURLY:
             simpleToken("{");
