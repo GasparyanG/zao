@@ -139,6 +139,37 @@ static Token prepString() {
     }
 }
 
+
+static void compareForKeyword(
+    Token* token, size_t position, const char* str, TokenType type) {
+    size_t length = position + strlen(str);
+    if (strlen(token->string) != length) return;            // No need for comparision.
+    if (strcmp(&token->string[position], str) != 0) return; // This is not a keyword substring.
+
+    // Update token to corresponding TokenType.
+    token->type = type;
+
+    // Free resources back.
+    free(token->string);
+    token->string = NULL;
+}
+
+static void lookForKeyword(Token* token) {
+    switch(token->string[0]) {
+        case 'f': {
+            if (strlen(token->string) == 1) return; // Terminate.
+            switch(token->string[1]) {
+                case 'o': return compareForKeyword(token, 2, "r", TOKEN_FOR);      // for
+                case 'a': return compareForKeyword(token, 2, "lse", TOKEN_FALSE);  // false
+                case 'u': return compareForKeyword(token, 2, "n", TOKEN_FUN);      // fun as function
+                default:
+                    return; // Terminate.
+            }
+            break;
+        }
+    }
+}
+
 static Token prepIdentifier() {
     advance(-1);                    // Get the previous character as well.
     Token token;
@@ -173,6 +204,10 @@ static Token prepIdentifier() {
         token.string = (char*)reallocate((void*)token.string, size + 1);
 
     token.string[size] = '\0';
+
+    // Check whether this identifier is keyword or not.
+    // If it is, then update Token to corresponding keyword.
+    lookForKeyword(&token);
 
     return token;
 }

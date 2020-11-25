@@ -43,8 +43,15 @@ static void numberToken(Token* token) {
     printf("Token - %d, number - '%g'\n", token->type, token->number);
 }
 
+static void keywordToken(Token* token) {
+    printf("Token - %d, keyword\n", token->type);
+}
+
 void displayToken(Token* token) {
     switch(token->type) {
+        case TOKEN_FUN: case TOKEN_FOR: case TOKEN_FALSE:
+            keywordToken(token);
+            break;
         case TOKEN_STRING:
             stringToken(token);
             break;
