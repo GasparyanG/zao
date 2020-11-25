@@ -23,7 +23,7 @@
     - Print opCode
 
 
-### 11/24/2020
+### 11/24 - 25/2020
 - [x] 09:10 - 10:00      - Design.
 - [x] 10:00 - 11:00      - Read source code from stream.
 - [] 11:00 - 12:00      - Prepare regular tokens.

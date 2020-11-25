@@ -44,6 +44,9 @@ void displayToken(Token* token) {
         case TOKEN_STRING:
             stringToken(token);
             break;
+        case TOKEN_IDENTIFIER:
+            stringToken(token);
+            break;
         case TOKEN_LEFT_CURLY:
             simpleToken("{");
             break;

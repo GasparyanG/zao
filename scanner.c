@@ -1,5 +1,10 @@
 #include "scanner.h"
 
+
+// Declarations
+static bool isEof();
+
+
 Scanner scanner;
 
 void initScanner(const char* sourceCode) {
@@ -134,6 +139,44 @@ static Token prepString() {
     }
 }
 
+static Token prepIdentifier() {
+    advance(-1);                    // Get the previous character as well.
+    Token token;
+    token.type = TOKEN_IDENTIFIER;
+    token.number = 0;               // This field will not be used.
+
+    // Heavy lifting.
+    size_t size = 0;
+    size_t capcaity = ARRAY_INITIAL_SIZE;
+    token.string = ALLOCATE(char, token.string, 0);
+
+    for (;;) {
+        if (isEof()) break;
+        char ch = getChar(false);
+
+        // Identifiers can only contain letters, numbers, and '_', nothing more.
+        if (isspace(ch) || (!isalnum(ch) && ch != '_')) {
+            advance(-1);    // Don't lose any chars.
+            break;
+        }
+
+        if (size == capcaity) {
+            token.string = ALLOCATE(char, token.string, size);
+            capcaity *= ENLARGEMENT_FACTOR;
+        }
+
+        token.string[size++] = ch;
+    }
+
+    // Terminating 0.
+    if (size == capcaity)
+        token.string = (char*)reallocate((void*)token.string, size + 1);
+
+    token.string[size] = '\0';
+
+    return token;
+}
+
 static bool isEof() {
     if (!advance(0)) return true;
     advance(-1);
@@ -157,6 +200,10 @@ Token scanToken() {
     
     advance(-1);
     char ch = getChar(true);
+
+    // Identifiers and numbers praparation.
+    if (isalpha(ch))
+        return prepIdentifier();
 
     switch(ch) {
         case '"':
