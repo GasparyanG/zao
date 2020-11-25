@@ -68,5 +68,6 @@ const char* cmdInput();
 Token scanToken();
 char getChar(bool noWS);
 bool advance(int n);
+bool consume(TokenType type, const char* message);
 
 #endif
