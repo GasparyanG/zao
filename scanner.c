@@ -71,6 +71,7 @@ char getChar(bool noWS) {
 
 bool advance(int n) {
     if (scanner.size == 0) return false;
+    if (scanner.position > scanner.size) return false;
 
     if (n < 0 && (scanner.position + n) < 0)
         scanner.position = 0;
@@ -133,6 +134,22 @@ static Token prepString() {
     }
 }
 
+static bool isEof() {
+    if (!advance(0)) return true;
+    advance(-1);
+    return false;
+}
+
+static void consumeComment() {
+    while(!isEof()) {
+        if (getChar(false) != '\n')
+            continue;
+        else {
+            break;
+        }
+    }
+}
+
 // Token scanning section.
 Token scanToken() {
     if (!advance(0))
@@ -152,6 +169,21 @@ Token scanToken() {
             return prepToken(TOKEN_LEFT_PAREN);
         case ')':
             return prepToken(TOKEN_RIGHT_PAREN);
+        case '/': {
+            if(!advance(0))
+                return prepToken(TOKEN_EOF);
+            advance(-1);
+            ch = getChar(true);
+
+            if(ch == '/') {
+                consumeComment();
+                return scanToken();
+            }
+
+            advance(-1);
+            return prepToken(TOKEN_FRD_SLASH);   
+        }
+
         // TODO: deal with other tokens too.
         default:
             // TODO: display `unknown token` error

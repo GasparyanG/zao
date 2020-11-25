@@ -1,4 +1,4 @@
-# ZaO (Aero and One)
+# ZaO (Zero and One)
 
 ## Agenda
 ### 11/20/2020
