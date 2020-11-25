@@ -50,6 +50,9 @@ static void keywordToken(Token* token) {
 void displayToken(Token* token) {
     switch(token->type) {
         case TOKEN_FUN: case TOKEN_FOR: case TOKEN_FALSE:
+        case TOKEN_TRUE: case TOKEN_WHILE: case TOKEN_CLASS:
+        case TOKEN_CONTINUE: case TOKEN_BREAK: case TOKEN_IF:
+        case TOKEN_ELSE:
             keywordToken(token);
             break;
         case TOKEN_STRING:

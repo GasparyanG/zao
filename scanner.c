@@ -167,6 +167,29 @@ static void lookForKeyword(Token* token) {
             }
             break;
         }
+
+        case 't':
+            return compareForKeyword(token, 1, "rue", TOKEN_TRUE);      // true
+        case 'w':
+            return compareForKeyword(token, 1, "hile", TOKEN_WHILE);    // while
+        case 'c': {
+            if (strlen(token->string) == 1) return; // Terminate.
+            switch(token->string[1]) {
+                case 'l': return compareForKeyword(token, 2, "ass", TOKEN_CLASS);        // class
+                case 'o': return compareForKeyword(token, 2, "ntinue", TOKEN_CONTINUE);  // continue
+                default:
+                    return; // Terminate.
+            }
+        }
+
+        case 'b':
+            return compareForKeyword(token, 1, "reak", TOKEN_BREAK);    // break
+        case 'i':
+            return compareForKeyword(token, 1, "f", TOKEN_IF);          // if
+        case 'e':
+            return compareForKeyword(token, 1, "lse", TOKEN_ELSE);      // else
+        default:
+            return;         // Terminate.
     }
 }
 
