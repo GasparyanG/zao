@@ -1,7 +1,7 @@
 #include "scanner.h"
 
 
-// Declarations
+// Declarations.
 static bool isEof();
 
 
@@ -338,6 +338,39 @@ Token scanToken() {
 
             advance(-1);
             return prepToken(TOKEN_FRD_SLASH);   
+        }
+
+        case '>': {
+            if (isEof()) return prepToken(TOKEN_GREATER_THAN);
+            ch = getChar(true);
+
+            if (ch == '=')
+                return prepToken(TOKEN_GREATER_EQUAL);
+            
+            advance(-1);
+            return prepToken(TOKEN_GREATER_THAN);
+        }
+
+        case '<': {
+            if (isEof()) return prepToken(TOKEN_LESS_THAN);
+            ch = getChar(true);
+
+            if (ch == '=')
+                return prepToken(TOKEN_LESS_EQUAL);
+            
+            advance(-1);
+            return prepToken(TOKEN_LESS_THAN);
+        }
+
+        case '=': {
+            if (isEof()) return prepToken(TOKEN_EQUAL);
+            ch = getChar(true);
+
+            if (ch == '=')
+                return prepToken(TOKEN_EQUAL_EQUAL);
+            
+            advance(-1);
+            return prepToken(TOKEN_EQUAL);
         }
 
         // TODO: deal with other tokens too.

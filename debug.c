@@ -47,6 +47,10 @@ static void keywordToken(Token* token) {
     printf("Token - %d, keyword\n", token->type);
 }
 
+static void cmpToken(Token* token) {
+    printf("Token - %d, comparision\n", token->type);
+}
+
 void displayToken(Token* token) {
     switch(token->type) {
         case TOKEN_FUN: case TOKEN_FOR: case TOKEN_FALSE:
@@ -54,6 +58,10 @@ void displayToken(Token* token) {
         case TOKEN_CONTINUE: case TOKEN_BREAK: case TOKEN_IF:
         case TOKEN_ELSE:
             keywordToken(token);
+            break;
+        case TOKEN_EQUAL: case TOKEN_EQUAL_EQUAL: case TOKEN_GREATER_EQUAL:
+        case TOKEN_GREATER_THAN: case TOKEN_LESS_THAN: case TOKEN_LESS_EQUAL:
+            cmpToken(token);
             break;
         case TOKEN_STRING:
             stringToken(token);

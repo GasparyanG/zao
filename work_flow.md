@@ -26,8 +26,8 @@
 ### 11/24 - 25/2020
 - [x] 09:10 - 10:00      - Design.
 - [x] 10:00 - 11:00      - Read source code from stream.
-- [] 11:00 - 12:00      - Prepare regular tokens.
-- [] 12:00 - 13:00      - Prepare keywords.
+- [x] 11:00 - 12:00      - Prepare regular tokens.
+- [x] 12:00 - 13:00      - Prepare keywords.
 - [] 13:00 - 14:00      - Implement `consume`, and `advance` functions.
 
 
