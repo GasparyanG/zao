@@ -14,7 +14,11 @@ typedef enum {
     OP_NONE,        // Don't remove from this position.
     OP_CONSTANT,
     OP_PRINT,
-    OP_RETURN
+    OP_RETURN,
+    OP_ADD,
+    OP_SUBTRACT,
+    OP_DIVIDE,
+    OP_MULTIPLY
 } OpCode;
 
 #endif

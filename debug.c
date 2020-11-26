@@ -23,6 +23,9 @@ void displayInstruction(uint8_t* ip) {
         case OP_RETURN:
             offset = simpleInstruction("OP_RETURN");
             break;
+        case OP_ADD:
+            offset = simpleInstruction("OP_ADD");
+            break;
         default:
             ip -= offset;
             return;

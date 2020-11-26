@@ -18,7 +18,9 @@ static void advance() {
 }
 
 typedef enum {
-    PREC_NONE
+    PREC_ERR,           // Interupt when encountered.
+    PREC_NONE,
+    PREC_MINUS_PLUS,
 } Precedence;
 
 typedef void (*ParseFn) ();
@@ -29,8 +31,26 @@ typedef struct {
     Precedence precedence;
 } ParseRule;
 
+ParseRule* getRule(TokenType type);
 
-// Parser functions.
+void parsePrecedence(Precedence precedence) {
+    advance();      // Get the next token.
+
+    ParseRule* rule = getRule(parser.previous.type);
+    ParseFn prefixFunc = rule->prefix;
+
+    if (prefixFunc == NULL);
+        // TODO: display `prefix function doesn't exists` error
+    prefixFunc();
+
+    while(precedence <= getRule(parser.current.type)->precedence) {
+        advance();
+        ParseFn infixFunc = getRule(parser.previous.type)->infix;
+        infixFunc();
+    }
+}
+
+// Parser's functions(pointer).
 uint8_t addConstant(const Value value) {
     if (compiler.constPos == UINT8_MAX);
         // TODO: display `constants table overflow` error.
@@ -62,11 +82,32 @@ void number() {
     emitConstant(parser.previous.number);
 }
 
+void binary() {
+    Token token = parser.previous;
+
+    // Proceed if there is operations with higher precedence.
+    ParseRule* rule = getRule(token.type);
+    parsePrecedence((Precedence)(rule->precedence + 1));
+
+    switch(token.type) {
+        case TOKEN_PLUS:        return addInstruction(OP_ADD);
+        case TOKEN_MINUS:       return addInstruction(OP_SUBTRACT);
+        case TOKEN_FRD_SLASH:   return addInstruction(OP_DIVIDE);
+        case TOKEN_STAR:        return addInstruction(OP_MULTIPLY);
+        default:
+            return; // Unreachable.
+    }
+}
 
 ParseRule rules[] = {
-    [TOKEN_NUMBER] = {number, NULL, PREC_NONE}
+    [TOKEN_PLUS]    = {NULL,     binary,     PREC_MINUS_PLUS},
+    [TOKEN_NUMBER]  = {number,   NULL,       PREC_NONE},
+    [TOKEN_EOF]     = {NULL,     NULL,       PREC_ERR}
 };
 
+ParseRule* getRule(TokenType type) {
+    return &rules[type];
+}
 
 Compiler compiler;
 
@@ -79,15 +120,12 @@ void initCompiler() {
     compiler.constPos = 0;
 }
 
-
 // Generating bytecode.
-void compile() {
-    for (;;) {
-        advance();
+void expression() {
+    parsePrecedence(PREC_NONE);
+}
 
-#ifdef ZAO_TOKEN_DEBUGGER
-    displayToken(&parser.previous);
-    displayToken(&parser.current);
-#endif
-    }
+void compile() {
+    advance();
+    expression();
 }

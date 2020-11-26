@@ -74,7 +74,7 @@ char getChar(bool noWS) {
     return ch;
 }
 
-bool advance(int n) {
+static bool advance(int n) {
     if (scanner.size == 0) return false;
     if (scanner.position > scanner.size) return false;
 
@@ -91,7 +91,6 @@ bool advance(int n) {
     
     return true;
 }
-
 
 bool consume(TokenType type, const char* message) {
     Token token = scanToken();
@@ -382,6 +381,8 @@ Token scanToken() {
             advance(-1);
             return prepToken(TOKEN_EQUAL);
         }
+
+        case '+': return prepToken(TOKEN_PLUS);
 
         // TODO: deal with other tokens too.
         default:
