@@ -2,6 +2,7 @@
 - [x] What kind of role does integers play in program exit/termination ?
 - [] What does happen with values which is being replaced in array with aother values just via subscript operator ?
 - [x] Get comfortable with pointer arithmetics, especially with pointers difference.
+- [] What is the name of DS against which keywords are being compared ?
 
 ### To Do
 - [] memory.c   : exit when pointer is not null.

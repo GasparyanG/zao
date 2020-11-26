@@ -1,6 +1,15 @@
 #include "compiler.h"
 #include "memory.h"
 
+
+// Parser section.
+typedef struct {
+    Token* previous;
+    Token* current;
+} Parser;
+
+Parser parser;
+
 Compiler compiler;
 
 void initCompiler() {

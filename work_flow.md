@@ -28,7 +28,7 @@
 - [x] 10:00 - 11:00      - Read source code from stream.
 - [x] 11:00 - 12:00      - Prepare regular tokens.
 - [x] 12:00 - 13:00      - Prepare keywords.
-- [] 13:00 - 14:00      - Implement `consume`, and `advance` functions.
+- [x] 13:00 - 14:00      - Implement `consume`, and `advance` functions.
 
 
 ### ZaO Implementation Path
