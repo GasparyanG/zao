@@ -12,6 +12,7 @@
 - [] scanner.c  : display `unknown token` error.
 - [] scanner.c  : deal with other tokens too.
 - [] debug.c    : implement other tokens debugging too.
+- [] compiler.c : display `EOF or some kind of error` error
 
 ### In Progress
 
