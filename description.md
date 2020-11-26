@@ -53,7 +53,12 @@
 ### Instruction effect on Stack (vm)
 * OP_PRINT
     - effect: -1
-    - description: pop value from stack and print it 
+    - description: pop value from stack and print it
+
+* OP_ADD, OP_SUBTRACT, OP_DIVIDE, OP_MULTIPY
+    - effect: -1
+    - description: pop 2 values from stack, 
+    implement required operation and push result back.
 
 ### Scanner
 * protperties
@@ -82,3 +87,33 @@
         - do we need to consume whitespaces or not.
     - return value
         - desired character.
+    
+### Parser
+* properties
+    - `previous`        - previous Token.
+    - `current`         - current Token.
+
+* Precedence
+    - description: meant for traversing tokens based on priority (a.k.a tight binding).
+
+* void parsePrecedence(Precedence)
+    - description
+        - parse expression based on precedence (see above).
+    - arguments
+        - precedence of token.
+    - return
+        - nothing.
+
+* ParseFn
+    - description
+        - pointer to parser functions (e.g. binary, number, etc.).
+
+* ParseRule: properties
+    - `prefix`          - such as "unary minus", "number", etc..
+    - `infix`           - such as "binary", "grouping", etc..
+    - `precedence`      - Precedence to apply traversing sequence.
+
+* void binary()
+    - description
+        - call parsePrecedence with +1 precedence to search for higher operations to handle.
+        - emit binary operators to bytecode.
