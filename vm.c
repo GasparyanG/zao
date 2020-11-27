@@ -37,6 +37,11 @@ void run() {
             case OP_CONSTANT:
                 push(&compiler.constants[READ_BYTE()]);     
                 break;
+            case OP_ADD:
+            case OP_SUBTRACT:
+            case OP_MULTIPLY:
+            case OP_DIVIDE:
+                break;
             case OP_PRINT: {
                 Value* value = pop();
                 printValue(value);

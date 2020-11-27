@@ -26,6 +26,15 @@ void displayInstruction(uint8_t* ip) {
         case OP_ADD:
             offset = simpleInstruction("OP_ADD");
             break;
+        case OP_MULTIPLY:
+            offset = simpleInstruction("OP_MULTIPLY");
+            break;
+        case OP_DIVIDE:
+            offset = simpleInstruction("OP_DIVIDE");
+            break;
+        case OP_SUBTRACT:
+            offset = simpleInstruction("OP_SUBTRACT");
+            break;
         default:
             ip -= offset;
             return;

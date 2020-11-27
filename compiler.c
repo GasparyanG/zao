@@ -2,6 +2,9 @@
 #include "memory.h"
 
 
+// Declarations.
+void expression();
+
 // Parser section.
 typedef struct {
     Token previous;
@@ -18,9 +21,11 @@ static void advance() {
 }
 
 typedef enum {
-    PREC_ERR,           // Interupt when encountered.
-    PREC_NONE,
-    PREC_MINUS_PLUS,
+    PREC_NONE,           // Interupt when encountered.
+    PREC_LITERAL,
+    PREC_MINUS_PLUS,    // -, +
+    PREC_MULT_DIV,      // *,/
+    PREC_GROUP,         // (expression)
 } Precedence;
 
 typedef void (*ParseFn) ();
@@ -99,10 +104,20 @@ void binary() {
     }
 }
 
+void grouping() {
+    expression();
+    // consume(TOKEN_RIGHT_PAREN, "After grouping ')' is required.");
+}
+
 ParseRule rules[] = {
-    [TOKEN_PLUS]    = {NULL,     binary,     PREC_MINUS_PLUS},
-    [TOKEN_NUMBER]  = {number,   NULL,       PREC_NONE},
-    [TOKEN_EOF]     = {NULL,     NULL,       PREC_ERR}
+    [TOKEN_PLUS]        = {NULL,     binary,     PREC_MINUS_PLUS},
+    [TOKEN_MINUS]       = {NULL,     binary,     PREC_MINUS_PLUS},
+    [TOKEN_STAR]        = {NULL,     binary,     PREC_MULT_DIV},
+    [TOKEN_FRD_SLASH]   = {NULL,     binary,     PREC_MULT_DIV},
+    [TOKEN_NUMBER]      = {number,   NULL,       PREC_LITERAL},
+    [TOKEN_EOF]         = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_LEFT_PAREN]  = {grouping, NULL,       PREC_GROUP},
+    [TOKEN_RIGHT_PAREN] = {NULL,     NULL,       PREC_NONE}
 };
 
 ParseRule* getRule(TokenType type) {
@@ -122,7 +137,7 @@ void initCompiler() {
 
 // Generating bytecode.
 void expression() {
-    parsePrecedence(PREC_NONE);
+    parsePrecedence(PREC_LITERAL);
 }
 
 void compile() {

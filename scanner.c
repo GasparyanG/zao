@@ -383,6 +383,8 @@ Token scanToken() {
         }
 
         case '+': return prepToken(TOKEN_PLUS);
+        case '-': return prepToken(TOKEN_MINUS);
+        case '*': return prepToken(TOKEN_STAR);
 
         // TODO: deal with other tokens too.
         default:
