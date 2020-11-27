@@ -7,6 +7,13 @@
     - Iterates over compiled instructions and handles them correspondingly.
     - To dispatch to required handler it considers instruction/op code.
 
+* BINARY_OP(op)
+    - description
+        - takes operator and does changes to stack by computing binary expressions.
+    - design notes
+        - why macro?        - To be able to deal with different operators.
+        - why `do while` ?  - First of all to have block expression and at the same time
+                            being able to use semicolon (;) afterwards.
 
 ## Compiler + Chunk
 * Chunk properties
@@ -59,6 +66,10 @@
     - effect: -1
     - description: pop 2 values from stack, 
     implement required operation and push result back.
+
+* OP_NEGATE
+    - effect: 0
+    - pop value from stack, negate it, push back to stack.
 
 ### Scanner
 * protperties
@@ -113,7 +124,16 @@
     - `infix`           - such as "binary", "grouping", etc..
     - `precedence`      - Precedence to apply traversing sequence.
 
+* void unary()
+    - description
+        - negare number.
+
 * void binary()
     - description
         - call parsePrecedence with +1 precedence to search for higher operations to handle.
         - emit binary operators to bytecode.
+    
+* void grouping()
+    - description
+        - handles (expression), while being prioritized againset some operations 
+        (e.g. litterals, arithmetics, etc.)

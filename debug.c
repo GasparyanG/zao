@@ -35,6 +35,9 @@ void displayInstruction(uint8_t* ip) {
         case OP_SUBTRACT:
             offset = simpleInstruction("OP_SUBTRACT");
             break;
+        case OP_NEGATE:
+            offset = simpleInstruction("OP_NEGATE");
+            break;
         default:
             ip -= offset;
             return;

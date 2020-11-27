@@ -87,6 +87,12 @@ void number() {
     emitConstant(parser.previous.number);
 }
 
+void unary() {
+    advance();
+    number();
+    addInstruction(OP_NEGATE);
+}
+
 void binary() {
     Token token = parser.previous;
 
@@ -111,7 +117,7 @@ void grouping() {
 
 ParseRule rules[] = {
     [TOKEN_PLUS]        = {NULL,     binary,     PREC_MINUS_PLUS},
-    [TOKEN_MINUS]       = {NULL,     binary,     PREC_MINUS_PLUS},
+    [TOKEN_MINUS]       = {unary,    binary,     PREC_MINUS_PLUS},
     [TOKEN_STAR]        = {NULL,     binary,     PREC_MULT_DIV},
     [TOKEN_FRD_SLASH]   = {NULL,     binary,     PREC_MULT_DIV},
     [TOKEN_NUMBER]      = {number,   NULL,       PREC_LITERAL},

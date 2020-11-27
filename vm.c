@@ -58,6 +58,11 @@ void run() {
             case OP_RETURN:
                 printf("OP_RETURN\n");
                 break;
+            case OP_NEGATE: {
+                Value value = -(*pop());
+                push(&value);
+                break;
+            }
             default:
                 // Terminate loop. 
                 return;
