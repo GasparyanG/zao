@@ -197,6 +197,8 @@ static void lookForKeyword(Token* token) {
             return compareForKeyword(token, 1, "f", TOKEN_IF);          // if
         case 'e':
             return compareForKeyword(token, 1, "lse", TOKEN_ELSE);      // else
+        case 'p':
+            return compareForKeyword(token, 1, "rint", TOKEN_PRINT);    // print
         default:
             return;         // Terminate.
     }

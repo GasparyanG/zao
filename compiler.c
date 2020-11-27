@@ -140,7 +140,19 @@ void expression() {
     parsePrecedence(PREC_LITERAL);
 }
 
+void statement() {
+    switch(parser.current.type) {
+        case TOKEN_PRINT:
+            advance();
+            expression();
+            addInstruction(OP_PRINT);
+            break;
+        default:
+            expression();
+    }
+}
+
 void compile() {
     advance();
-    expression();
+    statement();
 }
