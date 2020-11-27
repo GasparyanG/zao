@@ -4,11 +4,8 @@
 #include <stdio.h>
 
 static bool isEof() {
-    if (parser.current.type == TOKEN_SEMI_COLON) {
-        advance();
-        if (parser.current.type == TOKEN_EOF)
-            return true;
-    }
+    if (parser.current.type == TOKEN_EOF)
+        return true;
 
     return false;
 }

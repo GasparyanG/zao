@@ -96,7 +96,7 @@ void addInstruction(uint8_t instruction) {
         compiler.chunk.chunk = ALLOCATE(uint8_t, compiler.chunk.chunk, compiler.chunk.size);
         compiler.chunk.capacity *= ENLARGEMENT_FACTOR;
         compiler.ip = compiler.chunk.chunk;
-        compiler.ip += interval;                                // Add interval to reach desired instruction.
+        compiler.ip += interval ? interval - 1: 0;                             // Add interval to reach desired instruction.
     }
 
     compiler.chunk.chunk[compiler.chunk.size++] = instruction;
@@ -141,6 +141,7 @@ void binary() {
 void grouping() {
     expression();
     consume(TOKEN_RIGHT_PAREN, "')' is required after grouping.");
+    advance();
 }
 
 ParseRule rules[] = {
@@ -184,6 +185,9 @@ void expression() {
 
 void statement() {
     switch(parser.current.type) {
+        case TOKEN_EOF:
+            // Terminate.
+            break;
         case TOKEN_PRINT:
             advance();
             expression();
