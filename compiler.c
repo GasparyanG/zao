@@ -20,6 +20,13 @@ static void advance() {
         // TODO: display `EOF or some kind of error` error
 }
 
+static bool consume(TokenType type, const char* message) {
+    if (parser.current.type == type) return true;
+
+    printf("%s\n", message);
+    return false;
+}
+
 typedef enum {
     PREC_NONE,           // Interupt when encountered.
     PREC_LITERAL,
@@ -112,7 +119,7 @@ void binary() {
 
 void grouping() {
     expression();
-    // consume(TOKEN_RIGHT_PAREN, "After grouping ')' is required.");
+    consume(TOKEN_RIGHT_PAREN, "')' is required after grouping.");
 }
 
 ParseRule rules[] = {
@@ -123,7 +130,10 @@ ParseRule rules[] = {
     [TOKEN_NUMBER]      = {number,   NULL,       PREC_LITERAL},
     [TOKEN_EOF]         = {NULL,     NULL,       PREC_NONE},
     [TOKEN_LEFT_PAREN]  = {grouping, NULL,       PREC_GROUP},
-    [TOKEN_RIGHT_PAREN] = {NULL,     NULL,       PREC_NONE}
+    [TOKEN_RIGHT_PAREN] = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_LEFT_CURLY]  = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_RIGHT_CURLY] = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_SEMI_COLON]  = {NULL,     NULL,       PREC_NONE}
 };
 
 ParseRule* getRule(TokenType type) {
@@ -151,10 +161,13 @@ void statement() {
         case TOKEN_PRINT:
             advance();
             expression();
+            consume(TOKEN_SEMI_COLON, "';' is required after expression.");
             addInstruction(OP_PRINT);
             break;
-        default:
+        default: {
             expression();
+            consume(TOKEN_SEMI_COLON, "';' is required after expression.");
+        }
     }
 }
 

@@ -21,6 +21,9 @@ typedef enum {
     // BLOCKS AND GROUPINGS
     TOKEN_LEFT_PAREN, TOKEN_RIGHT_PAREN, TOKEN_LEFT_CURLY, TOKEN_RIGHT_CURLY,
     
+    // PUNCTUATIONS
+    TOKEN_SEMI_COLON, TOKEN_QUESTION, TOKEN_COLON, TOKEN_BANG /* ! */,
+
     // ARITHMETICS
     TOKEN_MODULO, TOKEN_BCK_SLASH,
 
@@ -30,8 +33,6 @@ typedef enum {
     // COMPARISION COMBINATIONS
     TOKEN_EQUAL_EQUAL, TOKEN_GREATER_EQUAL, TOKEN_LESS_EQUAL,
 
-    // PUNCTUATIONS
-    TOKEN_QUESTION, TOKEN_COLON, TOKEN_SEMI_COLON, TOKEN_BANG /* ! */,
 
     // UNDERSCORE AND HYPHEN
     TOKEN_UNDERSCORE, TOKEN_HYPHEN,
@@ -72,6 +73,5 @@ const char* cmdInput();
 // Token scanning section.
 Token scanToken();
 char getChar(bool noWS);
-bool consume(TokenType type, const char* message);
 
 #endif

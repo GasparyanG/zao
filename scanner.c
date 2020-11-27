@@ -92,15 +92,6 @@ static bool advance(int n) {
     return true;
 }
 
-bool consume(TokenType type, const char* message) {
-    Token token = scanToken();
-    if (token.type == type) return true;
-
-    printf("%s\n", message);
-    return false;
-}
-
-
 Token prepToken(TokenType type) {
     Token token;
     token.type = type;
@@ -387,6 +378,8 @@ Token scanToken() {
         case '+': return prepToken(TOKEN_PLUS);
         case '-': return prepToken(TOKEN_MINUS);
         case '*': return prepToken(TOKEN_STAR);
+
+        case ';': return prepToken(TOKEN_SEMI_COLON);
 
         // TODO: deal with other tokens too.
         default:
