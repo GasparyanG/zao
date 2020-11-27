@@ -26,6 +26,13 @@ static void printValue(Value* value) {
 void run() {
     for (;;) {
 #define READ_BYTE() *compiler.ip++
+#define BINARY_OP(op) \
+    do { \
+        Value* b = pop(); \
+        Value* a = pop(); \
+        Value c = (*a op *b); \
+        push(&c); \
+    } while(false)
 
 #ifdef ZAO_DEBUGGER_MODE_ON
     displayInstruction(compiler.ip);
@@ -37,11 +44,12 @@ void run() {
             case OP_CONSTANT:
                 push(&compiler.constants[READ_BYTE()]);     
                 break;
-            case OP_ADD:
-            case OP_SUBTRACT:
-            case OP_MULTIPLY:
-            case OP_DIVIDE:
-                break;
+            
+            case OP_ADD:            BINARY_OP(+); break;
+            case OP_SUBTRACT:       BINARY_OP(-); break;
+            case OP_MULTIPLY:       BINARY_OP(*); break;
+            case OP_DIVIDE:         BINARY_OP(/); break;
+
             case OP_PRINT: {
                 Value* value = pop();
                 printValue(value);
@@ -55,5 +63,6 @@ void run() {
                 return;
         }
 #undef READ_BYTE
+#undef BINARY_OP
     }
 }
