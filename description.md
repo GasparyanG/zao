@@ -25,7 +25,13 @@
     - `Chunk`       - Chunk (see above).
     - `ip`          - instruction pointer.
     - `constants`   - some instructions require values, so this DS will hold it.
+    - `panicMode`   - should be true when compiler encounters error.
 
+* void recover()
+    - description
+        - consume all tokens until EOF or semicolon (;).
+        - change ip to point to the end of instructions (chunk.chunk).
+        - set `panicMode` to true.
 
 ## Debugger
 - Just prints info about:
@@ -76,12 +82,14 @@
     - `sourceCode`      - self-explanatory.
     - `position`        - index to current character.
     - `size`            - length of source code.
+    - `lineNumber`      - character's line nubmer. This is meant for errors.
     
 #### Token
 * properties
     - `type`            - enum.
     - `string`          - meant for strings, identifiers, etc.
     - `number`          - meant for numbers.
+    - `lineNumber`      - meant for erros.
 
 * bool advance(int)
     - description

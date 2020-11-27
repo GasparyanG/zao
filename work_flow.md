@@ -1,4 +1,4 @@
-# ZaO (Zero and One)
+# ZaO (Zero and One Programming Language)
 
 ## Agenda
 ### 11/20/2020
@@ -22,13 +22,20 @@
 - [x] 13:30 - 14:30       - Debugger
     - Print opCode
 
-
 ### 11/24 - 25/2020
 - [x] 09:10 - 10:00      - Design.
 - [x] 10:00 - 11:00      - Read source code from stream.
 - [x] 11:00 - 12:00      - Prepare regular tokens.
 - [x] 12:00 - 13:00      - Prepare keywords.
 - [x] 13:00 - 14:00      - Implement `consume`, and `advance` functions.
+
+### 11/26 - 27/2020
+- [x] 09:10 - 10:00      - Design.
+- [x] 10:00 - 11:00      - Vaughn Pratt's table.
+- [x] 11:00 - 12:00      - Expression handling.
+- [x] 12:00 - 13:00      - Error handling.
+- [] 13:00 - 14:00      - Variable design.
+
 
 
 ### ZaO Implementation Path

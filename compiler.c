@@ -6,25 +6,43 @@
 void expression();
 
 // Parser section.
-typedef struct {
-    Token previous;
-    Token current;
-} Parser;
-
 Parser parser;
 
-static void advance() {
+void advance() {
     parser.previous = parser.current;
 
     if ((parser.current = scanToken()).type == TOKEN_EOF);
         // TODO: display `EOF or some kind of error` error
 }
 
+static void error(Token* token, const char* message) {
+    compiler.panicMode = true;      // Bytecode contains error.
+    printf("[Line %d] %s: %s\n",
+        token->lineNumber,
+        (scanner.lineNumber == token->lineNumber) ? "Error at the end": "Error",
+        message);
+}
+
 static bool consume(TokenType type, const char* message) {
     if (parser.current.type == type) return true;
 
-    printf("%s\n", message);
+    error(&parser.current, message);
     return false;
+}
+
+void recover() {
+    // Ignore all tokens either until semicolon (;) - a.k.a. end of expression,
+    // or until EOF - a.k.a. end of file.
+    for (;;) {
+        advance();
+        if (parser.current.type == TOKEN_EOF 
+            || parser.current.type == TOKEN_SEMI_COLON)
+            break;
+    }
+
+    // Start compiling from new expression.
+    compiler.ip += compiler.chunk.size - (compiler.ip - compiler.chunk.chunk);
+    compiler.panicMode = false;             // Back to normal.
 }
 
 typedef enum {
@@ -73,9 +91,12 @@ uint8_t addConstant(const Value value) {
 
 void addInstruction(uint8_t instruction) {
     if (compiler.chunk.size == compiler.chunk.capacity) {
+        size_t interval = compiler.ip - compiler.chunk.chunk;   // Don't lose required position to continue.
+
         compiler.chunk.chunk = ALLOCATE(uint8_t, compiler.chunk.chunk, compiler.chunk.size);
         compiler.chunk.capacity *= ENLARGEMENT_FACTOR;
         compiler.ip = compiler.chunk.chunk;
+        compiler.ip += interval;                                // Add interval to reach desired instruction.
     }
 
     compiler.chunk.chunk[compiler.chunk.size++] = instruction;
@@ -145,10 +166,15 @@ Compiler compiler;
 void initCompiler() {
     compiler.chunk.chunk = ALLOCATE(uint8_t, compiler.chunk.chunk, compiler.chunk.size);
     compiler.chunk.size = 0;
+    compiler.panicMode = false;     // There is no error in bytecode.
     compiler.chunk.capacity = ARRAY_INITIAL_SIZE;
     compiler.ip = compiler.chunk.chunk;
 
     compiler.constPos = 0;
+}
+
+void freeCompiler() {
+    free((void*)compiler.chunk.chunk);
 }
 
 // Generating bytecode.

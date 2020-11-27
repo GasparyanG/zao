@@ -51,6 +51,7 @@ typedef struct {
     TokenType type;
     char* string;
     double number;
+    int lineNumber;
 } Token;
 
 
@@ -61,11 +62,13 @@ typedef struct {
     const char* sourceCode;
     size_t position;
     size_t size;
+    int lineNumber;
 } Scanner;
 
 extern Scanner scanner;
 
 void initScanner(const char* sourceCode);
+void freeScanner();
 const char* fileInput(const char* fileName);
 const char* cmdInput();
 

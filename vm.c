@@ -20,7 +20,7 @@ void push(Value* value) {
 }
 
 static void printValue(Value* value) {
-    printf("%g", *value);
+    printf("%g\n", *value);
 }
 
 void run() {

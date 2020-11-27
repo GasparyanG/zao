@@ -11,6 +11,11 @@ void initScanner(const char* sourceCode) {
     scanner.sourceCode = sourceCode;
     scanner.position = 0;
     scanner.size = strlen(sourceCode);
+    scanner.lineNumber = 1;
+}
+
+void freeScanner() {
+    free((void*)scanner.sourceCode);
 }
 
 const char* fileInput(const char* fileName) {
@@ -68,8 +73,11 @@ char getChar(bool noWS) {
     scanner.position++;
 
     // Get rid of whitespaces.
-    while (noWS && isspace(ch))
+    while (noWS && isspace(ch)) {
         ch = scanner.sourceCode[scanner.position++];
+        if (ch == '\n')
+            scanner.lineNumber++;
+    }
 
     return ch;
 }
@@ -100,6 +108,7 @@ Token prepToken(TokenType type) {
     // but it's bad practice to leave them uninitialized.
     token.string = NULL;
     token.number = 0;
+    token.lineNumber = scanner.lineNumber;
 
     return token;
 }
