@@ -8,6 +8,7 @@
 #include "common.h"
 #include "debug.h"
 #include "scanner.h"
+#include "table.h"
 #include "value.h"
 
 typedef struct {

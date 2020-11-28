@@ -208,7 +208,12 @@ static void declareVariable() {
         return;
     }
     
-    printf("identifier name - '%s'\n", parser.current.string);
+    Entry entry;
+    entry.key = parser.current.string;
+    entry.tombstone = false;
+    entry.value = NULL;
+    entry.hash = hashString(entry.key);
+
     advance();
 
     if (parser.current.type == TOKEN_EQUAL) {
