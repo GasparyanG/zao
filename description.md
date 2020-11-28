@@ -26,6 +26,7 @@
     - `ip`          - instruction pointer.
     - `constants`   - some instructions require values, so this DS will hold it.
     - `panicMode`   - should be true when compiler encounters error.
+    - `table`       - hash table for variables.
 
 * void recover()
     - description
@@ -145,3 +146,47 @@
     - description
         - handles (expression), while being prioritized againset some operations 
         (e.g. litterals, arithmetics, etc.)
+
+* expression()
+    - description
+        - imply grammer on expressions.
+    - examples
+        - addition, multiplication, grouping, unary, etc..
+
+* statment()
+    - description
+        - imply grammer on statements.
+    - examples
+        - print, if-then, while, etc..
+
+* declaration()
+    - description
+        - imply grammer on declarations.
+    - examples
+        - function, variable, class, etc..
+
+### Table and Entry
+* Entry::properties
+    - `key`             - seach names via this.
+    - `value`           - payload.
+    - `hash`            - make search faster via hashed key.
+    - `tombstone`       - meant for deletion.
+
+* Table::properties
+    - `entries`         - array of Entry.
+    - `size`            - amount of entries.
+    - `capacity`        - amount of space for entries.
+
+* double hashString(const char* key)
+    - description
+        - hash string by considering every character in it.
+
+* Entry* findEntry(Table* table, const char* key, uint32_t hash)
+    - description
+        - seach Entry in table in _linear probing_ style.
+
+* void addEntry(Table* table, Entry* entry)
+    - description
+        - use _findEntry_ function to find position.
+        - add entry to table.
+        - grow table if it's near to max load space (in our case 0.75).
