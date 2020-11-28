@@ -34,8 +34,12 @@
 - [x] 10:00 - 11:00      - Vaughn Pratt's table.
 - [x] 11:00 - 12:00      - Expression handling.
 - [x] 12:00 - 13:00      - Error handling.
-- [] 13:00 - 14:00      - Variable design.
 
+### 11/28 - 29/2020
+- [x] 11:00 - 12:30      - Design.
+- [] 12:30 - 13:30      - Hash table, Entry, hash function.
+- [] 13:30 - 14:30      - Insertion, deletion.
+- [] 14:30 - 15:30      - Variable design.
 
 
 ### ZaO Implementation Path
@@ -62,7 +66,7 @@
 5) Hash Table
     5.1) Hash function
     5.2) Linear probbing
-    5.3) Tobstons
+    5.3) Tombstons
     5.4) Getter and setter
 
 6) String

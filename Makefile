@@ -1,5 +1,5 @@
-MODULES=compiler.c memory.c vm.c debug.c scanner.c
-OMODULES=obj/compiler.o obj/memory.o obj/vm.o obj/debug.o obj/scanner.o
+MODULES=compiler.c memory.c vm.c debug.c scanner.c table.c
+OMODULES=obj/compiler.o obj/memory.o obj/vm.o obj/debug.o obj/scanner.o obj/table.o
 
 zao: $(OMODULES) main.c
 	g++ -o zao $(OMODULES) main.c
@@ -18,6 +18,9 @@ obj/debug.o: debug.c
 
 obj/scanner.o: scanner.c
 	g++ -o obj/scanner.o -c scanner.c
+
+obj/table.o: table.c
+	g++ -o obj/table.o -c table.c
 
 clean:
 	rm $(OMODULES)
