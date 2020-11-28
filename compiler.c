@@ -219,7 +219,7 @@ static void declareVariable() {
     if (parser.current.type == TOKEN_EQUAL) {
         advance();
         expression();
-        // TODO: this this part through.
+        // TODO: think this part through.
     } else
         consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
 }

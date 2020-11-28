@@ -38,8 +38,8 @@
 ### 11/28 - 29/2020
 - [x] 11:00 - 12:30      - Design.
 - [x] 12:30 - 13:30      - Hash table, Entry, hash function.
-- [] 13:30 - 14:30      - Insertion, deletion.
-- [] 14:30 - 15:30      - Variable design.
+- [] 13:30 - 14:30      - Find, insertion, deletion.
+- [] 14:30 - 15:30      - Declaration, definition, assignement.
 
 
 ### ZaO Implementation Path

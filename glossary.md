@@ -14,7 +14,9 @@
 - [] debug.c    : implement other tokens debugging too.
 - [] compiler.c : display `EOF or some kind of error` error
 - [] compiler.c : display `prefix function dosn't exists` error
-- [] compiler.c : this this part through.
+- [] compiler.c : think this part through.
+- [] table.h    : introduce StrObj which will store key and hash.
+- [] table.c    : handle tombstones.
 
 ### In Progress
 
