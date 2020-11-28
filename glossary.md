@@ -14,6 +14,7 @@
 - [] debug.c    : implement other tokens debugging too.
 - [] compiler.c : display `EOF or some kind of error` error
 - [] compiler.c : display `prefix function dosn't exists` error
+- [] compiler.c : this this part through.
 
 ### In Progress
 

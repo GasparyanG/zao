@@ -201,7 +201,35 @@ void statement() {
     }
 }
 
+static void declareVariable() {
+    advance();
+    if (parser.current.type != TOKEN_IDENTIFIER) {
+        error(&parser.current, "Identifier is expected after 'var'.");
+        return;
+    }
+    
+    printf("identifier name - '%s'\n", parser.current.string);
+    advance();
+
+    if (parser.current.type == TOKEN_EQUAL) {
+        advance();
+        expression();
+        // TODO: this this part through.
+    } else
+        consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
+}
+
+void declaration() {
+    switch(parser.current.type) {
+        case TOKEN_VAR:
+            declareVariable();
+            break;
+        default:
+            statement();
+    }
+}
+
 void compile() {
     advance();
-    statement();
+    declaration();
 }
