@@ -1,4 +1,5 @@
 #include "table.h"
+#include <stdio.h>
 
 void initTable(Table* table) {
     table->size = 0;
@@ -21,15 +22,14 @@ double hashString(const char* key) {
     return hash;
 }
 
-Entry* find(Table* table, const char* key) {
-    uint32_t hash = hashString(key);
-
+Entry* findEntry(Table* table, const char* key, uint32_t hash) {
+    uint32_t index = hash % table->capacity;
+    uint32_t cycle = 0;
     for (;;) {
-        uint32_t index = hash % table->capacity;
         if (table->entries[index].key == NULL || table->entries[index].hash == hash)
             return &table->entries[index];
         
-        hash++;
+        index = (hash + (++cycle)) % table->capacity;
     }
 }
 
@@ -45,7 +45,10 @@ static void growTable(Table* table) {
 }
 
 void addEntry(Table* table, Entry* entry) {
-    if (table->size/table->capacity >= LOAD_FACTOR) growTable(table);
-    Entry* entryToChange = find(table, entry->key);
-    entryToChange = entry;
+    if (table->capacity == 0 || table->size >= table->capacity * LOAD_FACTOR) 
+        growTable(table);
+
+    Entry* entryToChange = findEntry(table, entry->key, entry->hash);
+    *entryToChange = *entry;
+    table->size++;
 }

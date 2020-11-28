@@ -171,6 +171,9 @@ void initCompiler() {
     compiler.chunk.capacity = ARRAY_INITIAL_SIZE;
     compiler.ip = compiler.chunk.chunk;
 
+    Table table;
+    initTable(&table);
+
     compiler.constPos = 0;
 }
 
@@ -214,6 +217,7 @@ static void declareVariable() {
     entry.value = NULL;
     entry.hash = hashString(entry.key);
 
+    addEntry(&compiler.table, &entry);
     advance();
 
     if (parser.current.type == TOKEN_EQUAL) {

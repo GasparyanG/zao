@@ -12,7 +12,7 @@
 
 typedef struct {
     // TODO: introduce StrObj which will store key and hash.
-    const char* key;    // Key to find value with.
+    char* key;          // Key to find value with.
     Value* value;       // Value pointer (points to compiler's constant table).
     uint32_t hash;      // Hashed value.
     bool tombstone;     // Are we deleted or not ?
@@ -26,10 +26,13 @@ typedef struct {
 
 
 // Helper functions.
+// Resource management.
 void initTable(Table* table);
 void freeTable(Table* table);
+
+// Table and Entry manipulation.
 double hashString(const char* key);
-Entry* find(Table* table, const char* key);
+Entry* findEntry(Table* table, const char* key, uint32_t hash);
 void addEntry(Table* table, Entry* entry);
 
 #endif
