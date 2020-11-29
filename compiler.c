@@ -217,7 +217,11 @@ static void declareVariable() {
     entry.value = NULL;
     entry.hash = hashString(entry.key);
 
-    addEntry(&compiler.table, &entry);
+    if (addEntry(&compiler.table, &entry)) {
+        error(&parser.current, "Variable already exists");
+        return; // Terminate.
+    }
+
     advance();
 
     if (parser.current.type == TOKEN_EQUAL) {

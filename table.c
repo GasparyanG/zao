@@ -26,9 +26,13 @@ Entry* findEntry(Table* table, const char* key, uint32_t hash) {
     uint32_t index = hash % table->capacity;
     uint32_t cycle = 0;
     for (;;) {
-        if (table->entries[index].key == NULL || table->entries[index].hash == hash)
+        printf("name - %s, index - %d\n", key, index);
+        if (table->entries[index].key == NULL || table->entries[index].hash == hash) {
+            printf("state - %s, hash cmp - %d == %d\n", table->entries[index].key == NULL ? "empty": "full", 
+                table->entries[index].hash, hash);
             return &table->entries[index];
-        
+        }
+
         index = (hash + (++cycle)) % table->capacity;
     }
 }
@@ -38,17 +42,52 @@ static void growTable(Table* table) {
         table->entries = ALLOCATE(Entry, table->entries, 0);
         table->capacity = ARRAY_INITIAL_SIZE;
     } else {
-        // TODO: handle tombstones.
-        table->entries = ALLOCATE(Entry, table->entries, table->capacity);
+        // Allocate entries without tombstones - they will be not included.
+        Entry* entries = table->entries;
+        
+        // New Table.
         table->capacity *= ENLARGEMENT_FACTOR;
+        table->size = 0;
+        table->entries = (Entry*)malloc(sizeof(Entry) * table->capacity * ENLARGEMENT_FACTOR);;
+        
+        // Populate with entries.
+        for (uint32_t i = 0, end = table->capacity/ENLARGEMENT_FACTOR; i < end; i++) {
+            // Don't include tombstones and empty Entries.
+            if (entries[i].tombstone == true || entries[i].key == NULL) continue;
+            addEntry(table, &entries[i]);
+        }
+
+        free(entries);
     }
 }
 
-void addEntry(Table* table, Entry* entry) {
+static void freeEntry(Entry* entry) {
+    free(entry->key);
+    free(entry->value);
+}
+
+bool addEntry(Table* table, Entry* entry) {
     if (table->capacity == 0 || table->size >= table->capacity * LOAD_FACTOR) 
         growTable(table);
 
     Entry* entryToChange = findEntry(table, entry->key, entry->hash);
+    if (entryToChange->key != NULL) {
+        freeEntry(entry);
+        return true;
+    }
+
     *entryToChange = *entry;
     table->size++;
+    return false;
+}
+
+void deleteEntry(Table* table, const char* key, uint32_t hash) {
+    Entry tombstone;
+    tombstone.key = NULL;
+    tombstone.value = NULL;
+    tombstone.tombstone = true;
+
+    Entry* entry = findEntry(table, key, hash);
+    freeEntry(entry);
+    *entry = tombstone;
 }

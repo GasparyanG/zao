@@ -33,6 +33,7 @@ void freeTable(Table* table);
 // Table and Entry manipulation.
 double hashString(const char* key);
 Entry* findEntry(Table* table, const char* key, uint32_t hash);
-void addEntry(Table* table, Entry* entry);
+bool addEntry(Table* table, Entry* entry);
+void deleteEntry(Table* table, const char* key, uint32_t hash);
 
 #endif
