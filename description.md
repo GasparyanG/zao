@@ -200,3 +200,12 @@
         - use _findEntry_ function to find position.
         - add entry to table.
         - grow table if it's near to max load space (in our case 0.75).
+
+## Objects
+* Obj::properties
+    - `type`            - type of object.
+
+* ObjString::properties
+    - `obj`             - to be able to use polymorphism.
+    - `string`          - payload.
+    - `hash`            - string hash.

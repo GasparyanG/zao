@@ -40,6 +40,9 @@
 - [x] 12:30 - 13:30      - Hash table, Entry, hash function.
 - [x] 13:30 - 14:30      - Find, insertion, deletion.
 - [~] 14:30 - 15:30      - Declaration, definition, assignement.
+- [x] -:- - -:-          - tagged union.
+- [x] -:- - -:-          - nil, false, true.
+- [x] -:- - -:-          - strings.
 
 
 ### ZaO Implementation Path
