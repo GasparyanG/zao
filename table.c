@@ -24,23 +24,24 @@ double hashString(const char* key) {
 
 Entry* findEntry(Table* table, const char* key, uint32_t hash) {
     uint32_t index = hash % table->capacity;
-    uint32_t cycle = 0;
     for (;;) {
-        printf("name - %s, index - %d\n", key, index);
-        if (table->entries[index].key == NULL || table->entries[index].hash == hash) {
-            printf("state - %s, hash cmp - %d == %d\n", table->entries[index].key == NULL ? "empty": "full", 
-                table->entries[index].hash, hash);
+        if (table->entries[index].key == NULL || table->entries[index].hash == hash)
             return &table->entries[index];
-        }
 
-        index = (hash + (++cycle)) % table->capacity;
+        index = (index + 1) % table->capacity;
     }
 }
 
 static void growTable(Table* table) {
     if (table->capacity == 0) {
-        table->entries = ALLOCATE(Entry, table->entries, 0);
+        // TODO: create function in memory.h to handle allocation in one place.
+        table->entries = (Entry*)malloc(sizeof(Entry) * ARRAY_INITIAL_SIZE);
         table->capacity = ARRAY_INITIAL_SIZE;
+
+        for (uint32_t i = 0; i < table->capacity; i++) {
+            table->entries[i].key = '\0';
+            table->entries[i].value = NULL;
+        }
     } else {
         // Allocate entries without tombstones - they will be not included.
         Entry* entries = table->entries;
@@ -48,8 +49,13 @@ static void growTable(Table* table) {
         // New Table.
         table->capacity *= ENLARGEMENT_FACTOR;
         table->size = 0;
-        table->entries = (Entry*)malloc(sizeof(Entry) * table->capacity * ENLARGEMENT_FACTOR);;
-        
+        table->entries = (Entry*)malloc(sizeof(Entry) * table->capacity * ENLARGEMENT_FACTOR);
+
+        for (uint32_t i = 0; i < table->capacity; i++) {
+            table->entries[i].key = '\0';
+            table->entries[i].value = NULL;
+        }
+
         // Populate with entries.
         for (uint32_t i = 0, end = table->capacity/ENLARGEMENT_FACTOR; i < end; i++) {
             // Don't include tombstones and empty Entries.
@@ -83,7 +89,7 @@ bool addEntry(Table* table, Entry* entry) {
 
 void deleteEntry(Table* table, const char* key, uint32_t hash) {
     Entry tombstone;
-    tombstone.key = NULL;
+    tombstone.key;
     tombstone.value = NULL;
     tombstone.tombstone = true;
 
