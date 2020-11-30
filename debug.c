@@ -20,6 +20,15 @@ void displayInstruction(uint8_t* ip) {
         case OP_CONSTANT:
             offset = constantInstruction("OP_CONSTANT", ip);
             break;
+        case OP_FALSE:
+            offset = simpleInstruction("OP_FALSE");
+            break;
+        case OP_TRUE:
+            offset = simpleInstruction("OP_TRUE");
+            break;
+        case OP_NIL:
+            offset = simpleInstruction("OP_TRUE");
+            break;
         case OP_PRINT:
             offset = simpleInstruction("OP_PRINT");
             break;

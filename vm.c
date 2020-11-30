@@ -24,6 +24,15 @@ static void printValue(Value* value) {
         case VAL_NUMBER:
             printf("%g\n", value->as.number);
             break;
+        case VAL_FALSE:
+            printf("false\n");
+            break;
+        case VAL_TRUE:
+            printf("true\n");
+            break;
+        case VAL_NIL:
+            printf("NIL\n");
+            break;
         default:
             return; // Unreachable.
     }
@@ -47,11 +56,29 @@ void run() {
 #endif 
         switch(*compiler.ip++) {
             case OP_NONE:
-                // Tertminate.
+                *compiler.ip--;
                 return;
             case OP_CONSTANT:
                 push(&compiler.constants[READ_BYTE()]);     
                 break;
+            case OP_FALSE: {
+                Value value;
+                value.type = VAL_FALSE;
+                push(&value);
+                break;
+            }
+            case OP_TRUE: {
+                Value value;
+                value.type = VAL_TRUE;
+                push(&value);
+                break;
+            }
+            case OP_NIL: {
+                Value value;
+                value.type = VAL_NIL;
+                push(&value);
+                break;
+            }
             
             case OP_ADD:            BINARY_OP(+); break;
             case OP_SUBTRACT:       BINARY_OP(-); break;

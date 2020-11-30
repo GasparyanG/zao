@@ -201,6 +201,8 @@ static void lookForKeyword(Token* token) {
             return compareForKeyword(token, 1, "rint", TOKEN_PRINT);    // print
         case 'v':
             return compareForKeyword(token, 1, "ar", TOKEN_VAR);        // var
+        case 'N':
+            return compareForKeyword(token, 1, "IL", TOKEN_NIL);        // NIL
         default:
             return;         // Terminate.
     }

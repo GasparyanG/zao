@@ -119,9 +119,24 @@ void number() {
 }
 
 void unary() {
-    advance();
-    number();
-    addInstruction(OP_NEGATE);
+    switch(parser.previous.type) {
+        case TOKEN_MINUS:
+            advance();
+            number();
+            addInstruction(OP_NEGATE);
+            break;
+        case TOKEN_FALSE:  // FALSE
+            addInstruction(OP_FALSE);
+            break;
+        case TOKEN_TRUE:  // TRUE
+            addInstruction(OP_TRUE);
+            break;
+        case TOKEN_NIL:  // NIL
+            addInstruction(OP_NIL);
+            break;
+        default:
+            return; // Unreachable.
+    }
 }
 
 void binary() {
@@ -158,7 +173,13 @@ ParseRule rules[] = {
     [TOKEN_RIGHT_PAREN] = {NULL,     NULL,       PREC_NONE},
     [TOKEN_LEFT_CURLY]  = {NULL,     NULL,       PREC_NONE},
     [TOKEN_RIGHT_CURLY] = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_SEMI_COLON]  = {NULL,     NULL,       PREC_NONE}
+    [TOKEN_SEMI_COLON]  = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_QUESTION]    = {NULL,     NULL,       PREC_NONE}, 
+    [TOKEN_COLON]       = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_BANG]        = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_FALSE]       = {unary,    NULL,       PREC_LITERAL}, 
+    [TOKEN_TRUE]        = {unary,    NULL,       PREC_LITERAL}, 
+    [TOKEN_NIL]         = {unary,    NULL,       PREC_LITERAL}
 };
 
 ParseRule* getRule(TokenType type) {

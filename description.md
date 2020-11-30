@@ -1,3 +1,9 @@
+## Value
+* properties
+    - `type`      - value type (e.g. number, string, bool, etc.).
+    - `as`        - value gor given type.
+        - to be able to store values in the same memory location union is used.
+
 ## VM
 * properties
     - `stack`     - meant for maintaining implementation flow.
@@ -65,9 +71,13 @@
 
 
 ### Instruction effect on Stack (vm)
+* OP_FALSE, OP_TRUE, OP_NIL, OP_CONSTANT
+    - effect: +1
+    - description: add constant to stack either from _constants_ or explicitly from _bytecode_.
+
 * OP_PRINT
     - effect: -1
-    - description: pop value from stack and print it
+    - description: pop value from stack and print it.
 
 * OP_ADD, OP_SUBTRACT, OP_DIVIDE, OP_MULTIPY
     - effect: -1

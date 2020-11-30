@@ -20,6 +20,9 @@ typedef enum {
     OP_DIVIDE,
     OP_MULTIPLY,
     OP_NEGATE,
+    OP_FALSE,
+    OP_TRUE,
+    OP_NIL,
     OP_DEFINE_GLOBAL
 } OpCode;
 
