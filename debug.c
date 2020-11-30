@@ -1,8 +1,11 @@
 #include "debug.h"
 
 static size_t constantInstruction(const char* name, uint8_t* ip) {
-    printf("%-16s %g\n", name, compiler.constants[*ip]);
-    return 1;
+    switch(compiler.constants[*ip].type) {
+        case VAL_NUMBER:
+            printf("%-16s %g\n", name, compiler.constants[*ip].as.number);
+            return 1;
+    }
 }
 
 static size_t simpleInstruction(const char* name) {

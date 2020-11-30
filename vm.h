@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "compiler.h"
 #include "value.h"
+#include "table.h"
 
 typedef struct {
     Value stack[UINT8_MAX];

@@ -3,6 +3,7 @@
 - [] What does happen with values which is being replaced in array with aother values just via subscript operator ?
 - [x] Get comfortable with pointer arithmetics, especially with pointers difference.
 - [] What is the name of DS against which keywords are being compared ?
+- [] Why doesn't ALLOCATE macro worked for Entry allocation ?
 
 ### To Do
 - [] memory.c   : exit when pointer is not null.

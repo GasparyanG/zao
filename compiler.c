@@ -112,7 +112,10 @@ void emitConstant(Value value) {
 }
 
 void number() {
-    emitConstant(parser.previous.number);
+    Value value;
+    value.type = VAL_NUMBER;
+    value.as.number = parser.previous.number;
+    emitConstant(value);
 }
 
 void unary() {
@@ -227,7 +230,7 @@ static void declareVariable() {
     if (parser.current.type == TOKEN_EQUAL) {
         advance();
         expression();
-        // TODO: think this part through.
+        addInstruction(OP_DEFINE_GLOBAL);
     } else
         consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
 }

@@ -20,7 +20,13 @@ void push(Value* value) {
 }
 
 static void printValue(Value* value) {
-    printf("%g\n", *value);
+    switch(value->type) {
+        case VAL_NUMBER:
+            printf("%g\n", value->as.number);
+            break;
+        default:
+            return; // Unreachable.
+    }
 }
 
 void run() {
@@ -30,7 +36,9 @@ void run() {
     do { \
         Value* b = pop(); \
         Value* a = pop(); \
-        Value c = (*a op *b); \
+        Value c; \
+        c.type = VAL_NUMBER; \
+        c.as.number = (AS_NUMBER(a) op AS_NUMBER(b)); \
         push(&c); \
     } while(false)
 
@@ -59,10 +67,19 @@ void run() {
                 printf("OP_RETURN\n");
                 break;
             case OP_NEGATE: {
-                Value value = -(*pop());
+                Value value;
+                value.type = VAL_NUMBER;
+                value.as.number = -(AS_NUMBER(pop()));
                 push(&value);
                 break;
             }
+
+            case OP_DEFINE_GLOBAL: {
+                Value value = *pop();
+                // TODO: define variable to be able to 
+                break;
+            }
+
             default:
                 // Terminate loop. 
                 return;

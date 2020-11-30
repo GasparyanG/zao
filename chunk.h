@@ -19,7 +19,8 @@ typedef enum {
     OP_SUBTRACT,
     OP_DIVIDE,
     OP_MULTIPLY,
-    OP_NEGATE
+    OP_NEGATE,
+    OP_DEFINE_GLOBAL
 } OpCode;
 
 #endif
