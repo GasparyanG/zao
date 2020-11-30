@@ -35,14 +35,22 @@
 - [x] 11:00 - 12:00      - Expression handling.
 - [x] 12:00 - 13:00      - Error handling.
 
-### 11/28 - 29/2020
-- [x] 11:00 - 12:30      - Design.
-- [x] 12:30 - 13:30      - Hash table, Entry, hash function.
-- [x] 13:30 - 14:30      - Find, insertion, deletion.
-- [~] 14:30 - 15:30      - Declaration, definition, assignement.
+### 11/28 - 29 - 30/2020
+- [x] -:- - -:-          - Design.
+- [x] -:- - -:-          - Hash table, Entry, hash function.
+- [x] -:- - -:-          - Find, insertion, deletion.
+- [~] -:- - -:-          - Declaration, definition, assignement.
 - [x] -:- - -:-          - tagged union.
 - [x] -:- - -:-          - nil, false, true.
 - [x] -:- - -:-          - strings.
+
+### 12/01/2020
+- [] 09:00 - 10:00      - assignement.
+    - Update _Entry_ with _ObjString_.
+    - Implement OP_DEFINE_GLOBAL, OP_SET_GLOBAL, OP_SET_GLOBAL.
+- [] 10:00 - 11:00      - string interning.
+- [] 11:00 - 12:00      - _scopes_ design.
+- [] 12:00 - 14:00      - _scopes_ implementation.
 
 
 ### ZaO Implementation Path
