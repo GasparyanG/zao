@@ -21,6 +21,7 @@
 - [] table.h    : introduce StrObj which will store key and hash.
 - [x] table.c    : handle tombstones.
 - [] table.c    : create function in memory.h to handle allocation in one place
+- [] compiler.c : compute hash.
 
 ### In Progress
 

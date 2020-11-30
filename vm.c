@@ -33,6 +33,9 @@ static void printValue(Value* value) {
         case VAL_NIL:
             printf("NIL\n");
             break;
+        case VAL_STRING:
+            printf("%s\n", AS_STRING(value->as.obj)->value);
+            break;
         default:
             return; // Unreachable.
     }

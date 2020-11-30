@@ -3,7 +3,7 @@
 
 #define AS_STRING(obj)    ((ObjString*)(obj))
 
-#define STR_TO_OBJ(obj)   ((Obj*)(obj))
+#define AS_OBJ(obj)       ((Obj*)(obj))
 
 typedef enum {
     OBJ_STRING

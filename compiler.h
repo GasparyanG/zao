@@ -7,6 +7,7 @@
 #include "chunk.h"
 #include "common.h"
 #include "debug.h"
+#include "object.h"
 #include "scanner.h"
 #include "table.h"
 #include "value.h"

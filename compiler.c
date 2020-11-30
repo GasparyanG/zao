@@ -119,19 +119,39 @@ void number() {
 }
 
 void unary() {
+    advance();
+    number();
+    addInstruction(OP_NEGATE);
+}
+
+void string() {
+    ObjString* obj = (ObjString*)malloc(sizeof(ObjString));
+    obj->obj.type = OBJ_STRING;
+    obj->value = parser.previous.string;
+    // TODO: compute hash.
+
+    Value value;
+    value.type = VAL_STRING;
+    value.as.obj = AS_OBJ(obj);
+    
+    addInstructions(OP_CONSTANT, addConstant(value));
+}
+
+void literal() {
     switch(parser.previous.type) {
-        case TOKEN_MINUS:
-            advance();
+        case TOKEN_STRING:
+            string();
+            break;
+        case TOKEN_NUMBER:
             number();
-            addInstruction(OP_NEGATE);
             break;
         case TOKEN_FALSE:  // FALSE
             addInstruction(OP_FALSE);
             break;
-        case TOKEN_TRUE:  // TRUE
+        case TOKEN_TRUE:   // TRUE
             addInstruction(OP_TRUE);
             break;
-        case TOKEN_NIL:  // NIL
+        case TOKEN_NIL:    // NIL
             addInstruction(OP_NIL);
             break;
         default:
@@ -167,7 +187,7 @@ ParseRule rules[] = {
     [TOKEN_MINUS]       = {unary,    binary,     PREC_MINUS_PLUS},
     [TOKEN_STAR]        = {NULL,     binary,     PREC_MULT_DIV},
     [TOKEN_FRD_SLASH]   = {NULL,     binary,     PREC_MULT_DIV},
-    [TOKEN_NUMBER]      = {number,   NULL,       PREC_LITERAL},
+    [TOKEN_NUMBER]      = {literal,  NULL,       PREC_LITERAL},
     [TOKEN_EOF]         = {NULL,     NULL,       PREC_NONE},
     [TOKEN_LEFT_PAREN]  = {grouping, NULL,       PREC_GROUP},
     [TOKEN_RIGHT_PAREN] = {NULL,     NULL,       PREC_NONE},
@@ -177,9 +197,11 @@ ParseRule rules[] = {
     [TOKEN_QUESTION]    = {NULL,     NULL,       PREC_NONE}, 
     [TOKEN_COLON]       = {NULL,     NULL,       PREC_NONE},
     [TOKEN_BANG]        = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_FALSE]       = {unary,    NULL,       PREC_LITERAL}, 
-    [TOKEN_TRUE]        = {unary,    NULL,       PREC_LITERAL}, 
-    [TOKEN_NIL]         = {unary,    NULL,       PREC_LITERAL}
+    [TOKEN_FALSE]       = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_TRUE]        = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_NIL]         = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_STRING]      = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_IDENTIFIER]  = {NULL,     NULL,       PREC_LITERAL}
 };
 
 ParseRule* getRule(TokenType type) {
