@@ -4,6 +4,8 @@
 - [x] Get comfortable with pointer arithmetics, especially with pointers difference.
 - [] What is the name of DS against which keywords are being compared ?
 - [] Why doesn't ALLOCATE macro worked for Entry allocation ?
+- [] How does  CPU cache works ?
+- [] what is Valgrind ?
 
 ### To Do
 - [] memory.c   : exit when pointer is not null.
