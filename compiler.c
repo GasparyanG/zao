@@ -138,19 +138,21 @@ static void string() {
 }
 
 static void identifier() {
+    Value value;
+    ObjString* string = (ObjString*)malloc(sizeof(ObjString));
+    string->value = parser.previous.string;
+    string->hash = hashString(string->value);
+    value.type = VAL_STRING;
+    value.as.obj = AS_OBJ(string);
+    
     switch (parser.current.type) {
         case TOKEN_EQUAL:
-            error(&parser.current, "Assignement is not handled yet");
+            advance();
+            expression();
+            addInstructions(OP_SET_GLOBAL, addConstant(value));
             break;
-        default: {
-            Value value;
-            ObjString* string = (ObjString*)malloc(sizeof(ObjString));
-            string->value = parser.previous.string;
-            string->hash = hashString(string->value);
-            value.type = VAL_STRING;
-            value.as.obj = AS_OBJ(string);
+        default:
             addInstructions(OP_GET_GLOBAL, addConstant(value));
-        }
     }
 }
 

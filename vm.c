@@ -117,8 +117,11 @@ void run() {
                 break;
             }
             
-            case OP_SET_GLOBAL:
+            case OP_SET_GLOBAL: {
+                Entry* entry = findEntry(&compiler.table, READ_STRING());
+                entry->value = pop();
                 break;
+            }
 
             default:
                 // Terminate loop. 
