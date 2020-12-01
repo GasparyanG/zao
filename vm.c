@@ -27,6 +27,14 @@ ObjString* internString(ObjString* strToCmp) {
     return strToCmp;
 }
 
+static void runtimeError(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fputs("\n", stderr);
+}
+
 Value* pop() {
     // TODO: display `empty stack` error.
     return --vm.stackTop;
@@ -60,7 +68,7 @@ static void printValue(Value* value) {
     }
 }
 
-void run() {
+ExecutionResult run() {
     for (;;) {
 #define READ_BYTE()   *compiler.ip++
 #define READ_STRING() AS_STRING(compiler.constants[(*compiler.ip++)].as.obj)
@@ -80,7 +88,7 @@ void run() {
         switch(*compiler.ip++) {
             case OP_NONE:
                 *compiler.ip--;
-                return;
+                return EXECUTION_SUCCESS;
             case OP_CONSTANT:
                 push(&compiler.constants[READ_BYTE()]);     
                 break;
@@ -131,20 +139,34 @@ void run() {
             }
 
             case OP_GET_GLOBAL: {
-                Entry* entry = findEntry(&compiler.table, READ_STRING());
+                ObjString* str = READ_STRING();
+                Entry* entry = findEntry(&compiler.table, str);
+
+                if (entry->key == NULL) {
+                    runtimeError("Variable %s is not defined yet.", str->value);
+                    return INTERPRETER_RUNTIME_ERROR;
+                }
+                
+
                 push(entry->value);
                 break;
             }
             
             case OP_SET_GLOBAL: {
-                Entry* entry = findEntry(&compiler.table, READ_STRING());
+                ObjString* str = READ_STRING();
+                Entry* entry = findEntry(&compiler.table, str);
+
+                if (entry->key == NULL) {
+                    runtimeError("Variable %s is not defined yet.", str->value);
+                    return INTERPRETER_RUNTIME_ERROR;
+                }
+
                 entry->value = pop();
                 break;
             }
 
             default:
-                // Terminate loop. 
-                return;
+                return EXECUTION_SUCCESS;
         }
 #undef READ_BYTE
 #undef READ_STRING

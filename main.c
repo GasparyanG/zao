@@ -10,6 +10,18 @@ static bool isEof() {
     return false;
 }
 
+static bool runtimeResult(ExecutionResult result) {
+    switch(result) {
+        case EXECUTION_SUCCESS:
+            return true;
+        case INTERPRETER_RUNTIME_ERROR:
+            return false;
+        default:
+            // Unreachable.
+            return false;
+    }
+}
+
 int main(int argc, char* argv[]) {
     initCompiler();
     initVM();
@@ -22,7 +34,7 @@ int main(int argc, char* argv[]) {
             if (compiler.panicMode)
                 recover();
             else
-                run();
+                if (!runtimeResult(run())) break;
 
             if (isEof()) break;
         }
@@ -38,7 +50,7 @@ int main(int argc, char* argv[]) {
             if (compiler.panicMode)
                 recover();
             else
-                run();
+                if (!runtimeResult(run())) break;
 
             freeScanner();
         }

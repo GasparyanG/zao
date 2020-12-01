@@ -48,7 +48,7 @@
 - [x] 09:00 - 10:00      - assignement.
     - Update _Entry_ with _ObjString_.
     - Implement OP_DEFINE_GLOBAL, OP_SET_GLOBAL, OP_GET_GLOBAL.
-- [] 10:00 - 11:00      - string interning.
+- [x] 10:00 - 11:00      - string interning.
 - [] 11:00 - 12:00      - runtime error.
 - [] 12:00 - 13:00      - _scopes_ design.
 - [] 13:00 - 14:00      - _scopes_ implementation.

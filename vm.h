@@ -2,6 +2,7 @@
 #define ZAO_VM_H
 
 #include <stdint.h>
+#include <stdarg.h>
 
 #include "common.h"
 #include "debug.h"
@@ -9,6 +10,11 @@
 #include "object.h"
 #include "value.h"
 #include "table.h"
+
+typedef enum {
+    INTERPRETER_RUNTIME_ERROR,
+    EXECUTION_SUCCESS
+} ExecutionResult;
 
 typedef struct {
     Value stack[UINT8_MAX];
@@ -31,6 +37,6 @@ Value* pop();
 void push(Value* value);
 
 // Interpreter operations.
-void run();
+ExecutionResult run();
 
 #endif
