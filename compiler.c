@@ -274,8 +274,6 @@ static void declareVariable() {
     Entry entry;
     entry.key = copyString(parser.current.string);
     entry.tombstone = false;
-    entry.value = NULL;
-
 
     if (addEntry(&compiler.table, &entry)) {
         error(&parser.current, "Variable already exists");

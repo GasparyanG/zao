@@ -40,7 +40,6 @@ static void growTable(Table* table) {
 
         for (uint32_t i = 0; i < table->capacity; i++) {
             table->entries[i].key = NULL;
-            table->entries[i].value = NULL;
         }
     } else {
         // Allocate entries without tombstones - they will be not included.
@@ -53,7 +52,6 @@ static void growTable(Table* table) {
 
         for (uint32_t i = 0; i < table->capacity; i++) {
             table->entries[i].key = NULL;
-            table->entries[i].value = NULL;
         }
 
         // Populate with entries.
@@ -68,8 +66,8 @@ static void growTable(Table* table) {
 }
 
 static void freeEntry(Entry* entry) {
-    free(entry->key);
-    free(entry->value);
+    // free(entry->key);
+    // free(entry->value);
 }
 
 bool addEntry(Table* table, Entry* entry) {
@@ -90,7 +88,6 @@ bool addEntry(Table* table, Entry* entry) {
 void deleteEntry(Table* table, ObjString* key) {
     Entry tombstone;
     tombstone.key = NULL;
-    tombstone.value = NULL;
     tombstone.tombstone = true;
 
     Entry* entry = findEntry(table, key);

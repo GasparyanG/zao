@@ -6,6 +6,7 @@ VM vm;
 
 void initVM() {
     vm.stackTop = vm.stack;
+    vm.stringCount = 0;
 }
 
 ObjString* internString(ObjString* strToCmp) {
@@ -138,7 +139,7 @@ ExecutionResult run() {
 
             case OP_DEFINE_GLOBAL: {
                 Entry* entry = findEntry(&compiler.table, READ_STRING());
-                entry->value = pop();
+                entry->value = *pop();
                 break;
             }
 
@@ -151,7 +152,7 @@ ExecutionResult run() {
                     return INTERPRETER_RUNTIME_ERROR;
                 }
                 
-                push(entry->value);
+                push(&entry->value);
                 break;
             }
             
@@ -164,7 +165,7 @@ ExecutionResult run() {
                     return INTERPRETER_RUNTIME_ERROR;
                 }
 
-                entry->value = pop();
+                entry->value = *pop();
                 break;
             }
 

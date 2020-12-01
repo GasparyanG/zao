@@ -7,6 +7,9 @@
 - [] Why doesn't ALLOCATE macro worked for Entry allocation ?
 - [] How does  CPU cache works ?
 - [] What is Valgrind ?
+- [] How to handle value update in vm.c ?
+    - hint 1: change return value of pop from `Value*` to `Value`.
+    - hint 2: change argument value of push from `Value*` to `Value`.
 
 ### To Do
 - [] memory.c   : exit when pointer is not null.

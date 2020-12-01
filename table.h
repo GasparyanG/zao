@@ -13,7 +13,7 @@
 
 typedef struct {
     ObjString* key;     // Key to search with.
-    Value* value;       // Value pointer (points to compiler's constant table).
+    Value value;
     bool tombstone;     // Are we deleted or not ?
 } Entry;
 
