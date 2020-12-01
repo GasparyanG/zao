@@ -323,7 +323,7 @@ void compile() {
 }
 
 ObjString* copyString(const char* str) {
-    ObjString* strObj;
+    ObjString* strObj = (ObjString*)malloc(sizeof(ObjString));
     strObj->value = str;
     strObj->hash = hashString(strObj->value);
 
