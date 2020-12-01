@@ -44,4 +44,7 @@ extern Compiler compiler;
 // Generating bytecode.
 void compile();
 
+ObjString* copyString(const char* str);
+#include "vm.h"
+
 #endif

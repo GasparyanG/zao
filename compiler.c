@@ -321,3 +321,11 @@ void compile() {
     advance();
     declaration();
 }
+
+ObjString* copyString(const char* str) {
+    ObjString* strObj;
+    strObj->value = str;
+    strObj->hash = hashString(strObj->value);
+
+    return internString(strObj);
+}

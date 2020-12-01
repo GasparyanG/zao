@@ -8,6 +8,24 @@ void initVM() {
     vm.stackTop = vm.stack;
 }
 
+ObjString* internString(ObjString* strToCmp) {
+    for (uint32_t i = 0; i < vm.stringCount; i++) {
+        if (strToCmp->hash == vm.internedStrings[i]->hash) {
+            free((char*)strToCmp->value);
+            return vm.internedStrings[i];
+        }
+    }
+
+    if ((vm.stringCount + 1) >= UINT8_MAX) {
+        // TODO: handle string stack overflow error properly.
+        printf("String stack overflow.\n");
+        exit(1);
+    }
+
+    vm.internedStrings[vm.stringCount++] = strToCmp;
+    return strToCmp;
+}
+
 Value* pop() {
     // TODO: display `empty stack` error.
     return --vm.stackTop;
