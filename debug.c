@@ -3,7 +3,10 @@
 static size_t constantInstruction(const char* name, uint8_t* ip) {
     switch(compiler.constants[*ip].type) {
         case VAL_NUMBER:
-            printf("%-16s %g\n", name, compiler.constants[*ip].as.number);
+            printf("%-20s %g\n", name, compiler.constants[*ip].as.number);
+            return 1;
+        case VAL_STRING:
+            printf("%-20s %s\n", name, AS_STRING(compiler.constants[*ip].as.obj)->value);
             return 1;
     }
 }
@@ -49,6 +52,9 @@ void displayInstruction(uint8_t* ip) {
             break;
         case OP_NEGATE:
             offset = simpleInstruction("OP_NEGATE");
+            break;
+        case OP_DEFINE_GLOBAL:
+            offset = constantInstruction("OP_DEFINE_GLOBAL", ip);
             break;
         default:
             ip -= offset;

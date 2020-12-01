@@ -43,7 +43,8 @@ static void printValue(Value* value) {
 
 void run() {
     for (;;) {
-#define READ_BYTE() *compiler.ip++
+#define READ_BYTE()   *compiler.ip++
+#define READ_STRING() AS_STRING(compiler.constants[(*compiler.ip++)].as.obj)
 #define BINARY_OP(op) \
     do { \
         Value* b = pop(); \
@@ -106,7 +107,9 @@ void run() {
 
             case OP_DEFINE_GLOBAL: {
                 Value value = *pop();
-                // TODO: define variable to be able to 
+                ObjString* string = READ_STRING();
+                Entry* entry = findEntry(&compiler.table, string);
+                entry->value = &value;
                 break;
             }
 
@@ -115,6 +118,7 @@ void run() {
                 return;
         }
 #undef READ_BYTE
+#undef READ_STRING
 #undef BINARY_OP
     }
 }

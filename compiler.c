@@ -275,7 +275,12 @@ static void declareVariable() {
     if (parser.current.type == TOKEN_EQUAL) {
         advance();
         expression();
-        addInstruction(OP_DEFINE_GLOBAL);
+        
+        // Add string to constants' table.
+        Value value;
+        value.type = VAL_STRING;
+        value.as.obj = AS_OBJ(key);
+        addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
     } else
         consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
 }

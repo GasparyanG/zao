@@ -25,7 +25,6 @@ uint32_t hashString(const char* key) {
 Entry* findEntry(Table* table, ObjString* key) {
     uint32_t index = key->hash % table->capacity;
     for (;;) {
-        printf("index - %d\n", index);
         if (table->entries[index].key == NULL || table->entries[index].key->hash == key->hash)
             return &table->entries[index];
 

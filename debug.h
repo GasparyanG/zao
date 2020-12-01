@@ -7,6 +7,7 @@
 
 #include "chunk.h"
 #include "compiler.h"
+#include "object.h"
 #include "scanner.h"
 
 void displayInstruction(uint8_t* ip);

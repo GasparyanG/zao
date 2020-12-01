@@ -19,7 +19,7 @@
 - [] compiler.c : display `EOF or some kind of error` error
 - [] compiler.c : display `prefix function dosn't exists` error
 - [] compiler.c : think this part through.
-- [] table.h    : introduce StrObj which will store key and hash.
+- [x] table.h    : introduce StrObj which will store key and hash.
 - [x] table.c    : handle tombstones.
 - [] table.c    : create function in memory.h to handle allocation in one place
 - [] compiler.c : compute hash.
