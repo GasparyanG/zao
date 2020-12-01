@@ -56,6 +56,9 @@ void displayInstruction(uint8_t* ip) {
         case OP_DEFINE_GLOBAL:
             offset = constantInstruction("OP_DEFINE_GLOBAL", ip);
             break;
+        case OP_GET_GLOBAL:
+            offset = constantInstruction("OP_GET_GLOBAL", ip);
+            break;
         default:
             ip -= offset;
             return;

@@ -111,20 +111,20 @@ void emitConstant(Value value) {
     addInstructions(OP_CONSTANT, addConstant(value));
 }
 
-void number() {
+static void number() {
     Value value;
     value.type = VAL_NUMBER;
     value.as.number = parser.previous.number;
     emitConstant(value);
 }
 
-void unary() {
+static void unary() {
     advance();
     number();
     addInstruction(OP_NEGATE);
 }
 
-void string() {
+static void string() {
     ObjString* obj = (ObjString*)malloc(sizeof(ObjString));
     obj->obj.type = OBJ_STRING;
     obj->value = parser.previous.string;
@@ -137,7 +137,24 @@ void string() {
     addInstructions(OP_CONSTANT, addConstant(value));
 }
 
-void literal() {
+static void identifier() {
+    switch (parser.current.type) {
+        case TOKEN_EQUAL:
+            error(&parser.current, "Assignement is not handled yet");
+            break;
+        default: {
+            Value value;
+            ObjString* string = (ObjString*)malloc(sizeof(ObjString));
+            string->value = parser.previous.string;
+            string->hash = hashString(string->value);
+            value.type = VAL_STRING;
+            value.as.obj = AS_OBJ(string);
+            addInstructions(OP_GET_GLOBAL, addConstant(value));
+        }
+    }
+}
+
+static void literal() {
     switch(parser.previous.type) {
         case TOKEN_STRING:
             string();
@@ -154,12 +171,15 @@ void literal() {
         case TOKEN_NIL:    // NIL
             addInstruction(OP_NIL);
             break;
+        case TOKEN_IDENTIFIER:
+            identifier();
+            break;
         default:
             return; // Unreachable.
     }
 }
 
-void binary() {
+static void binary() {
     Token token = parser.previous;
 
     // Proceed if there is operations with higher precedence.
@@ -176,7 +196,7 @@ void binary() {
     }
 }
 
-void grouping() {
+static void grouping() {
     expression();
     consume(TOKEN_RIGHT_PAREN, "')' is required after grouping.");
     advance();
@@ -201,7 +221,7 @@ ParseRule rules[] = {
     [TOKEN_TRUE]        = {literal,  NULL,       PREC_LITERAL},
     [TOKEN_NIL]         = {literal,  NULL,       PREC_LITERAL},
     [TOKEN_STRING]      = {literal,  NULL,       PREC_LITERAL},
-    [TOKEN_IDENTIFIER]  = {NULL,     NULL,       PREC_LITERAL}
+    [TOKEN_IDENTIFIER]  = {literal,  NULL,       PREC_LITERAL}
 };
 
 ParseRule* getRule(TokenType type) {

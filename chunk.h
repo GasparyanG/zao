@@ -23,7 +23,9 @@ typedef enum {
     OP_FALSE,
     OP_TRUE,
     OP_NIL,
-    OP_DEFINE_GLOBAL
+    OP_DEFINE_GLOBAL,
+    OP_GET_GLOBAL,
+    OP_SET_GLOBAL
 } OpCode;
 
 #endif

@@ -106,12 +106,19 @@ void run() {
             }
 
             case OP_DEFINE_GLOBAL: {
-                Value value = *pop();
-                ObjString* string = READ_STRING();
-                Entry* entry = findEntry(&compiler.table, string);
-                entry->value = &value;
+                Entry* entry = findEntry(&compiler.table, READ_STRING());
+                entry->value = pop();
                 break;
             }
+
+            case OP_GET_GLOBAL: {
+                Entry* entry = findEntry(&compiler.table, READ_STRING());
+                push(entry->value);
+                break;
+            }
+            
+            case OP_SET_GLOBAL:
+                break;
 
             default:
                 // Terminate loop. 
