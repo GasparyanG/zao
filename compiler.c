@@ -125,25 +125,17 @@ static void unary() {
 }
 
 static void string() {
-    ObjString* obj = (ObjString*)malloc(sizeof(ObjString));
-    obj->obj.type = OBJ_STRING;
-    obj->value = parser.previous.string;
-    // TODO: compute hash.
-
     Value value;
     value.type = VAL_STRING;
-    value.as.obj = AS_OBJ(obj);
+    value.as.obj = AS_OBJ(copyString(parser.previous.string));
     
     addInstructions(OP_CONSTANT, addConstant(value));
 }
 
 static void identifier() {
     Value value;
-    ObjString* string = (ObjString*)malloc(sizeof(ObjString));
-    string->value = parser.previous.string;
-    string->hash = hashString(string->value);
     value.type = VAL_STRING;
-    value.as.obj = AS_OBJ(string);
+    value.as.obj = AS_OBJ(copyString(parser.previous.string));
     
     switch (parser.current.type) {
         case TOKEN_EQUAL:
@@ -280,17 +272,16 @@ static void declareVariable() {
     }
     
     Entry entry;
-    ObjString* key = (ObjString*)malloc(sizeof(ObjString));
-    key->value = parser.current.string;
-    key->hash = hashString(key->value);
-    entry.key = key;
+    entry.key = copyString(parser.current.string);
     entry.tombstone = false;
     entry.value = NULL;
+
 
     if (addEntry(&compiler.table, &entry)) {
         error(&parser.current, "Variable already exists");
         return; // Terminate.
     }
+
 
     advance();
 
@@ -301,7 +292,7 @@ static void declareVariable() {
         // Add string to constants' table.
         Value value;
         value.type = VAL_STRING;
-        value.as.obj = AS_OBJ(key);
+        value.as.obj = AS_OBJ(entry.key);
         addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
     } else
         consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
