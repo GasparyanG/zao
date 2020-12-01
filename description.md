@@ -1,15 +1,31 @@
 ## Value
 * properties
-    - `type`      - value type (e.g. number, string, bool, etc.).
-    - `as`        - value gor given type.
+    - `type`                - value type (e.g. number, string, bool, etc.).
+    - `as`                  - value gor given type.
         - to be able to store values in the same memory location union is used.
 
 ## VM
 * properties
-    - `stack`     - meant for maintaining implementation flow.
-    - `stackTop`  - meant for keeping track on one-past the end element.
+    - `stack`               - meant for maintaining implementation flow.
+    - `stackTop`            - meant for keeping track on one-past the end element.
+    - `internedStrings`     - ObjString array.
+    - `stringCount`         - amount of interned strings. Serves as index and size indicator.
 
-* `run()`
+* [WIP]void runtimeError(const char* format, ...)
+    - description
+        - deal with runtime errors.
+
+* ObjString* internString(ObjString*)
+    - description
+        - Keep track on strings to not duplicate them.
+        - Based on this comparitions of strings can be done effortlessly.
+        - if string exists delete passed one, else add new one and return it.
+
+* ExecutionResult
+    - description
+        - indicator (enum) of execution result.
+
+* ExecutionResult run()
     - Iterates over compiled instructions and handles them correspondingly.
     - To dispatch to required handler it considers instruction/op code.
 
@@ -87,6 +103,18 @@
 * OP_NEGATE
     - effect: 0
     - pop value from stack, negate it, push back to stack.
+
+* OP_DEFINE_GLOBAL
+    - effect: -1 || 0
+    - pop value (if any) from stack and initialize variable in hash table.
+
+* OP_GET_GLOBAL
+    - effect: +1
+    - push value to stack, for including in expressions.
+
+* OP_SET_GLOBAL
+    - effect: -1
+    - pop value from stack to change (assign) existing variables value.
 
 ### Scanner
 * protperties

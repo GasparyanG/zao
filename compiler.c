@@ -243,6 +243,7 @@ void freeCompiler() {
 
 // Generating bytecode.
 void expression() {
+    // TODO: think about a + b = c + d expression's compilation.
     parsePrecedence(PREC_LITERAL);
 }
 

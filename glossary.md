@@ -28,6 +28,7 @@
 - [x] compiler.c : compute hash.
 - [] vm.c       : handle string stack overflow error properly.
 - [] cm.c       : show line of error.
+- [] compiler   : think about a + b = c + d expression's compilation.
 
 ### In Progress
 
