@@ -14,16 +14,17 @@
 - [] vm.c       : display `stack overflow` error.
 - [] compiler.c : display `constants table overflow` error.
 - [] scanner.c  : display `unknown token` error.
-- [] scanner.c  : deal with other tokens too.
-- [] debug.c    : implement other tokens debugging too.
+- [~] scanner.c  : deal with other tokens too.
+- [~] debug.c    : implement other tokens debugging too.
 - [] compiler.c : display `EOF or some kind of error` error
 - [] compiler.c : display `prefix function dosn't exists` error
 - [] compiler.c : think this part through.
 - [x] table.h    : introduce StrObj which will store key and hash.
 - [x] table.c    : handle tombstones.
 - [] table.c    : create function in memory.h to handle allocation in one place
-- [] compiler.c : compute hash.
+- [x] compiler.c : compute hash.
 - [] vm.c       : handle string stack overflow error properly.
+- [] cm.c       : show line of error.
 
 ### In Progress
 

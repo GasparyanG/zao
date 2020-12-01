@@ -33,6 +33,10 @@ static void runtimeError(const char* format, ...) {
     vfprintf(stderr, format, args);
     va_end(args);
     fputs("\n", stderr);
+
+    // TODO: show line of error.
+    // vm.stackTop = vm.stack;
+    // compiler.ip = &compiler.chunk.chunk[compiler.chunk.capacity];
 }
 
 Value* pop() {
@@ -85,10 +89,10 @@ ExecutionResult run() {
 #ifdef ZAO_DEBUGGER_MODE_ON
     displayInstruction(compiler.ip);
 #endif 
+        if (*compiler.ip == OP_NONE)
+            return EXECUTION_SUCCESS;
+
         switch(*compiler.ip++) {
-            case OP_NONE:
-                *compiler.ip--;
-                return EXECUTION_SUCCESS;
             case OP_CONSTANT:
                 push(&compiler.constants[READ_BYTE()]);     
                 break;
@@ -143,11 +147,10 @@ ExecutionResult run() {
                 Entry* entry = findEntry(&compiler.table, str);
 
                 if (entry->key == NULL) {
-                    runtimeError("Variable %s is not defined yet.", str->value);
+                    runtimeError("Undefined variable '%s'.", str->value);
                     return INTERPRETER_RUNTIME_ERROR;
                 }
                 
-
                 push(entry->value);
                 break;
             }
@@ -157,7 +160,7 @@ ExecutionResult run() {
                 Entry* entry = findEntry(&compiler.table, str);
 
                 if (entry->key == NULL) {
-                    runtimeError("Variable %s is not defined yet.", str->value);
+                    runtimeError("Undefined variable '%s'.", str->value);
                     return INTERPRETER_RUNTIME_ERROR;
                 }
 
