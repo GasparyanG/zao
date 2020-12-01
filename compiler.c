@@ -258,10 +258,12 @@ static void declareVariable() {
     }
     
     Entry entry;
-    entry.key = parser.current.string;
+    ObjString* key = (ObjString*)malloc(sizeof(ObjString));
+    key->value = parser.current.string;
+    key->hash = hashString(key->value);
+    entry.key = key;
     entry.tombstone = false;
     entry.value = NULL;
-    entry.hash = hashString(entry.key);
 
     if (addEntry(&compiler.table, &entry)) {
         error(&parser.current, "Variable already exists");

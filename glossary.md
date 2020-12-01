@@ -2,10 +2,11 @@
 - [x] What kind of role does integers play in program exit/termination ?
 - [] What does happen with values which is being replaced in array with aother values just via subscript operator ?
 - [x] Get comfortable with pointer arithmetics, especially with pointers difference.
-- [] What is the name of DS against which keywords are being compared ?
+- [x] What is the name of DS against which keywords are being compared ?
+    - Trie.
 - [] Why doesn't ALLOCATE macro worked for Entry allocation ?
 - [] How does  CPU cache works ?
-- [] what is Valgrind ?
+- [] What is Valgrind ?
 
 ### To Do
 - [] memory.c   : exit when pointer is not null.

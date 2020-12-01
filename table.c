@@ -11,7 +11,7 @@ void freeTable(Table* table) {
     free(table->entries);
 }
 
-double hashString(const char* key) {
+uint32_t hashString(const char* key) {
     uint32_t hash = 2166136261u;
 
     for (int i=0; i < strlen(key); i++) {
@@ -22,10 +22,11 @@ double hashString(const char* key) {
     return hash;
 }
 
-Entry* findEntry(Table* table, const char* key, uint32_t hash) {
-    uint32_t index = hash % table->capacity;
+Entry* findEntry(Table* table, ObjString* key) {
+    uint32_t index = key->hash % table->capacity;
     for (;;) {
-        if (table->entries[index].key == NULL || table->entries[index].hash == hash)
+        printf("index - %d\n", index);
+        if (table->entries[index].key == NULL || table->entries[index].key->hash == key->hash)
             return &table->entries[index];
 
         index = (index + 1) % table->capacity;
@@ -39,7 +40,7 @@ static void growTable(Table* table) {
         table->capacity = ARRAY_INITIAL_SIZE;
 
         for (uint32_t i = 0; i < table->capacity; i++) {
-            table->entries[i].key = '\0';
+            table->entries[i].key = NULL;
             table->entries[i].value = NULL;
         }
     } else {
@@ -52,7 +53,7 @@ static void growTable(Table* table) {
         table->entries = (Entry*)malloc(sizeof(Entry) * table->capacity * ENLARGEMENT_FACTOR);
 
         for (uint32_t i = 0; i < table->capacity; i++) {
-            table->entries[i].key = '\0';
+            table->entries[i].key = NULL;
             table->entries[i].value = NULL;
         }
 
@@ -76,7 +77,7 @@ bool addEntry(Table* table, Entry* entry) {
     if (table->capacity == 0 || table->size >= table->capacity * LOAD_FACTOR) 
         growTable(table);
 
-    Entry* entryToChange = findEntry(table, entry->key, entry->hash);
+    Entry* entryToChange = findEntry(table, entry->key);
     if (entryToChange->key != NULL) {
         freeEntry(entry);
         return true;
@@ -87,13 +88,13 @@ bool addEntry(Table* table, Entry* entry) {
     return false;
 }
 
-void deleteEntry(Table* table, const char* key, uint32_t hash) {
+void deleteEntry(Table* table, ObjString* key) {
     Entry tombstone;
-    tombstone.key;
+    tombstone.key = NULL;
     tombstone.value = NULL;
     tombstone.tombstone = true;
 
-    Entry* entry = findEntry(table, key, hash);
+    Entry* entry = findEntry(table, key);
     freeEntry(entry);
     *entry = tombstone;
 }

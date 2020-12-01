@@ -6,15 +6,14 @@
 #include <stdlib.h>
 
 #include "memory.h"
+#include "object.h"
 #include "value.h"
 
 #define LOAD_FACTOR 0.75    // Enlarge Table if size/capacity > LOAD_FACTOR.
 
 typedef struct {
-    // TODO: introduce StrObj which will store key and hash.
-    char* key;          // Key to find value with.
+    ObjString* key;     // Key to search with.
     Value* value;       // Value pointer (points to compiler's constant table).
-    uint32_t hash;      // Hashed value.
     bool tombstone;     // Are we deleted or not ?
 } Entry;
 
@@ -31,9 +30,9 @@ void initTable(Table* table);
 void freeTable(Table* table);
 
 // Table and Entry manipulation.
-double hashString(const char* key);
-Entry* findEntry(Table* table, const char* key, uint32_t hash);
+uint32_t hashString(const char* key);
+Entry* findEntry(Table* table, ObjString* key);
 bool addEntry(Table* table, Entry* entry);
-void deleteEntry(Table* table, const char* key, uint32_t hash);
+void deleteEntry(Table* table, ObjString* key);
 
 #endif

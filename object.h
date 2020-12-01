@@ -18,7 +18,7 @@ typedef struct {
 typedef struct {
     Obj obj;            // Type identifier.
     const char* value;  // Payload.
-    double hash;        // Hashed string;
+    uint32_t hash;      // Hashed string;
 } ObjString;
 
 #endif
