@@ -20,7 +20,7 @@
 - [~] scanner.c  : deal with other tokens too.
 - [~] debug.c    : implement other tokens debugging too.
 - [] compiler.c : display `EOF or some kind of error` error
-- [] compiler.c : display `prefix function dosn't exists` error
+- [x] compiler.c : display `prefix function dosn't exists` error
 - [] compiler.c : think this part through.
 - [x] table.h    : introduce StrObj which will store key and hash.
 - [x] table.c    : handle tombstones.
@@ -28,7 +28,7 @@
 - [x] compiler.c : compute hash.
 - [] vm.c       : handle string stack overflow error properly.
 - [] cm.c       : show line of error.
-- [] compiler   : think about a + b = c + d expression's compilation.
+- [x] compiler   : think about a + b = c + d expression's compilation.
 
 ### In Progress
 

@@ -46,14 +46,15 @@ void recover() {
 }
 
 typedef enum {
-    PREC_NONE,           // Interupt when encountered.
+    PREC_NONE,          // Interupt when encountered.
     PREC_LITERAL,
+    PREC_ASSIGN,        // a + b = c + d should fail.
     PREC_MINUS_PLUS,    // -, +
     PREC_MULT_DIV,      // *,/
     PREC_GROUP,         // (expression)
 } Precedence;
 
-typedef void (*ParseFn) ();
+typedef void (*ParseFn) (bool canAssign);
 
 typedef struct {
     ParseFn prefix;
@@ -69,14 +70,21 @@ void parsePrecedence(Precedence precedence) {
     ParseRule* rule = getRule(parser.previous.type);
     ParseFn prefixFunc = rule->prefix;
 
-    if (prefixFunc == NULL);
-        // TODO: display `prefix function doesn't exists` error
-    prefixFunc();
+    if (prefixFunc == NULL)
+        error(&parser.previous, "Wrong prefix operation.");
+    
+    bool canAssign = precedence <= PREC_ASSIGN;
+    prefixFunc(canAssign);
 
     while(precedence <= getRule(parser.current.type)->precedence) {
         advance();
         ParseFn infixFunc = getRule(parser.previous.type)->infix;
-        infixFunc();
+        infixFunc(canAssign);
+    }
+
+    if (parser.current.type == TOKEN_EQUAL) {
+        error(&parser.current, "Wrong assignement expression.");
+        advance();
     }
 }
 
@@ -111,20 +119,20 @@ void emitConstant(Value value) {
     addInstructions(OP_CONSTANT, addConstant(value));
 }
 
-static void number() {
+static void number(bool canAssign) {
     Value value;
     value.type = VAL_NUMBER;
     value.as.number = parser.previous.number;
     emitConstant(value);
 }
 
-static void unary() {
+static void unary(bool canAssign) {
     advance();
-    number();
+    number(canAssign);
     addInstruction(OP_NEGATE);
 }
 
-static void string() {
+static void string(bool canAssign) {
     Value value;
     value.type = VAL_STRING;
     value.as.obj = AS_OBJ(copyString(parser.previous.string));
@@ -132,29 +140,32 @@ static void string() {
     addInstructions(OP_CONSTANT, addConstant(value));
 }
 
-static void identifier() {
+static void identifier(bool canAssign) {
     Value value;
     value.type = VAL_STRING;
     value.as.obj = AS_OBJ(copyString(parser.previous.string));
     
     switch (parser.current.type) {
-        case TOKEN_EQUAL:
+        case TOKEN_EQUAL: {
+            if (!canAssign)
+                return;     // leave = in current position to throw an error.
             advance();
             expression();
             addInstructions(OP_SET_GLOBAL, addConstant(value));
             break;
+        }
         default:
             addInstructions(OP_GET_GLOBAL, addConstant(value));
     }
 }
 
-static void literal() {
+static void literal(bool canAssign) {
     switch(parser.previous.type) {
         case TOKEN_STRING:
-            string();
+            string(canAssign);
             break;
         case TOKEN_NUMBER:
-            number();
+            number(canAssign);
             break;
         case TOKEN_FALSE:  // FALSE
             addInstruction(OP_FALSE);
@@ -166,14 +177,14 @@ static void literal() {
             addInstruction(OP_NIL);
             break;
         case TOKEN_IDENTIFIER:
-            identifier();
+            identifier(canAssign);
             break;
         default:
             return; // Unreachable.
     }
 }
 
-static void binary() {
+static void binary(bool canAssign) {
     Token token = parser.previous;
 
     // Proceed if there is operations with higher precedence.
@@ -190,32 +201,37 @@ static void binary() {
     }
 }
 
-static void grouping() {
+static void grouping(bool canAssign) {
     expression();
     consume(TOKEN_RIGHT_PAREN, "')' is required after grouping.");
     advance();
 }
 
 ParseRule rules[] = {
-    [TOKEN_PLUS]        = {NULL,     binary,     PREC_MINUS_PLUS},
-    [TOKEN_MINUS]       = {unary,    binary,     PREC_MINUS_PLUS},
-    [TOKEN_STAR]        = {NULL,     binary,     PREC_MULT_DIV},
-    [TOKEN_FRD_SLASH]   = {NULL,     binary,     PREC_MULT_DIV},
-    [TOKEN_NUMBER]      = {literal,  NULL,       PREC_LITERAL},
-    [TOKEN_EOF]         = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_LEFT_PAREN]  = {grouping, NULL,       PREC_GROUP},
-    [TOKEN_RIGHT_PAREN] = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_LEFT_CURLY]  = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_RIGHT_CURLY] = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_SEMI_COLON]  = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_QUESTION]    = {NULL,     NULL,       PREC_NONE}, 
-    [TOKEN_COLON]       = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_BANG]        = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_FALSE]       = {literal,  NULL,       PREC_LITERAL},
-    [TOKEN_TRUE]        = {literal,  NULL,       PREC_LITERAL},
-    [TOKEN_NIL]         = {literal,  NULL,       PREC_LITERAL},
-    [TOKEN_STRING]      = {literal,  NULL,       PREC_LITERAL},
-    [TOKEN_IDENTIFIER]  = {literal,  NULL,       PREC_LITERAL}
+    [TOKEN_PLUS]            = {NULL,     binary,     PREC_MINUS_PLUS},
+    [TOKEN_MINUS]           = {unary,    binary,     PREC_MINUS_PLUS},
+    [TOKEN_STAR]            = {NULL,     binary,     PREC_MULT_DIV},
+    [TOKEN_FRD_SLASH]       = {NULL,     binary,     PREC_MULT_DIV},
+    [TOKEN_NUMBER]          = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_EOF]             = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_LEFT_PAREN]      = {grouping, NULL,       PREC_GROUP},
+    [TOKEN_RIGHT_PAREN]     = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_LEFT_CURLY]      = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_RIGHT_CURLY]     = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_SEMI_COLON]      = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_QUESTION]        = {NULL,     NULL,       PREC_NONE}, 
+    [TOKEN_COLON]           = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_BANG]            = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_FALSE]           = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_TRUE]            = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_NIL]             = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_STRING]          = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_IDENTIFIER]      = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_MODULO]          = {literal,  NULL,       PREC_LITERAL}, 
+    [TOKEN_BCK_SLASH]       = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_GREATER_THAN]    = {literal,  NULL,       PREC_LITERAL}, 
+    [TOKEN_LESS_THAN]       = {literal,  NULL,       PREC_LITERAL},
+    [TOKEN_EQUAL]           = {literal,  NULL,       PREC_ASSIGN}
 };
 
 ParseRule* getRule(TokenType type) {
@@ -243,8 +259,7 @@ void freeCompiler() {
 
 // Generating bytecode.
 void expression() {
-    // TODO: think about a + b = c + d expression's compilation.
-    parsePrecedence(PREC_LITERAL);
+    parsePrecedence(PREC_ASSIGN);
 }
 
 void statement() {

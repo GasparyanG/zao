@@ -44,7 +44,7 @@
 - [x] -:- - -:-          - nil, false, true.
 - [x] -:- - -:-          - strings.
 
-### 12/01/2020
+### 12/01 - 02/2020
 - [x] 09:00 - 10:00      - assignement.
     - Update _Entry_ with _ObjString_.
     - Implement OP_DEFINE_GLOBAL, OP_SET_GLOBAL, OP_GET_GLOBAL.
