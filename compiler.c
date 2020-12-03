@@ -312,12 +312,50 @@ void statement() {
     }
 }
 
+static int resolveLocal(Local* local) {
+    for (size_t i = compiler.localsCount; i > 0; i--) {
+        if (strcmp(local.name.string, compiler.locals[i].name.string) == 0)
+            return i;   // Found at index.
+    }
+
+    return -1;
+}
+
+static int isDeclared(Local* local) {
+    for (size_t i = compiler.localsCount; i > 0; i--) {
+        if (local->scopeDepth == compiler.locals[i].scopeDepth &&
+            strcmp(local.name.string, compiler.locals[i].name.string) == 0)
+            return i;   // Found at index.
+    }
+
+    return -1;
+}
+
+static void declareLocalVariable() {
+    Local* local = compiler.locals[compiler.localsCount++];
+    local->name = parser.current;
+    local->scopeDepth = compiler.scopeDepth;
+
+    int position;
+    if ((position = isDeclared(local)) > 0)
+        error(&parser.current, "Double declaration.";)
+    
+    // TODO: implement declaration as well (this is just initialization).
+    expression();
+    
+    addInstructions(OP_SET_LOCAL, (uint8_t)position);
+    compiler.localsCount++;         // One local added.
+}
+
 static void declareVariable() {
     advance();
     if (parser.current.type != TOKEN_IDENTIFIER) {
         error(&parser.current, "Identifier is expected after 'var'.");
         return;
     }
+
+    if (compiler.scopeDepth > 0)
+        return declareLocalVariable(); // Return just meant for termination.
     
     Entry entry;
     entry.key = copyString(parser.current.string);

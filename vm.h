@@ -20,6 +20,8 @@ typedef struct {
     Value stack[UINT8_MAX];
     Value* stackTop;
 
+    Value locals[UINT8_MAX];
+
     ObjString* internedStrings[UINT8_MAX];
     size_t stringCount;
 } VM;

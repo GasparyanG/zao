@@ -29,6 +29,8 @@
 - [] vm.c       : handle string stack overflow error properly.
 - [] cm.c       : show line of error.
 - [x] compiler   : think about a + b = c + d expression's compilation.
+- [] vm.c       : you will feel that Value* is wrong in here, so chagne it to Value.
+- [] compiler.c : implement declaration as well (this is just initialization).
 
 ### In Progress
 

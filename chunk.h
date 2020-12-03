@@ -25,7 +25,9 @@ typedef enum {
     OP_NIL,
     OP_DEFINE_GLOBAL,
     OP_GET_GLOBAL,
-    OP_SET_GLOBAL
+    OP_SET_GLOBAL,
+    OP_GET_LOCAL,
+    OP_SET_LOCAL
 } OpCode;
 
 #endif

@@ -169,6 +169,15 @@ ExecutionResult run() {
                 break;
             }
 
+            case OP_SET_LOCAL:
+                vm.locals[READ_BYTE()] = *pop();
+                break;
+
+            case OP_GET_LOCAL:
+                // TODO: you will feel that Value* is wrong in here, so chagne it to Value.
+                push(&vm.locals[READ_BYTE()]);
+                break; 
+
             default:
                 return EXECUTION_SUCCESS;
         }
