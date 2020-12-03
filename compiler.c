@@ -5,6 +5,7 @@
 // Declarations.
 void expression();
 void declaration();
+static int resolveLocal(Token* local);
 
 // Parser section.
 Parser parser;
@@ -142,22 +143,31 @@ static void string(bool canAssign) {
 }
 
 static void identifier(bool canAssign) {
+    int position;       // Instruction.
+    int resLocPos;      // Temporary local.
+
     Value value;
     value.type = VAL_STRING;
     value.as.obj = AS_OBJ(copyString(parser.previous.string));
-    
-    switch (parser.current.type) {
-        case TOKEN_EQUAL: {
-            if (!canAssign)
-                return;     // leave = in current position to throw an error.
-            advance();
-            expression();
-            addInstructions(OP_SET_GLOBAL, addConstant(value));
-            break;
-        }
-        default:
-            addInstructions(OP_GET_GLOBAL, addConstant(value));
+    position = addConstant(value);
+
+    OpCode opGet = OP_SET_GLOBAL;
+    OpCode opSet = OP_GET_GLOBAL;
+    if (compiler.scopeDepth > 0 && 
+    (resLocPos = resolveLocal(&parser.previous)) > 0) {
+        opSet = OP_SET_LOCAL;
+        opGet = OP_GET_LOCAL;
+        position = resLocPos;
     }
+
+    if (parser.current.type == TOKEN_EQUAL) {
+        if (!canAssign)
+                return;     // Leave = in current position to throw an error.
+        advance();
+        expression();
+        addInstructions(opSet, (uint8_t)position);
+    } else
+        addInstructions(opGet, (uint8_t)position);
 }
 
 static void literal(bool canAssign) {
@@ -214,6 +224,11 @@ static void scopeStart() {
 
 static void scopeEnd() {
     compiler.scopeDepth--;
+
+    while (compiler.scopeDepth < compiler.locals[compiler.localsCount].scopeDepth)
+        compiler.localsCount--;
+    
+    compiler.localsCount++; // Point to one past the end location.
 }
 
 static void block(bool canAssign) {
@@ -312,9 +327,9 @@ void statement() {
     }
 }
 
-static int resolveLocal(Local* local) {
-    for (size_t i = compiler.localsCount; i > 0; i--) {
-        if (strcmp(local.name.string, compiler.locals[i].name.string) == 0)
+static int resolveLocal(Token* local) {
+    for (size_t i = compiler.localsCount - 1; i > 0; i--) {
+        if (strcmp(local->string, compiler.locals[i].name.string) == 0)
             return i;   // Found at index.
     }
 
@@ -322,9 +337,9 @@ static int resolveLocal(Local* local) {
 }
 
 static int isDeclared(Local* local) {
-    for (size_t i = compiler.localsCount; i > 0; i--) {
+    for (size_t i = compiler.localsCount - 1; i > 0; i--) {
         if (local->scopeDepth == compiler.locals[i].scopeDepth &&
-            strcmp(local.name.string, compiler.locals[i].name.string) == 0)
+            strcmp(local->name.string, compiler.locals[i].name.string) == 0)
             return i;   // Found at index.
     }
 
@@ -332,13 +347,13 @@ static int isDeclared(Local* local) {
 }
 
 static void declareLocalVariable() {
-    Local* local = compiler.locals[compiler.localsCount++];
+    Local* local = &compiler.locals[compiler.localsCount++];
     local->name = parser.current;
     local->scopeDepth = compiler.scopeDepth;
 
     int position;
     if ((position = isDeclared(local)) > 0)
-        error(&parser.current, "Double declaration.";)
+        error(&parser.current, "Double declaration.");
     
     // TODO: implement declaration as well (this is just initialization).
     expression();
