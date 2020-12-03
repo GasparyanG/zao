@@ -218,13 +218,19 @@ static void scopeEnd() {
 
 static void block(bool canAssign) {
     scopeStart();
+    advance();
     
-    advance();
-    declaration();
-    advance();
+    while (parser.current.type != TOKEN_RIGHT_CURLY) {
+        if (parser.current.type == TOKEN_SEMI_COLON) {
+            advance();  // Ignore semicolon (;) and left curly (}).
+            continue;
+        }
+        
+        declaration();
+    }
 
-    consume(TOKEN_RIGHT_CURLY, "'}' is required in block end.");
-
+    consume(TOKEN_RIGHT_CURLY, "'}' is required at the end of block.");
+    advance();
     scopeEnd();
 }
 
@@ -321,7 +327,6 @@ static void declareVariable() {
         error(&parser.current, "Variable already exists");
         return; // Terminate.
     }
-
 
     advance();
 
