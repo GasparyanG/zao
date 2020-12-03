@@ -221,6 +221,9 @@ static void block(bool canAssign) {
     
     advance();
     declaration();
+    advance();
+
+    consume(TOKEN_RIGHT_CURLY, "'}' is required in block end.");
 
     scopeEnd();
 }
@@ -332,10 +335,17 @@ static void declareVariable() {
         consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
 }
 
+static void blockStatement() {
+    block(true);
+}
+
 void declaration() {
     switch(parser.current.type) {
         case TOKEN_VAR:
             declareVariable();
+            break;
+        case TOKEN_LEFT_CURLY:
+            blockStatement();
             break;
         default:
             statement();
