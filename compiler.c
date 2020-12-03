@@ -4,6 +4,7 @@
 
 // Declarations.
 void expression();
+void declaration();
 
 // Parser section.
 Parser parser;
@@ -207,6 +208,23 @@ static void grouping(bool canAssign) {
     advance();
 }
 
+static void scopeStart() {
+    compiler.scopeDepth++;
+}
+
+static void scopeEnd() {
+    compiler.scopeDepth--;
+}
+
+static void block(bool canAssign) {
+    scopeStart();
+    
+    advance();
+    declaration();
+
+    scopeEnd();
+}
+
 ParseRule rules[] = {
     [TOKEN_PLUS]            = {NULL,     binary,     PREC_MINUS_PLUS},
     [TOKEN_MINUS]           = {unary,    binary,     PREC_MINUS_PLUS},
@@ -216,7 +234,7 @@ ParseRule rules[] = {
     [TOKEN_EOF]             = {NULL,     NULL,       PREC_NONE},
     [TOKEN_LEFT_PAREN]      = {grouping, NULL,       PREC_GROUP},
     [TOKEN_RIGHT_PAREN]     = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_LEFT_CURLY]      = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_LEFT_CURLY]      = {block,    NULL,       PREC_NONE},
     [TOKEN_RIGHT_CURLY]     = {NULL,     NULL,       PREC_NONE},
     [TOKEN_SEMI_COLON]      = {NULL,     NULL,       PREC_NONE},
     [TOKEN_QUESTION]        = {NULL,     NULL,       PREC_NONE}, 
@@ -244,6 +262,8 @@ void initCompiler() {
     compiler.chunk.chunk = ALLOCATE(uint8_t, compiler.chunk.chunk, compiler.chunk.size);
     compiler.chunk.size = 0;
     compiler.panicMode = false;     // There is no error in bytecode.
+    compiler.localsCount = 0;
+    compiler.scopeDepth = 0;
     compiler.chunk.capacity = ARRAY_INITIAL_SIZE;
     compiler.ip = compiler.chunk.chunk;
 
