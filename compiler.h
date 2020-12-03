@@ -20,9 +20,15 @@ typedef struct {
 extern Parser parser;
 
 typedef struct {
+    Token name;
+    int scopeDepth;
+} Local;
+
+typedef struct {
     Chunk chunk;
     uint8_t* ip;
     Value constants[UINT8_MAX];
+    Local locals[UINT8_MAX];
 
     bool panicMode;
 
