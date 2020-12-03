@@ -290,6 +290,9 @@ void statement() {
         case TOKEN_EOF:
             // Terminate.
             break;
+        case TOKEN_LEFT_CURLY: 
+            block(true);
+            break;
         case TOKEN_PRINT:
             advance();
             expression();
@@ -335,17 +338,11 @@ static void declareVariable() {
         consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
 }
 
-static void blockStatement() {
-    block(true);
-}
 
 void declaration() {
     switch(parser.current.type) {
         case TOKEN_VAR:
             declareVariable();
-            break;
-        case TOKEN_LEFT_CURLY:
-            blockStatement();
             break;
         default:
             statement();
