@@ -73,9 +73,29 @@ static void printValue(Value* value) {
     }
 }
 
+
 static inline ValueType boolValue(bool value) {
     if (value) return VAL_TRUE;
     return VAL_FALSE;
+}
+
+static void boolOperator(OpCode op) {
+    Value b = *pop();
+    Value a = *pop();
+
+    if (IS_BOOL(b) && IS_BOOL(a)) {
+        bool bb = (b.type == VAL_FALSE) ? false: true;
+        bool ba = (a.type == VAL_TRUE) ? true: false;
+
+        Value c;
+        if (op == OP_AND)
+            c.type = boolValue(bb && ba);
+        else
+            c.type = boolValue(bb || ba);
+        push(&c);
+    } else 
+        runtimeError("Can't use %s for not bool values.", 
+            (op == OP_AND) ? "and": "or");
 }
 
 ExecutionResult run() {
@@ -152,34 +172,12 @@ ExecutionResult run() {
             }
 
             case OP_AND: {
-                Value b = *pop();
-                Value a = *pop();
-
-                if (IS_BOOL(b) && IS_BOOL(a)) {
-                    bool bb = (b.type == VAL_FALSE) ? false: true;
-                    bool ba = (a.type == VAL_TRUE) ? true: false;
-
-                    Value c;
-                    c.type = boolValue(bb && ba);
-                    push(&c);
-                } else 
-                    runtimeError("Can't use and for not bool values.");
+                boolOperator(OP_AND);
                 break;
             }
 
             case OP_OR: {
-                Value b = *pop();
-                Value a = *pop();
-
-                if (IS_BOOL(b) && IS_BOOL(a)) {
-                    bool bb = (b.type == VAL_FALSE) ? false: true;
-                    bool ba = (a.type == VAL_TRUE) ? true: false;
-
-                    Value c;
-                    c.type = boolValue(bb || ba);
-                    push(&c);
-                } else 
-                    runtimeError("Can't use and for not bool values.");
+                boolOperator(OP_OR);
                 break;
             }
 
