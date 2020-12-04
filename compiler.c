@@ -144,7 +144,7 @@ static void string(bool canAssign) {
 
 static void identifier(bool canAssign) {
     int position;       // Instruction.
-    int resLocPos;      // Temporary local.
+    int resLocPos;      // Temporary local - this will hold value for `position`.
 
     OpCode opGet = OP_GET_GLOBAL;
     OpCode opSet = OP_SET_GLOBAL;

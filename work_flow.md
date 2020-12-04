@@ -51,8 +51,7 @@
 - [x] 10:00 - 11:00      - string interning.
 - [~] 11:00 - 12:00      - runtime error.
 - [x] 12:00 - 13:00      - _scopes_ design.
-- [~] 13:00 - 14:00      - _scopes_ implementation.
-    reason of segmentation fault (run with file - tests/test.zao)
+- [x] 13:00 - 14:00      - _scopes_ implementation.
 
 
 ### ZaO Implementation Path

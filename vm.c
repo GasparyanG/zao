@@ -73,10 +73,27 @@ static void printValue(Value* value) {
     }
 }
 
+static inline ValueType boolValue(bool value) {
+    if (value) return VAL_TRUE;
+    return VAL_FALSE;
+}
+
 ExecutionResult run() {
     for (;;) {
 #define READ_BYTE()   *compiler.ip++
 #define READ_STRING() AS_STRING(compiler.constants[(*compiler.ip++)].as.obj)
+#define BOOL_BINARY_OP(op) \
+    do { \
+        Value* b = pop(); \
+        Value* a = pop(); \
+        Value c; \
+        if (b.type == VAL_NUMBER) \
+            c.type = boolValue((AS_NUMBER(a) op AS_NUMBER(b))); \
+        else if (b.type == VAL_STRING) \
+            c.type = boolValue((AS_STRING(a) op AS_STRING(b))); \
+        push(&c); \
+    } while(false)
+
 #define BINARY_OP(op) \
     do { \
         Value* b = pop(); \
@@ -183,6 +200,7 @@ ExecutionResult run() {
         }
 #undef READ_BYTE
 #undef READ_STRING
+#undef BOOL_BINARY_OP
 #undef BINARY_OP
     }
 }
