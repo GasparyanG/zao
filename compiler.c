@@ -226,7 +226,9 @@ static void scopeStart() {
 static void scopeEnd() {
     compiler.scopeDepth--;
 
-    while (compiler.scopeDepth < compiler.locals[compiler.localsCount--].scopeDepth);
+    while (compiler.scopeDepth < compiler.locals[compiler.localsCount - 1].scopeDepth) {
+        compiler.localsCount--;
+    }
 }
 
 static void block(bool canAssign) {
