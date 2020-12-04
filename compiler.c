@@ -151,12 +151,12 @@ static void identifier(bool canAssign) {
     value.as.obj = AS_OBJ(copyString(parser.previous.string));
     position = addConstant(value);
 
-    OpCode opGet = OP_SET_GLOBAL;
-    OpCode opSet = OP_GET_GLOBAL;
+    OpCode opGet = OP_GET_GLOBAL;
+    OpCode opSet = OP_SET_GLOBAL;
     if (compiler.scopeDepth > 0 && 
-    (resLocPos = resolveLocal(&parser.previous)) > 0) {
-        opSet = OP_SET_LOCAL;
+    (resLocPos = resolveLocal(&parser.previous)) >= 0) {
         opGet = OP_GET_LOCAL;
+        opSet = OP_SET_LOCAL;
         position = resLocPos;
     }
 
@@ -166,8 +166,9 @@ static void identifier(bool canAssign) {
         advance();
         expression();
         addInstructions(opSet, (uint8_t)position);
-    } else
+    } else {
         addInstructions(opGet, (uint8_t)position);
+    }
 }
 
 static void literal(bool canAssign) {
@@ -328,7 +329,7 @@ void statement() {
 }
 
 static int resolveLocal(Token* local) {
-    for (size_t i = compiler.localsCount - 1; i > 0; i--) {
+    for (int i = compiler.localsCount - 1; i >= 0; i--) {
         if (strcmp(local->string, compiler.locals[i].name.string) == 0)
             return i;   // Found at index.
     }
@@ -336,10 +337,10 @@ static int resolveLocal(Token* local) {
     return -1;
 }
 
-static int isDeclared(Local* local) {
-    for (size_t i = compiler.localsCount - 1; i > 0; i--) {
-        if (local->scopeDepth == compiler.locals[i].scopeDepth &&
-            strcmp(local->name.string, compiler.locals[i].name.string) == 0)
+static int isDeclared(Token* local, size_t depth) {
+    for (int i = compiler.localsCount - 1; i >= 0; i--) {
+        if (depth == compiler.locals[i].scopeDepth &&
+            strcmp(local->string, compiler.locals[i].name.string) == 0)
             return i;   // Found at index.
     }
 
@@ -347,19 +348,25 @@ static int isDeclared(Local* local) {
 }
 
 static void declareLocalVariable() {
-    Local* local = &compiler.locals[compiler.localsCount++];
-    local->name = parser.current;
-    local->scopeDepth = compiler.scopeDepth;
-
     int position;
-    if ((position = isDeclared(local)) > 0)
+    if ((position = isDeclared(&parser.current, compiler.scopeDepth)) > 0) {
         error(&parser.current, "Double declaration.");
-    
+    } else {
+        Local* local = &compiler.locals[compiler.localsCount];
+        local->name = parser.current;
+        local->scopeDepth = compiler.scopeDepth;
+
+        position = compiler.localsCount++;
+    }
+
+
+    advance();      // Consume identifier.
+    advance();      // Consume = token as well.
+
     // TODO: implement declaration as well (this is just initialization).
-    expression();
-    
+    expression();   // Semicolon (;) is being consumed in this function.
+
     addInstructions(OP_SET_LOCAL, (uint8_t)position);
-    compiler.localsCount++;         // One local added.
 }
 
 static void declareVariable() {
