@@ -146,11 +146,6 @@ static void identifier(bool canAssign) {
     int position;       // Instruction.
     int resLocPos;      // Temporary local.
 
-    Value value;
-    value.type = VAL_STRING;
-    value.as.obj = AS_OBJ(copyString(parser.previous.string));
-    position = addConstant(value);
-
     OpCode opGet = OP_GET_GLOBAL;
     OpCode opSet = OP_SET_GLOBAL;
     if (compiler.scopeDepth > 0 && 
@@ -158,6 +153,11 @@ static void identifier(bool canAssign) {
         opGet = OP_GET_LOCAL;
         opSet = OP_SET_LOCAL;
         position = resLocPos;
+    } else {
+        Value value;
+        value.type = VAL_STRING;
+        value.as.obj = AS_OBJ(copyString(parser.previous.string));
+        position = addConstant(value);
     }
 
     if (parser.current.type == TOKEN_EQUAL) {
@@ -226,16 +226,13 @@ static void scopeStart() {
 static void scopeEnd() {
     compiler.scopeDepth--;
 
-    while (compiler.scopeDepth < compiler.locals[compiler.localsCount].scopeDepth)
-        compiler.localsCount--;
-    
-    compiler.localsCount++; // Point to one past the end location.
+    while (compiler.scopeDepth < compiler.locals[compiler.localsCount--].scopeDepth);
 }
 
 static void block(bool canAssign) {
     scopeStart();
     advance();
-    
+
     while (parser.current.type != TOKEN_RIGHT_CURLY) {
         if (parser.current.type == TOKEN_SEMI_COLON) {
             advance();  // Ignore semicolon (;) and left curly (}).
