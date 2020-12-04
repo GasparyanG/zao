@@ -87,9 +87,9 @@ ExecutionResult run() {
         Value* b = pop(); \
         Value* a = pop(); \
         Value c; \
-        if (b.type == VAL_NUMBER) \
+        if (b->type == VAL_NUMBER) \
             c.type = boolValue((AS_NUMBER(a) op AS_NUMBER(b))); \
-        else if (b.type == VAL_STRING) \
+        else if (b->type == VAL_STRING) \
             c.type = boolValue((AS_STRING(a) op AS_STRING(b))); \
         push(&c); \
     } while(false)
@@ -137,6 +137,13 @@ ExecutionResult run() {
             case OP_SUBTRACT:       BINARY_OP(-); break;
             case OP_MULTIPLY:       BINARY_OP(*); break;
             case OP_DIVIDE:         BINARY_OP(/); break;
+            case OP_GREATER_THAN:   BOOL_BINARY_OP(>); break;
+            case OP_LESS_THAN:      BOOL_BINARY_OP(<); break;
+            case OP_EQUAL_EQUAL:    BOOL_BINARY_OP(==); break;
+            case OP_BANG: {
+                // TODO: implement bang case.
+                break;
+            }
 
             case OP_PRINT: {
                 Value* value = pop();

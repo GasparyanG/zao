@@ -53,6 +53,7 @@ typedef enum {
     PREC_ASSIGN,        // a + b = c + d should fail.
     PREC_MINUS_PLUS,    // -, +
     PREC_MULT_DIV,      // *,/
+    PREC_COMPARISION,   // >, <, ==
     PREC_GROUP,         // (expression)
 } Precedence;
 
@@ -204,10 +205,15 @@ static void binary(bool canAssign) {
     parsePrecedence((Precedence)(rule->precedence + 1));
 
     switch(token.type) {
-        case TOKEN_PLUS:        return addInstruction(OP_ADD);
-        case TOKEN_MINUS:       return addInstruction(OP_SUBTRACT);
-        case TOKEN_FRD_SLASH:   return addInstruction(OP_DIVIDE);
-        case TOKEN_STAR:        return addInstruction(OP_MULTIPLY);
+        case TOKEN_PLUS:            return addInstruction(OP_ADD);
+        case TOKEN_MINUS:           return addInstruction(OP_SUBTRACT);
+        case TOKEN_FRD_SLASH:       return addInstruction(OP_DIVIDE);
+        case TOKEN_STAR:            return addInstruction(OP_MULTIPLY);
+        case TOKEN_GREATER_THAN:    return addInstruction(OP_GREATER_THAN);
+        case TOKEN_LESS_THAN:       return addInstruction(OP_LESS_THAN);
+        case TOKEN_EQUAL_EQUAL:     return addInstruction(OP_EQUAL_EQUAL);
+        case TOKEN_GREATER_EQUAL:   return addInstructions(OP_GREATER_THAN, OP_BANG);
+        case TOKEN_LESS_EQUAL:      return addInstructions(OP_LESS_THAN, OP_BANG);
         default:
             return; // Unreachable.
     }
@@ -271,9 +277,12 @@ ParseRule rules[] = {
     [TOKEN_IDENTIFIER]      = {literal,  NULL,       PREC_LITERAL},
     [TOKEN_MODULO]          = {literal,  NULL,       PREC_LITERAL}, 
     [TOKEN_BCK_SLASH]       = {literal,  NULL,       PREC_LITERAL},
-    [TOKEN_GREATER_THAN]    = {literal,  NULL,       PREC_LITERAL}, 
-    [TOKEN_LESS_THAN]       = {literal,  NULL,       PREC_LITERAL},
-    [TOKEN_EQUAL]           = {literal,  NULL,       PREC_ASSIGN}
+    [TOKEN_GREATER_THAN]    = {NULL,     binary,     PREC_COMPARISION}, 
+    [TOKEN_LESS_THAN]       = {NULL,     binary,     PREC_COMPARISION},
+    [TOKEN_EQUAL]           = {literal,  NULL,       PREC_ASSIGN},
+    [TOKEN_EQUAL_EQUAL]     = {NULL,     binary,     PREC_COMPARISION},
+    [TOKEN_GREATER_EQUAL]   = {NULL,     binary,     PREC_COMPARISION},
+    [TOKEN_LESS_EQUAL]      = {NULL,     binary,     PREC_COMPARISION}
 };
 
 ParseRule* getRule(TokenType type) {

@@ -68,6 +68,18 @@ void displayInstruction(uint8_t* ip) {
         case OP_SET_LOCAL:
             offset = constantInstruction("OP_SET_LOCAL", ip);
             break;
+        case OP_GREATER_THAN:
+            offset = simpleInstruction("OP_GREATER_THAN");
+            break;
+        case OP_LESS_THAN:
+            offset = simpleInstruction("OP_LESS_THAN");
+            break;
+        case OP_BANG:
+            offset = simpleInstruction("OP_BANG");
+            break;
+        case OP_EQUAL_EQUAL:
+            offset = simpleInstruction("OP_EQUAL_EQUAL");
+            break;
         default:
             ip -= offset;
             return;
