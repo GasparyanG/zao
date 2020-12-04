@@ -141,7 +141,13 @@ ExecutionResult run() {
             case OP_LESS_THAN:      BOOL_BINARY_OP(<); break;
             case OP_EQUAL_EQUAL:    BOOL_BINARY_OP(==); break;
             case OP_BANG: {
-                // TODO: implement bang case.
+                Value value = *pop();
+                if (IS_BOOL(value)) {
+                    value.type = (value.type == VAL_FALSE) ? VAL_TRUE: VAL_FALSE;
+                    push(&value);
+                } else
+                    runtimeError("Can't convert not bool to bool.");
+                
                 break;
             }
 

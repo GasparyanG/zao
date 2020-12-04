@@ -6,6 +6,7 @@
 #define AS_NUMBER(value)    (value->as.number)
 
 #define IS_NUMBER(value)    (value.type == VAL_NUMBER)
+#define IS_BOOL(value)      (value.type == VAL_FALSE || value.type == VAL_TRUE)
 
 typedef enum {
     VAL_NIL,

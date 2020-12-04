@@ -212,8 +212,8 @@ static void binary(bool canAssign) {
         case TOKEN_GREATER_THAN:    return addInstruction(OP_GREATER_THAN);
         case TOKEN_LESS_THAN:       return addInstruction(OP_LESS_THAN);
         case TOKEN_EQUAL_EQUAL:     return addInstruction(OP_EQUAL_EQUAL);
-        case TOKEN_GREATER_EQUAL:   return addInstructions(OP_GREATER_THAN, OP_BANG);
-        case TOKEN_LESS_EQUAL:      return addInstructions(OP_LESS_THAN, OP_BANG);
+        case TOKEN_GREATER_EQUAL:   return addInstructions(OP_LESS_THAN, OP_BANG);
+        case TOKEN_LESS_EQUAL:      return addInstructions(OP_GREATER_THAN, OP_BANG);
         default:
             return; // Unreachable.
     }
