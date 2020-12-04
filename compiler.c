@@ -245,8 +245,8 @@ static void block(bool canAssign) {
     }
 
     consume(TOKEN_RIGHT_CURLY, "'}' is required at the end of block.");
-    advance();
     scopeEnd();
+    if (compiler.scopeDepth > 0) advance();
 }
 
 ParseRule rules[] = {
