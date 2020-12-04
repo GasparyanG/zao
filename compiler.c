@@ -55,6 +55,7 @@ typedef enum {
     PREC_MULT_DIV,      // *,/
     PREC_COMPARISION,   // >, <, ==
     PREC_GROUP,         // (expression)
+    PREC_BOOL,          // and, or
 } Precedence;
 
 typedef void (*ParseFn) (bool canAssign);
@@ -214,6 +215,8 @@ static void binary(bool canAssign) {
         case TOKEN_EQUAL_EQUAL:     return addInstruction(OP_EQUAL_EQUAL);
         case TOKEN_GREATER_EQUAL:   return addInstructions(OP_LESS_THAN, OP_BANG);
         case TOKEN_LESS_EQUAL:      return addInstructions(OP_GREATER_THAN, OP_BANG);
+        case TOKEN_AND:             return addInstruction(OP_AND);
+        case TOKEN_OR:              return addInstruction(OP_OR);
         default:
             return; // Unreachable.
     }
@@ -282,7 +285,9 @@ ParseRule rules[] = {
     [TOKEN_EQUAL]           = {literal,  NULL,       PREC_ASSIGN},
     [TOKEN_EQUAL_EQUAL]     = {NULL,     binary,     PREC_COMPARISION},
     [TOKEN_GREATER_EQUAL]   = {NULL,     binary,     PREC_COMPARISION},
-    [TOKEN_LESS_EQUAL]      = {NULL,     binary,     PREC_COMPARISION}
+    [TOKEN_LESS_EQUAL]      = {NULL,     binary,     PREC_COMPARISION},
+    [TOKEN_AND]             = {NULL,     binary,     PREC_BOOL},
+    [TOKEN_OR]              = {NULL,     binary,     PREC_BOOL},
 };
 
 ParseRule* getRule(TokenType type) {

@@ -80,6 +80,12 @@ void displayInstruction(uint8_t* ip) {
         case OP_EQUAL_EQUAL:
             offset = simpleInstruction("OP_EQUAL_EQUAL");
             break;
+        case OP_AND:
+            offset = simpleInstruction("OP_AND");
+            break;
+        case OP_OR:
+            offset = simpleInstruction("OP_OR");
+            break;
         default:
             ip -= offset;
             return;

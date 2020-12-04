@@ -165,6 +165,10 @@ static void compareForKeyword(
 
 static void lookForKeyword(Token* token) {
     switch(token->string[0]) {
+        case 'a':
+            return compareForKeyword(token, 1, "nd", TOKEN_AND);        // and
+        case 'o':
+            return compareForKeyword(token, 1, "r", TOKEN_OR);          // or
         case 'f': {
             if (strlen(token->string) == 1) return; // Terminate.
             switch(token->string[1]) {

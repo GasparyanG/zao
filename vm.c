@@ -151,6 +151,38 @@ ExecutionResult run() {
                 break;
             }
 
+            case OP_AND: {
+                Value b = *pop();
+                Value a = *pop();
+
+                if (IS_BOOL(b) && IS_BOOL(a)) {
+                    bool bb = (b.type == VAL_FALSE) ? false: true;
+                    bool ba = (a.type == VAL_TRUE) ? true: false;
+
+                    Value c;
+                    c.type = boolValue(bb && ba);
+                    push(&c);
+                } else 
+                    runtimeError("Can't use and for not bool values.");
+                break;
+            }
+
+            case OP_OR: {
+                Value b = *pop();
+                Value a = *pop();
+
+                if (IS_BOOL(b) && IS_BOOL(a)) {
+                    bool bb = (b.type == VAL_FALSE) ? false: true;
+                    bool ba = (a.type == VAL_TRUE) ? true: false;
+
+                    Value c;
+                    c.type = boolValue(bb || ba);
+                    push(&c);
+                } else 
+                    runtimeError("Can't use and for not bool values.");
+                break;
+            }
+
             case OP_PRINT: {
                 Value* value = pop();
                 printValue(value);
