@@ -131,9 +131,19 @@ static void number(bool canAssign) {
 }
 
 static void unary(bool canAssign) {
-    advance();
-    number(canAssign);
-    addInstruction(OP_NEGATE);
+    switch(parser.previous.type) {
+        case TOKEN_BANG:
+            expression();
+            addInstruction(OP_BANG);
+            break;
+        case TOKEN_MINUS:
+            advance();
+            number(canAssign);
+            addInstruction(OP_NEGATE);
+            break;
+        default:
+            return;     // Unreachable.
+    }
 }
 
 static void string(bool canAssign) {
@@ -215,6 +225,7 @@ static void binary(bool canAssign) {
         case TOKEN_EQUAL_EQUAL:     return addInstruction(OP_EQUAL_EQUAL);
         case TOKEN_GREATER_EQUAL:   return addInstructions(OP_LESS_THAN, OP_BANG);
         case TOKEN_LESS_EQUAL:      return addInstructions(OP_GREATER_THAN, OP_BANG);
+        case TOKEN_BANG_EQUAL:      return addInstructions(OP_EQUAL_EQUAL, OP_BANG);
         case TOKEN_AND:             return addInstruction(OP_AND);
         case TOKEN_OR:              return addInstruction(OP_OR);
         default:
@@ -272,7 +283,7 @@ ParseRule rules[] = {
     [TOKEN_SEMI_COLON]      = {NULL,     NULL,       PREC_NONE},
     [TOKEN_QUESTION]        = {NULL,     NULL,       PREC_NONE}, 
     [TOKEN_COLON]           = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_BANG]            = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_BANG]            = {unary,    NULL,       PREC_NONE},
     [TOKEN_FALSE]           = {literal,  NULL,       PREC_LITERAL},
     [TOKEN_TRUE]            = {literal,  NULL,       PREC_LITERAL},
     [TOKEN_NIL]             = {literal,  NULL,       PREC_LITERAL},
@@ -286,8 +297,9 @@ ParseRule rules[] = {
     [TOKEN_EQUAL_EQUAL]     = {NULL,     binary,     PREC_COMPARISION},
     [TOKEN_GREATER_EQUAL]   = {NULL,     binary,     PREC_COMPARISION},
     [TOKEN_LESS_EQUAL]      = {NULL,     binary,     PREC_COMPARISION},
+    [TOKEN_BANG_EQUAL]      = {NULL,     binary,     PREC_COMPARISION},
     [TOKEN_AND]             = {NULL,     binary,     PREC_BOOL},
-    [TOKEN_OR]              = {NULL,     binary,     PREC_BOOL},
+    [TOKEN_OR]              = {NULL,     binary,     PREC_BOOL}
 };
 
 ParseRule* getRule(TokenType type) {

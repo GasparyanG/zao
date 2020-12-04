@@ -391,12 +391,24 @@ Token scanToken() {
             advance(-1);
             return prepToken(TOKEN_EQUAL);
         }
+        
+        case '!': {
+            if (isEof()) return prepToken(TOKEN_BANG);
+            ch = getChar(true);
+
+            if (ch == '=')
+                return prepToken(TOKEN_BANG_EQUAL);
+            
+            advance(-1);
+            return prepToken(TOKEN_BANG);
+        }
 
         case '+': return prepToken(TOKEN_PLUS);
         case '-': return prepToken(TOKEN_MINUS);
         case '*': return prepToken(TOKEN_STAR);
 
         case ';': return prepToken(TOKEN_SEMI_COLON);
+
 
         // TODO: deal with other tokens too.
         default:
