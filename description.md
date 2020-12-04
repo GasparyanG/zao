@@ -10,6 +10,7 @@
     - `stackTop`            - meant for keeping track on one-past the end element.
     - `internedStrings`     - ObjString array.
     - `stringCount`         - amount of interned strings. Serves as index and size indicator.
+    - `locals`              - scope local values.
 
 * [WIP]void runtimeError(const char* format, ...)
     - description
@@ -29,6 +30,7 @@
     - Iterates over compiled instructions and handles them correspondingly.
     - To dispatch to required handler it considers instruction/op code.
 
+
 * BINARY_OP(op)
     - description
         - takes operator and does changes to stack by computing binary expressions.
@@ -36,6 +38,9 @@
         - why macro?        - To be able to deal with different operators.
         - why `do while` ?  - First of all to have block expression and at the same time
                             being able to use semicolon (;) afterwards.
+* BOOL_BINARY_OP(op)
+    - description
+        - the same as BINARY_OP, except this one handles binary operatos (>, <, ==).
 
 ## Compiler + Chunk
 * Chunk properties
@@ -49,6 +54,22 @@
     - `constants`   - some instructions require values, so this DS will hold it.
     - `panicMode`   - should be true when compiler encounters error.
     - `table`       - hash table for variables.
+    - `locals`      - Local objects array. Meant for local variables (neasted in scopes).
+    - `scopeDepth`  - in which scope are we right now ?
+    - `localsCount` - amount of locals currently being stored in _locals_.
+
+* Local
+    - `name`        - Token, which stores identifier's name.
+    - `scopeDepth`  - current variables scope.
+
+* void scopeStart()
+    - description: increments compiler::scopeDepth.
+
+* void scopeEnd()
+    - description
+        - decrements compiler::scopeDepth.
+        - 'removes' locals - actually its just decrements compiler::localsCount 
+        to let next locals to replace them at their location.
 
 * void recover()
     - description
@@ -116,6 +137,11 @@
     - effect: -1
     - pop value from stack to change (assign) existing variables value.
 
+* OP_AND, OP_OR, OP_GREATER_THAN, OP_LESS_THAN, OP_EQUAL_EQUAL
+    - effect: -1
+    - _pop two_ values from stack to _combine_ their values via _boolean opeator_,
+    then _push result_.
+
 ### Scanner
 * protperties
     - `sourceCode`      - self-explanatory.
@@ -171,16 +197,16 @@
     - `infix`           - such as "binary", "grouping", etc..
     - `precedence`      - Precedence to apply traversing sequence.
 
-* void unary()
+* void unary(bool canAssign)
     - description
         - negare number.
 
-* void binary()
+* void binary(bool canAssign)
     - description
         - call parsePrecedence with +1 precedence to search for higher operations to handle.
         - emit binary operators to bytecode.
     
-* void grouping()
+* void grouping(bool canAssign)
     - description
         - handles (expression), while being prioritized againset some operations 
         (e.g. litterals, arithmetics, etc.)
@@ -202,6 +228,16 @@
         - imply grammer on declarations.
     - examples
         - function, variable, class, etc..
+
+* void block(bool canAssign)
+    - description
+        - handle { statements }.
+        - statements in curly braces ({}) are being handled via this 'grammer rule'.
+    - implementation flow:
+        1) start scope by calling `scopeStart()`.
+        2) handle all statements by terating through them.
+        3) stop if end of scope is reached (i.e. '}' is found).
+        4) end scope by calling `scopeEnd()`.
 
 ### Table and Entry
 * Entry::properties

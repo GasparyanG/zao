@@ -31,7 +31,7 @@
 - [x] compiler   : think about a + b = c + d expression's compilation.
 - [] vm.c       : you will feel that Value* is wrong in here, so chagne it to Value.
 - [] compiler.c : implement declaration as well (this is just initialization).
-- [] vm.c       : implement bang case.
+- [x] vm.c       : implement bang case.
 
 ### In Progress
 
