@@ -309,7 +309,29 @@ static void if_(bool canAssign) {
 }
 
 static void while_(bool canAssign) {
-    // TODO: implement 'while' statement.
+    advance();
+    consume(TOKEN_LEFT_PAREN, "'(' is required after 'while' keyword.");
+
+    size_t exprPos = compiler.chunk.size;           // Position to jump back after loop.
+    expression();   // Prepare bytecode for bool expression.
+
+    addInstruction(OP_JUMP);
+    size_t currentPosition = compiler.chunk.size;   // Position to insert jumping size.
+    compiler.chunk.size += JUMP_BYTES;              // Keep 2 bytes for jumping size.
+    
+    statement();                        // Add bytecode for block statement.
+    addInstruction(OP_POP);             // Remove bool after every loop.
+
+    // Go Back to expression, to see whether to loop again or not.
+    addInstruction(OP_JUMP_BACK);
+    compiler.chunk.size += JUMP_BYTES;
+    addSizeToJumpPos(compiler.chunk.size - JUMP_BYTES, exprPos);
+
+    // Add jumping size in bytecode, next to OP_JUMP instruction.
+    uint16_t jumpingSize = compiler.chunk.size - currentPosition;
+    addSizeToJumpPos(currentPosition, jumpingSize);
+
+    addInstruction(OP_POP);             // Remove bool from stack.
 }
 
 ParseRule rules[] = {
@@ -345,7 +367,7 @@ ParseRule rules[] = {
     [TOKEN_OR]              = {NULL,     binary,     PREC_BOOL},
     [TOKEN_IF]              = {if_,      NULL,       PREC_NONE}, 
     [TOKEN_ELSE]            = {else_,    NULL,       PREC_NONE},
-    [TOKEN_FOR]             = {for_,     NULL,       PREC_NONE},
+    [TOKEN_FOR]             = {NULL,     NULL,       PREC_NONE},
     [TOKEN_WHILE]           = {while_,   NULL,       PREC_NONE},
 };
 

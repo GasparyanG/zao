@@ -251,7 +251,7 @@ ExecutionResult run() {
             }
 
             case OP_JUMP_BACK: {
-                // TODO: implement OP_JUM_BACK instruction.
+                compiler.ip = &compiler.chunk.chunk[bytesFusion(READ_BYTE(), READ_BYTE())];
                 break;
             }
 
