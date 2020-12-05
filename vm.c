@@ -45,6 +45,10 @@ Value* pop() {
     return --vm.stackTop;
 }
 
+Value* peek(size_t n) {
+    return vm.stackTop - n;
+}
+
 void push(Value* value) {
     if ((vm.stackTop - vm.stack) > UINT8_MAX);
         // TODO: display `stack overflow` error.
@@ -237,6 +241,18 @@ ExecutionResult run() {
                 // TODO: you will feel that Value* is wrong in here, so chagne it to Value.
                 push(&vm.locals[READ_BYTE()]);
                 break; 
+
+            case OP_JUMP: {
+                if (AS_BOOL((*peek(1))))
+                    compiler.ip += 2;       // Go straight to instruction.
+                else
+                    compiler.ip += bytesFusion(READ_BYTE(), READ_BYTE());
+                break;
+            }
+
+            case OP_POP:
+                pop();
+                break;
 
             default:
                 return EXECUTION_SUCCESS;

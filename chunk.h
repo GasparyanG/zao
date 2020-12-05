@@ -33,7 +33,9 @@ typedef enum {
     OP_GET_LOCAL,
     OP_SET_LOCAL,
     OP_AND,
-    OP_OR
+    OP_OR,
+    OP_JUMP,
+    OP_POP
 } OpCode;
 
 #endif

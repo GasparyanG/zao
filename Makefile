@@ -1,8 +1,11 @@
-MODULES=compiler.c memory.c vm.c debug.c scanner.c table.c
-OMODULES=obj/compiler.o obj/memory.o obj/vm.o obj/debug.o obj/scanner.o obj/table.o
+MODULES=common.c compiler.c memory.c vm.c debug.c scanner.c table.c
+OMODULES=obj/common.o obj/compiler.o obj/memory.o obj/vm.o obj/debug.o obj/scanner.o obj/table.o
 
 zao: $(OMODULES) main.c
 	g++ -o zao $(OMODULES) main.c
+
+obj/common.o: common.c
+	g++ -o obj/common.o -c common.c
 
 obj/compiler.o: compiler.c
 	g++ -o obj/compiler.o -c compiler.c

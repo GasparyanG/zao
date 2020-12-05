@@ -7,6 +7,7 @@
 
 #include "chunk.h"
 #include "compiler.h"
+#include "common.h"
 #include "object.h"
 #include "scanner.h"
 

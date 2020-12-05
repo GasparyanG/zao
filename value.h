@@ -4,6 +4,7 @@
 #include "object.h"
 
 #define AS_NUMBER(value)    (value->as.number)
+#define AS_BOOL(value)      ((value.type == VAL_FALSE) ? false : true)
 
 #define IS_NUMBER(value)    (value.type == VAL_NUMBER)
 #define IS_BOOL(value)      (value.type == VAL_FALSE || value.type == VAL_TRUE)

@@ -4,6 +4,7 @@
 
 // Declarations.
 void expression();
+void statement();
 void declaration();
 static int resolveLocal(Token* local);
 
@@ -269,12 +270,29 @@ static void block(bool canAssign) {
     if (compiler.scopeDepth > 0) advance();
 }
 
-static void if_(bool canAssign) {
+static void addSizeToJumpPos(uint8_t currentPosition, uint16_t jumpingSize) {
+    compiler.chunk.chunk[currentPosition] = (uint8_t)((8 >> jumpingSize) & 0xff);
+    compiler.chunk.chunk[currentPosition + 1] = (uint8_t)(jumpingSize & 0xff);
+}
 
+static void if_(bool canAssign) {
+    advance();
+    consume(TOKEN_LEFT_PAREN, "'(' is required after 'if' keyword.");
+    expression();   // Prepare bytecode for bool expression.
+    
+    addInstruction(OP_JUMP);
+    size_t currentPosition = compiler.chunk.size;   // Position to insert jumping size.
+    compiler.chunk.size += 2;                       // Keep 2 bytes for jumping size.
+    
+    statement();    // Add bytecode for block statement.
+
+    // Add jumping size in bytecode, next to OP_JUMP instruction.
+    uint16_t jumpingSize = compiler.chunk.size - currentPosition;
+    addSizeToJumpPos(currentPosition, jumpingSize);
 }
 
 static void else_(bool canAssign) {
-    
+
 }
 
 ParseRule rules[] = {
@@ -347,7 +365,7 @@ void statement() {
         case TOKEN_EOF:
             // Terminate.
             break;
-        case TOKEN_LEFT_CURLY: 
+        case TOKEN_LEFT_CURLY:
             block(true);
             break;
         case TOKEN_PRINT:
@@ -355,6 +373,9 @@ void statement() {
             expression();
             consume(TOKEN_SEMI_COLON, "';' is required after expression.");
             addInstruction(OP_PRINT);
+            break;
+        case TOKEN_IF:
+            if_(true);
             break;
         default: {
             expression();

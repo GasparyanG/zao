@@ -4,16 +4,24 @@ static size_t constantInstruction(const char* name, uint8_t* ip) {
     switch(compiler.constants[*ip].type) {
         case VAL_NUMBER:
             printf("%-20s %g\n", name, compiler.constants[*ip].as.number);
-            return 1;
+            break;
         case VAL_STRING:
             printf("%-20s %s\n", name, AS_STRING(compiler.constants[*ip].as.obj)->value);
-            return 1;
+            break;
     }
+
+    return 1;
 }
 
 static size_t simpleInstruction(const char* name) {
     printf("%-16s\n", name);
     return 1;
+}
+
+static size_t jumpInstruction(const char* name, uint8_t* ip) {
+    uint16_t size = bytesFusion(*ip++, *ip);
+    printf("%-20s %d\n", name, size);
+    return 2;
 }
 
 void displayInstruction(uint8_t* ip) {
@@ -85,6 +93,12 @@ void displayInstruction(uint8_t* ip) {
             break;
         case OP_OR:
             offset = simpleInstruction("OP_OR");
+            break;
+        case OP_JUMP:
+            offset = jumpInstruction("OP_JUMP", ip);
+            break;
+        case OP_POP:
+            offset = simpleInstruction("OP_POP");
             break;
         default:
             ip -= offset;
