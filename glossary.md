@@ -10,6 +10,7 @@
 - [] How to handle value update in vm.c ?
     - hint 1: change return value of pop from `Value*` to `Value`.
     - hint 2: change argument value of push from `Value*` to `Value`.
+- [] Why I couldn't use pointers explicitly in debug.c (jumpInstruction) ?
 
 ### To Do
 - [] memory.c   : exit when pointer is not null.

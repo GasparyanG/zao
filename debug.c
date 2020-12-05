@@ -19,7 +19,9 @@ static size_t simpleInstruction(const char* name) {
 }
 
 static size_t jumpInstruction(const char* name, uint8_t* ip) {
-    uint16_t size = bytesFusion(*ip++, *ip);
+    uint8_t a = *ip++;
+    uint8_t b = *ip;
+    uint16_t size = bytesFusion(a, b);
     printf("%-20s %d\n", name, size);
     return 2;
 }
