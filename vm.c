@@ -250,6 +250,11 @@ ExecutionResult run() {
                 break;
             }
 
+            case OP_JUMP_BACK: {
+                // TODO: implement OP_JUM_BACK instruction.
+                break;
+            }
+
             case OP_POP:
                 pop();
                 break;

@@ -99,6 +99,9 @@ void displayInstruction(uint8_t* ip) {
         case OP_JUMP:
             offset = jumpInstruction("OP_JUMP", ip);
             break;
+        case OP_JUMP_BACK:
+            offset = jumpInstruction("OP_JUMP_BACK", ip);
+            break;
         case OP_POP:
             offset = simpleInstruction("OP_POP");
             break;

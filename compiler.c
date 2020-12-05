@@ -308,6 +308,10 @@ static void if_(bool canAssign) {
         addInstruction(OP_POP); // Remove boolean from stack.
 }
 
+static void while_(bool canAssign) {
+    // TODO: implement 'while' statement.
+}
+
 ParseRule rules[] = {
     [TOKEN_PLUS]            = {NULL,     binary,     PREC_MINUS_PLUS},
     [TOKEN_MINUS]           = {unary,    binary,     PREC_MINUS_PLUS},
@@ -340,7 +344,9 @@ ParseRule rules[] = {
     [TOKEN_AND]             = {NULL,     binary,     PREC_BOOL},
     [TOKEN_OR]              = {NULL,     binary,     PREC_BOOL},
     [TOKEN_IF]              = {if_,      NULL,       PREC_NONE}, 
-    [TOKEN_ELSE]            = {else_,    NULL,       PREC_NONE}
+    [TOKEN_ELSE]            = {else_,    NULL,       PREC_NONE},
+    [TOKEN_FOR]             = {for_,     NULL,       PREC_NONE},
+    [TOKEN_WHILE]           = {while_,   NULL,       PREC_NONE},
 };
 
 ParseRule* getRule(TokenType type) {
@@ -389,6 +395,9 @@ void statement() {
             break;
         case TOKEN_IF:
             if_(true);
+            break;
+        case TOKEN_WHILE:
+            while_(true);
             break;
         default: {
             expression();
