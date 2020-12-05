@@ -275,11 +275,7 @@ static void addSizeToJumpPos(uint8_t currentPosition, uint16_t jumpingSize) {
     compiler.chunk.chunk[currentPosition + 1] = (uint8_t)(jumpingSize & 0xff);
 }
 
-static void if_(bool canAssign) {
-    advance();
-    consume(TOKEN_LEFT_PAREN, "'(' is required after 'if' keyword.");
-    expression();   // Prepare bytecode for bool expression.
-    
+static void condition() {
     addInstruction(OP_JUMP);
     size_t currentPosition = compiler.chunk.size;   // Position to insert jumping size.
     compiler.chunk.size += 2;                       // Keep 2 bytes for jumping size.
@@ -292,7 +288,23 @@ static void if_(bool canAssign) {
 }
 
 static void else_(bool canAssign) {
+    addInstruction(OP_BANG);    // Negate boolean to consider implemnting block or not.
+    condition();                // Block statement bytecode preparation.
+    addInstruction(OP_POP);     // Remove boolean from stack.
+}
 
+static void if_(bool canAssign) {
+    advance();
+    consume(TOKEN_LEFT_PAREN, "'(' is required after 'if' keyword.");
+    expression();   // Prepare bytecode for bool expression.
+    
+    condition();                // Block statement bytecode preparation.
+
+    advance();
+    if (parser.current.type == TOKEN_ELSE)
+        else_(canAssign);
+    else
+        addInstruction(OP_POP); // Remove boolean from stack.
 }
 
 ParseRule rules[] = {
