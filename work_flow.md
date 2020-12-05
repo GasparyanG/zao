@@ -53,6 +53,8 @@
 - [x] 12:00 - 13:00      - _scopes_ design.
 - [x] 13:00 - 14:00      - _scopes_ implementation.
 
+### 12/04 - 05/2020
+Coming today[05].
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine

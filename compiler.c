@@ -269,6 +269,14 @@ static void block(bool canAssign) {
     if (compiler.scopeDepth > 0) advance();
 }
 
+static void if_(bool canAssign) {
+
+}
+
+static void else_(bool canAssign) {
+    
+}
+
 ParseRule rules[] = {
     [TOKEN_PLUS]            = {NULL,     binary,     PREC_MINUS_PLUS},
     [TOKEN_MINUS]           = {unary,    binary,     PREC_MINUS_PLUS},
@@ -299,7 +307,9 @@ ParseRule rules[] = {
     [TOKEN_LESS_EQUAL]      = {NULL,     binary,     PREC_COMPARISION},
     [TOKEN_BANG_EQUAL]      = {NULL,     binary,     PREC_COMPARISION},
     [TOKEN_AND]             = {NULL,     binary,     PREC_BOOL},
-    [TOKEN_OR]              = {NULL,     binary,     PREC_BOOL}
+    [TOKEN_OR]              = {NULL,     binary,     PREC_BOOL},
+    [TOKEN_IF]              = {if_,      NULL,       PREC_NONE}, 
+    [TOKEN_ELSE]            = {else_,    NULL,       PREC_NONE}
 };
 
 ParseRule* getRule(TokenType type) {
