@@ -244,9 +244,9 @@ ExecutionResult run() {
 
             case OP_JUMP: {
                 if (AS_BOOL((*peek(1))))
-                    compiler.ip += 2;       // Go straight to instruction.
+                    compiler.ip += JUMP_BYTES;       // Go straight to instruction.
                 else
-                    compiler.ip += bytesFusion(READ_BYTE(), READ_BYTE());
+                    compiler.ip += bytesFusion(READ_BYTE(), READ_BYTE()) + JUMP_BYTES;
                 break;
             }
 

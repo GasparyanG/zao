@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define JUMP_BYTES 2
+
 typedef struct {
     uint8_t* chunk;
     size_t size;

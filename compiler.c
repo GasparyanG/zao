@@ -278,7 +278,7 @@ static void addSizeToJumpPos(uint8_t currentPosition, uint16_t jumpingSize) {
 static void condition() {
     addInstruction(OP_JUMP);
     size_t currentPosition = compiler.chunk.size;   // Position to insert jumping size.
-    compiler.chunk.size += 2;                       // Keep 2 bytes for jumping size.
+    compiler.chunk.size += JUMP_BYTES;              // Keep 2 bytes for jumping size.
     
     statement();    // Add bytecode for block statement.
 
@@ -288,6 +288,7 @@ static void condition() {
 }
 
 static void else_(bool canAssign) {
+    advance();
     addInstruction(OP_BANG);    // Negate boolean to consider implemnting block or not.
     condition();                // Block statement bytecode preparation.
     addInstruction(OP_POP);     // Remove boolean from stack.
