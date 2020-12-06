@@ -55,6 +55,7 @@
 
 ### 12/04 - 05/2020
 Coming today[05].
+Run source code of test.zao
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine

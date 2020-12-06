@@ -246,7 +246,7 @@ ExecutionResult run() {
                 if (AS_BOOL((*peek(1))))
                     compiler.ip += JUMP_BYTES;       // Go straight to instruction.
                 else
-                    compiler.ip += bytesFusion(READ_BYTE(), READ_BYTE()) + JUMP_BYTES;
+                    compiler.ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 break;
             }
 

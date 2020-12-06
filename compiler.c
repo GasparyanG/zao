@@ -278,12 +278,12 @@ static void addSizeToJumpPos(uint8_t currentPosition, uint16_t jumpingSize) {
 static void condition() {
     addInstruction(OP_JUMP);
     size_t currentPosition = compiler.chunk.size;   // Position to insert jumping size.
-    compiler.chunk.size += JUMP_BYTES;              // Keep 2 bytes for jumping size.
+    addInstructions(0x00, 0x00);
     
     statement();    // Add bytecode for block statement.
 
     // Add jumping size in bytecode, next to OP_JUMP instruction.
-    uint16_t jumpingSize = compiler.chunk.size - currentPosition;
+    uint16_t jumpingSize = compiler.chunk.size - currentPosition - JUMP_BYTES;
     addSizeToJumpPos(currentPosition, jumpingSize);
 }
 
@@ -313,25 +313,26 @@ static void while_(bool canAssign) {
     consume(TOKEN_LEFT_PAREN, "'(' is required after 'while' keyword.");
 
     size_t exprPos = compiler.chunk.size;           // Position to jump back after loop.
-    expression();   // Prepare bytecode for bool expression.
+    expression();                                   // Prepare bytecode for bool expression.
 
     addInstruction(OP_JUMP);
     size_t currentPosition = compiler.chunk.size;   // Position to insert jumping size.
-    compiler.chunk.size += JUMP_BYTES;              // Keep 2 bytes for jumping size.
+    addInstructions(0x00, 0x00);
     
-    statement();                        // Add bytecode for block statement.
-    addInstruction(OP_POP);             // Remove bool after every loop.
+    statement();                                    // Add bytecode for block statement.
+    addInstruction(OP_POP);                         // Remove bool after every loop.
 
     // Go Back to expression, to see whether to loop again or not.
     addInstruction(OP_JUMP_BACK);
-    compiler.chunk.size += JUMP_BYTES;
+    addInstructions(0x00, 0x00);
     addSizeToJumpPos(compiler.chunk.size - JUMP_BYTES, exprPos);
 
     // Add jumping size in bytecode, next to OP_JUMP instruction.
-    uint16_t jumpingSize = compiler.chunk.size - currentPosition;
+    // TODO: why does 1 is subtracted ?
+    uint16_t jumpingSize = compiler.chunk.size - currentPosition - JUMP_BYTES - 1;
     addSizeToJumpPos(currentPosition, jumpingSize);
 
-    addInstruction(OP_POP);             // Remove bool from stack.
+    addInstruction(OP_POP);                         // Remove last bool from stack.
 }
 
 ParseRule rules[] = {
