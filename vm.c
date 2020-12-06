@@ -255,6 +255,16 @@ ExecutionResult run() {
                 break;
             }
 
+            case OP_JUMP_FOR: {
+                if (AS_BOOL((*peek(1))))
+                    compiler.ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                else {
+                    compiler.ip += 2;   // Ignore assignement bytes.
+                    compiler.ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                }
+                break;
+            }
+
             case OP_POP:
                 pop();
                 break;

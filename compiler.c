@@ -253,6 +253,10 @@ static void scopeEnd() {
     }
 }
 
+static void scopeSimpleEnd() {
+    compiler.scopeDepth--;
+}
+
 static void block(bool canAssign) {
     scopeStart();
     advance();
@@ -342,9 +346,10 @@ static void forAssign() {
         case TOKEN_RIGHT_PAREN:
             break;
         default:
-            identifier(true);
+            expression();
     }
 
+    consume(TOKEN_RIGHT_PAREN, "')' is required after 'for' assignement.");
     advance();
 }
 
@@ -359,7 +364,7 @@ static void for_(bool canAssign) {
     // Expression section.
     size_t exprPos = compiler.chunk.size;
     forExpr();          // In this section we can either wrtire expression or just leave it empty.
-    addInstruction(OP_JUMP);
+    addInstruction(OP_JUMP_FOR);
     size_t exprJumpPos = compiler.chunk.size;
     addInstructions(0x00, 0x00);    // Jump over instruction right into block.
     addInstructions(0x00, 0x00);    // Jump out of 'for' statement.
@@ -367,7 +372,6 @@ static void for_(bool canAssign) {
     // Assignement section.
     size_t assignPos = compiler.chunk.size;
     forAssign();        // In this section we can either make assignement or just leave it empty.
-    addInstruction(OP_POP); // Remove bool from stack.
 
     // Jump back to expression.
     addInstruction(OP_JUMP_BACK);
@@ -379,6 +383,8 @@ static void for_(bool canAssign) {
     addSizeToJumpPos(exprJumpPos, compiler.chunk.size - exprJumpPos - JUMP_BYTES);
 
     // Block statement.
+    scopeSimpleEnd();           // This scope will be continued in `statement()`.
+    addInstruction(OP_POP);     // Remove bool from stack.
     statement();
 
     // Go back to assignement, after which in its case will dispatch to expression.
@@ -389,8 +395,6 @@ static void for_(bool canAssign) {
     // Set distance from expression to out of 'for' statement, to be able to leave the loop.
     addSizeToJumpPos(exprJumpPos + JUMP_BYTES, compiler.chunk.size - exprJumpPos - (2 * JUMP_BYTES));
     addInstruction(OP_POP);
-
-    scopeEnd();
 }
 
 static void while_(bool canAssign) {

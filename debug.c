@@ -18,12 +18,25 @@ static size_t simpleInstruction(const char* name) {
     return 1;
 }
 
-static size_t jumpInstruction(const char* name, uint8_t* ip) {
+static size_t jumpInstruction(const char* name, OpCode type, uint8_t* ip) {
     uint8_t a = *ip++;
-    uint8_t b = *ip;
-    uint16_t size = bytesFusion(a, b);
-    printf("%-20s %d\n", name, size);
-    return 2;
+    uint8_t b = *ip++;
+
+    switch (type) {
+        case OP_JUMP_FOR: {
+            uint8_t c = *ip++;
+            uint8_t d = *ip; 
+            uint16_t size = bytesFusion(a, b);
+            uint16_t size2 = bytesFusion(c, d);
+            printf("%-20s ASSIGN - %d, BLOCK - %d\n", name, size, size2);
+            return 4;
+        }
+        default: {
+            uint16_t size = bytesFusion(a, b);
+            printf("%-20s %d\n", name, size);
+            return 3;
+        }
+    }
 }
 
 void displayInstruction(uint8_t* ip) {
@@ -97,10 +110,13 @@ void displayInstruction(uint8_t* ip) {
             offset = simpleInstruction("OP_OR");
             break;
         case OP_JUMP:
-            offset = jumpInstruction("OP_JUMP", ip);
+            offset = jumpInstruction("OP_JUMP", OP_JUMP, ip);
             break;
         case OP_JUMP_BACK:
-            offset = jumpInstruction("OP_JUMP_BACK", ip);
+            offset = jumpInstruction("OP_JUMP_BACK", OP_JUMP_BACK, ip);
+            break;
+        case OP_JUMP_FOR:
+            offset = jumpInstruction("OP_JUMP_FOR", OP_JUMP_FOR, ip);
             break;
         case OP_POP:
             offset = simpleInstruction("OP_POP");
