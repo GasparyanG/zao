@@ -35,6 +35,7 @@
 - [x] vm.c       : implement bang case.
 - [] compiler.c : why does 1 is being subtracted ?
 - [] compiler.c : why does 0 is being converted to 8 ?
+- [] compiler.c : for optimization same, implement short circuit.
 
 ### In Progress
 

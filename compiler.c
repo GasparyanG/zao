@@ -399,7 +399,8 @@ static void for_(bool canAssign) {
     addSizeToJumpPos(compiler.chunk.size - JUMP_BYTES, assignPos);
 
     // Set distance from expression to out of 'for' statement, to be able to leave the loop.
-    addSizeToJumpPos(exprJumpPos + JUMP_BYTES, compiler.chunk.size - exprJumpPos - (2 * JUMP_BYTES));
+    // TODO: why does 1 is subtracted ?
+    addSizeToJumpPos(exprJumpPos + JUMP_BYTES, compiler.chunk.size - exprJumpPos - (2 * JUMP_BYTES) - 1);
     addInstruction(OP_POP);
 }
 
