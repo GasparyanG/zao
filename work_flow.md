@@ -53,9 +53,12 @@
 - [x] 12:00 - 13:00      - _scopes_ design.
 - [x] 13:00 - 14:00      - _scopes_ implementation.
 
-### 12/04 - 05/2020
-Coming today[05].
-Run source code of test.zao
+### 12/04 - 05 - 06/2020
+- [x] -:- - -:-          - Design bool expressions and implement.
+- [x] -:- - -:-          - Design `if` statement and implement.
+- [x] -:- - -:-          - Design `while` statement and implement.
+- [x] -:- - -:-          - Design `for` statement and implement.
+
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine

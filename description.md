@@ -142,6 +142,12 @@
     - _pop two_ values from stack to _combine_ their values via _boolean opeator_,
     then _push result_.
 
+* OP_POP
+    - effect: -1
+
+* OP_JUMP, OP_JUMP_BACK, OP_JUMP_FOR
+    - effect: 0
+
 ### Scanner
 * protperties
     - `sourceCode`      - self-explanatory.
@@ -222,6 +228,39 @@
         - imply grammer on statements.
     - examples
         - print, if-then, while, etc..
+
+* void if_(bool canAssign)
+    - description
+        - based on bool expression deside whther to jump over
+        instuctions or not.
+    - else leg
+        - if 'if' bool expression is false then jump over
+        if's block and implement else's block.
+
+* void for_(bool canAssign)
+    - description
+        - declaration: can be empty or used to declare variable.
+        - expression: can be empty or used to evaluate bool expression.
+        Based on this for's block usage will be determined.
+        - assignement: can be empty or used for assignement.
+    - in first loop:
+        1) evaluate declaration.
+        2) evaluate expression.
+        3) go straight to block.
+        4) jump to assignement.
+    - in next loops:
+        1) evaluate assignement.
+        2) jump back to expression.
+        3) evaluate expression.
+        3.1) if true jump into block.
+        3.2) if false jump out of for statement.
+
+* void while_(bool can assign)
+    - description
+        - based on bool expression deside whther to dive into
+        while's block or to exit it by jumping over instructions.
+        - after reaching to the end of block jump back to evaluate
+        expression to start again.
 
 * declaration()
     - description
