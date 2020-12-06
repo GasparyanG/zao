@@ -276,8 +276,14 @@ static void block(bool canAssign) {
 }
 
 static void addSizeToJumpPos(uint8_t currentPosition, uint16_t jumpingSize) {
-    compiler.chunk.chunk[currentPosition] = (uint8_t)((8 >> jumpingSize) & 0xff);
-    compiler.chunk.chunk[currentPosition + 1] = (uint8_t)(jumpingSize & 0xff);
+    // TODO: why does 0 being converted to 8 ?
+    if (jumpingSize == 0) {
+        compiler.chunk.chunk[currentPosition] = (uint8_t)(jumpingSize);
+        compiler.chunk.chunk[currentPosition + 1] = (uint8_t)(jumpingSize);
+    } else {
+        compiler.chunk.chunk[currentPosition] = (uint8_t)((8 >> jumpingSize) & 0xff);
+        compiler.chunk.chunk[currentPosition + 1] = (uint8_t)(jumpingSize & 0xff);
+    }
 }
 
 static void condition() {
