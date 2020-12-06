@@ -5,6 +5,7 @@
 // Declarations.
 void expression();
 void statement();
+static void declareVariable();
 void declaration();
 static int resolveLocal(Token* local);
 
@@ -308,6 +309,90 @@ static void if_(bool canAssign) {
         addInstruction(OP_POP); // Remove boolean from stack.
 }
 
+
+// for statement section.
+static void forDecl() {
+    advance();
+    switch(parser.current.type) {
+        case TOKEN_SEMI_COLON:
+            break;
+        case TOKEN_VAR:
+            declareVariable();
+            break;
+        default:
+            error(&parser.current, "Either initialize variable or leave it empty.");
+    }
+}
+
+static void forExpr() {
+    advance();
+    switch(parser.current.type) {
+        case TOKEN_SEMI_COLON:
+            addInstruction(OP_TRUE);    // Always evaluate to true.
+            break;
+        default:
+            expression();
+            consume(TOKEN_SEMI_COLON, "';' is required after expression.");
+    }
+}
+
+static void forAssign() {
+    advance();
+    switch(parser.current.type) {
+        case TOKEN_RIGHT_PAREN:
+            break;
+        default:
+            identifier(true);
+    }
+
+    advance();
+}
+
+static void for_(bool canAssign) {
+    advance();
+    scopeStart();       // Declared variable should be in a scope.
+
+    // Variable declaration/initialization section.
+    consume(TOKEN_LEFT_PAREN, "'(' is required after 'if' keyword.");
+    forDecl();          // In this section we can either declare vaiable or just leave it empty.
+
+    // Expression section.
+    size_t exprPos = compiler.chunk.size;
+    forExpr();          // In this section we can either wrtire expression or just leave it empty.
+    addInstruction(OP_JUMP);
+    size_t exprJumpPos = compiler.chunk.size;
+    addInstructions(0x00, 0x00);    // Jump over instruction right into block.
+    addInstructions(0x00, 0x00);    // Jump out of 'for' statement.
+
+    // Assignement section.
+    size_t assignPos = compiler.chunk.size;
+    forAssign();        // In this section we can either make assignement or just leave it empty.
+    addInstruction(OP_POP); // Remove bool from stack.
+
+    // Jump back to expression.
+    addInstruction(OP_JUMP_BACK);
+    size_t assignJumpPos = compiler.chunk.size;
+    addInstructions(0x00, 0x00);
+    addSizeToJumpPos(compiler.chunk.size - JUMP_BYTES, exprPos);
+
+    // Set distance from expression to block.
+    addSizeToJumpPos(exprJumpPos, compiler.chunk.size - exprJumpPos - JUMP_BYTES);
+
+    // Block statement.
+    statement();
+
+    // Go back to assignement, after which in its case will dispatch to expression.
+    addInstruction(OP_JUMP_BACK);
+    addInstructions(0x00, 0x00);
+    addSizeToJumpPos(compiler.chunk.size - JUMP_BYTES, assignPos);
+
+    // Set distance from expression to out of 'for' statement, to be able to leave the loop.
+    addSizeToJumpPos(exprJumpPos + JUMP_BYTES, compiler.chunk.size - exprJumpPos - (2 * JUMP_BYTES));
+    addInstruction(OP_POP);
+
+    scopeEnd();
+}
+
 static void while_(bool canAssign) {
     advance();
     consume(TOKEN_LEFT_PAREN, "'(' is required after 'while' keyword.");
@@ -368,7 +453,7 @@ ParseRule rules[] = {
     [TOKEN_OR]              = {NULL,     binary,     PREC_BOOL},
     [TOKEN_IF]              = {if_,      NULL,       PREC_NONE}, 
     [TOKEN_ELSE]            = {else_,    NULL,       PREC_NONE},
-    [TOKEN_FOR]             = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_FOR]             = {for_,     NULL,       PREC_NONE},
     [TOKEN_WHILE]           = {while_,   NULL,       PREC_NONE},
 };
 
@@ -418,6 +503,9 @@ void statement() {
             break;
         case TOKEN_IF:
             if_(true);
+            break;
+        case TOKEN_FOR:
+            for_(true);
             break;
         case TOKEN_WHILE:
             while_(true);
