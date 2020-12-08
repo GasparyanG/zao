@@ -641,7 +641,7 @@ static void argumentList() {
     for (;;) {
         advance();
         if (parser.current.type == ')') break;
-        expression();
+        declareLocalVariable();
         compiler->function->arity++;    // increment amount of arguments by one.
         consume(TOKEN_COMMA, "',' is required after every argument.");
     }
