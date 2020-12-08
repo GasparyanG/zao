@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
         for(;;) {
             compile();
             
-            if (compiler.panicMode)
+            if (compiler->panicMode)
                 recover();
             else
                 if (!runtimeResult(run())) break;
@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
             
             compile();
             
-            if (compiler.panicMode)
+            if (compiler->panicMode)
                 recover();
             else
                 if (!runtimeResult(run())) break;

@@ -42,7 +42,7 @@ void addInstruction(uint8_t instruction);
 void advance();
 void recover();     // Recover from error state.
 
-extern Compiler compiler;
+extern Compiler* compiler;
 
 // Generating bytecode.
 void compile();
