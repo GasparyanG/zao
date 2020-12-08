@@ -59,6 +59,10 @@
 - [x] -:- - -:-          - Design `while` statement and implement.
 - [x] -:- - -:-          - Design `for` statement and implement.
 
+### 12/07/2020
+- [x] -:- - -:-          - Design functions parsing.
+- [] -:- - -:-          - Compilers chain.
+- [] -:- - -:-          - Call frame.
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine

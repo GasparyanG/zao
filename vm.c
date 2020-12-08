@@ -7,6 +7,9 @@ VM vm;
 void initVM() {
     vm.stackTop = vm.stack;
     vm.stringCount = 0;
+    
+    Table glob;
+    initTable(&glob);
 }
 
 ObjString* internString(ObjString* strToCmp) {
@@ -202,14 +205,14 @@ ExecutionResult run() {
             }
 
             case OP_DEFINE_GLOBAL: {
-                Entry* entry = findEntry(&compiler.table, READ_STRING());
+                Entry* entry = findEntry(&vm.globals, READ_STRING());
                 entry->value = *pop();
                 break;
             }
 
             case OP_GET_GLOBAL: {
                 ObjString* str = READ_STRING();
-                Entry* entry = findEntry(&compiler.table, str);
+                Entry* entry = findEntry(&vm.globals, str);
 
                 if (entry->key == NULL) {
                     runtimeError("Undefined variable '%s'.", str->value);
@@ -222,7 +225,7 @@ ExecutionResult run() {
             
             case OP_SET_GLOBAL: {
                 ObjString* str = READ_STRING();
-                Entry* entry = findEntry(&compiler.table, str);
+                Entry* entry = findEntry(&vm.globals, str);
 
                 if (entry->key == NULL) {
                     runtimeError("Undefined variable '%s'.", str->value);

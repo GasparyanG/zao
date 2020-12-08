@@ -482,10 +482,6 @@ void initCompiler() {
     compiler.scopeDepth = 0;
     compiler.chunk.capacity = ARRAY_INITIAL_SIZE;
     compiler.ip = compiler.chunk.chunk;
-
-    Table table;
-    initTable(&table);
-
     compiler.constPos = 0;
 }
 
@@ -583,7 +579,7 @@ static void declareVariable() {
     entry.key = copyString(parser.current.string);
     entry.tombstone = false;
 
-    if (addEntry(&compiler.table, &entry)) {
+    if (addEntry(&vm.globals, &entry)) {
         error(&parser.current, "Variable already exists");
         return; // Terminate.
     }

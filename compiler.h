@@ -36,8 +36,6 @@ typedef struct {
     bool panicMode;
 
     size_t constPos;
-    
-    Table table;        // Hash table for variables.
 } Compiler;
 
 void initCompiler();

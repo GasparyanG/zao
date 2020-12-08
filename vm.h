@@ -20,6 +20,7 @@ typedef struct {
     Value stack[UINT8_MAX];
     Value* stackTop;
 
+    Table globals;              // Hash table for variables.
     Value locals[UINT8_MAX];
 
     ObjString* internedStrings[UINT8_MAX];
