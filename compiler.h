@@ -25,9 +25,8 @@ typedef struct {
 } Local;
 
 typedef struct {
-    Chunk chunk;
-    uint8_t* ip;
-    
+    ObjFunction* function;
+
     Local locals[UINT8_MAX];
     size_t localsCount;
     int scopeDepth;

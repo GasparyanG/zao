@@ -45,7 +45,8 @@ void recover() {
     }
 
     // Start compiling from new expression.
-    compiler.ip += compiler.chunk.size - (compiler.ip - compiler.chunk.chunk);
+    compiler.function->ip 
+        += compiler.function->chunk.size - (compiler.function->ip - compiler.function->chunk.chunk);
     compiler.panicMode = false;             // Back to normal.
 }
 
@@ -104,16 +105,16 @@ uint8_t addConstant(const Value value) {
 }
 
 void addInstruction(uint8_t instruction) {
-    if (compiler.chunk.size == compiler.chunk.capacity) {
-        size_t interval = compiler.ip - compiler.chunk.chunk;   // Don't lose required position to continue.
+    if (compiler.function->chunk.size == compiler.function->chunk.capacity) {
+        size_t interval = compiler.function->ip - compiler.function->chunk.chunk;   // Don't lose required position to continue.
 
-        compiler.chunk.chunk = ALLOCATE(uint8_t, compiler.chunk.chunk, compiler.chunk.size);
-        compiler.chunk.capacity *= ENLARGEMENT_FACTOR;
-        compiler.ip = compiler.chunk.chunk;
-        compiler.ip += interval;                                // Add interval to reach desired instruction.
+        compiler.function->chunk.chunk = ALLOCATE(uint8_t, compiler.function->chunk.chunk, compiler.function->chunk.size);
+        compiler.function->chunk.capacity *= ENLARGEMENT_FACTOR;
+        compiler.function->ip = compiler.function->chunk.chunk;
+        compiler.function->ip += interval;                                // Add interval to reach desired instruction.
     }
 
-    compiler.chunk.chunk[compiler.chunk.size++] = instruction;
+    compiler.function->chunk.chunk[compiler.function->chunk.size++] = instruction;
 }
 
 void addInstructions(uint8_t inst1, uint8_t inst2) {
@@ -278,23 +279,23 @@ static void block(bool canAssign) {
 static void addSizeToJumpPos(uint8_t currentPosition, uint16_t jumpingSize) {
     // TODO: why does 0 being converted to 8 ?
     if (jumpingSize == 0) {
-        compiler.chunk.chunk[currentPosition] = (uint8_t)(jumpingSize);
-        compiler.chunk.chunk[currentPosition + 1] = (uint8_t)(jumpingSize);
+        compiler.function->chunk.chunk[currentPosition] = (uint8_t)(jumpingSize);
+        compiler.function->chunk.chunk[currentPosition + 1] = (uint8_t)(jumpingSize);
     } else {
-        compiler.chunk.chunk[currentPosition] = (uint8_t)((8 >> jumpingSize) & 0xff);
-        compiler.chunk.chunk[currentPosition + 1] = (uint8_t)(jumpingSize & 0xff);
+        compiler.function->chunk.chunk[currentPosition] = (uint8_t)((8 >> jumpingSize) & 0xff);
+        compiler.function->chunk.chunk[currentPosition + 1] = (uint8_t)(jumpingSize & 0xff);
     }
 }
 
 static void condition() {
     addInstruction(OP_JUMP);
-    size_t currentPosition = compiler.chunk.size;   // Position to insert jumping size.
+    size_t currentPosition = compiler.function->chunk.size;   // Position to insert jumping size.
     addInstructions(0x00, 0x00);
     
     statement();    // Add bytecode for block statement.
 
     // Add jumping size in bytecode, next to OP_JUMP instruction.
-    uint16_t jumpingSize = compiler.chunk.size - currentPosition - JUMP_BYTES;
+    uint16_t jumpingSize = compiler.function->chunk.size - currentPosition - JUMP_BYTES;
     addSizeToJumpPos(currentPosition, jumpingSize);
 }
 
@@ -368,25 +369,25 @@ static void for_(bool canAssign) {
     forDecl();          // In this section we can either declare vaiable or just leave it empty.
 
     // Expression section.
-    size_t exprPos = compiler.chunk.size;
+    size_t exprPos = compiler.function->chunk.size;
     forExpr();          // In this section we can either wrtire expression or just leave it empty.
     addInstruction(OP_JUMP_FOR);
-    size_t exprJumpPos = compiler.chunk.size;
+    size_t exprJumpPos = compiler.function->chunk.size;
     addInstructions(0x00, 0x00);    // Jump over instruction right into block.
     addInstructions(0x00, 0x00);    // Jump out of 'for' statement.
 
     // Assignement section.
-    size_t assignPos = compiler.chunk.size;
+    size_t assignPos = compiler.function->chunk.size;
     forAssign();        // In this section we can either make assignement or just leave it empty.
 
     // Jump back to expression.
     addInstruction(OP_JUMP_BACK);
-    size_t assignJumpPos = compiler.chunk.size;
+    size_t assignJumpPos = compiler.function->chunk.size;
     addInstructions(0x00, 0x00);
-    addSizeToJumpPos(compiler.chunk.size - JUMP_BYTES, exprPos);
+    addSizeToJumpPos(compiler.function->chunk.size - JUMP_BYTES, exprPos);
 
     // Set distance from expression to block.
-    addSizeToJumpPos(exprJumpPos, compiler.chunk.size - exprJumpPos - JUMP_BYTES);
+    addSizeToJumpPos(exprJumpPos, compiler.function->chunk.size - exprJumpPos - JUMP_BYTES);
 
     // Block statement.
     scopeSimpleEnd();           // This scope will be continued in `statement()`.
@@ -396,11 +397,11 @@ static void for_(bool canAssign) {
     // Go back to assignement, after which in its case will dispatch to expression.
     addInstruction(OP_JUMP_BACK);
     addInstructions(0x00, 0x00);
-    addSizeToJumpPos(compiler.chunk.size - JUMP_BYTES, assignPos);
+    addSizeToJumpPos(compiler.function->chunk.size - JUMP_BYTES, assignPos);
 
     // Set distance from expression to out of 'for' statement, to be able to leave the loop.
     // TODO: why does 1 is subtracted ?
-    addSizeToJumpPos(exprJumpPos + JUMP_BYTES, compiler.chunk.size - exprJumpPos - (2 * JUMP_BYTES) - 1);
+    addSizeToJumpPos(exprJumpPos + JUMP_BYTES, compiler.function->chunk.size - exprJumpPos - (2 * JUMP_BYTES) - 1);
     addInstruction(OP_POP);
 }
 
@@ -408,11 +409,11 @@ static void while_(bool canAssign) {
     advance();
     consume(TOKEN_LEFT_PAREN, "'(' is required after 'while' keyword.");
 
-    size_t exprPos = compiler.chunk.size;           // Position to jump back after loop.
+    size_t exprPos = compiler.function->chunk.size;           // Position to jump back after loop.
     expression();                                   // Prepare bytecode for bool expression.
 
     addInstruction(OP_JUMP);
-    size_t currentPosition = compiler.chunk.size;   // Position to insert jumping size.
+    size_t currentPosition = compiler.function->chunk.size;   // Position to insert jumping size.
     addInstructions(0x00, 0x00);
     
     statement();                                    // Add bytecode for block statement.
@@ -421,11 +422,11 @@ static void while_(bool canAssign) {
     // Go Back to expression, to see whether to loop again or not.
     addInstruction(OP_JUMP_BACK);
     addInstructions(0x00, 0x00);
-    addSizeToJumpPos(compiler.chunk.size - JUMP_BYTES, exprPos);
+    addSizeToJumpPos(compiler.function->chunk.size - JUMP_BYTES, exprPos);
 
     // Add jumping size in bytecode, next to OP_JUMP instruction.
     // TODO: why does 1 is subtracted ?
-    uint16_t jumpingSize = compiler.chunk.size - currentPosition - JUMP_BYTES - 1;
+    uint16_t jumpingSize = compiler.function->chunk.size - currentPosition - JUMP_BYTES - 1;
     addSizeToJumpPos(currentPosition, jumpingSize);
 
     addInstruction(OP_POP);                         // Remove last bool from stack.
@@ -475,17 +476,20 @@ ParseRule* getRule(TokenType type) {
 Compiler compiler;
 
 void initCompiler() {
-    compiler.chunk.chunk = ALLOCATE(uint8_t, compiler.chunk.chunk, compiler.chunk.size);
-    compiler.chunk.size = 0;
+    compiler.function = (ObjFunction*)malloc(sizeof(ObjFunction));
+
+    compiler.function->chunk.chunk 
+        = ALLOCATE(uint8_t, compiler.function->chunk.chunk, compiler.function->chunk.size);
+    compiler.function->chunk.size = 0;
     compiler.panicMode = false;     // There is no error in bytecode.
     compiler.localsCount = 0;
     compiler.scopeDepth = 0;
-    compiler.chunk.capacity = ARRAY_INITIAL_SIZE;
-    compiler.ip = compiler.chunk.chunk;
+    compiler.function->chunk.capacity = ARRAY_INITIAL_SIZE;
+    compiler.function->ip = compiler.function->chunk.chunk;
 }
 
 void freeCompiler() {
-    free((void*)compiler.chunk.chunk);
+    free((void*)compiler.function->chunk.chunk);
 }
 
 // Generating bytecode.

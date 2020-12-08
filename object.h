@@ -1,6 +1,10 @@
 #ifndef ZAO_OBJECT_H
 #define ZAO_OBJECT_H
 
+#include <stdint.h>
+
+#include "chunk.h"
+
 #define AS_STRING(obj)    ((ObjString*)(obj))
 
 #define AS_OBJ(obj)       ((Obj*)(obj))
@@ -20,5 +24,11 @@ typedef struct {
     const char* value;  // Payload.
     uint32_t hash;      // Hashed string;
 } ObjString;
+
+typedef struct {
+    Obj obj;
+    Chunk chunk;
+    uint8_t* ip;
+} ObjFunction;
 
 #endif

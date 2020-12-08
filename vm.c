@@ -108,8 +108,8 @@ static void boolOperator(OpCode op) {
 
 ExecutionResult run() {
     for (;;) {
-#define READ_BYTE()   *compiler.ip++
-#define READ_STRING() AS_STRING(vm.constants[(*compiler.ip++)].as.obj)
+#define READ_BYTE()   *compiler.function->ip++
+#define READ_STRING() AS_STRING(vm.constants[(*compiler.function->ip++)].as.obj)
 #define BOOL_BINARY_OP(op) \
     do { \
         Value* b = pop(); \
@@ -133,12 +133,12 @@ ExecutionResult run() {
     } while(false)
 
 #ifdef ZAO_DEBUGGER_MODE_ON
-    displayInstruction(compiler.ip);
+    displayInstruction(compiler.function->ip);
 #endif 
-        if (*compiler.ip == OP_NONE)
+        if (*compiler.function->ip == OP_NONE)
             return EXECUTION_SUCCESS;
 
-        switch(*compiler.ip++) {
+        switch(*compiler.function->ip++) {
             case OP_CONSTANT:
                 push(&vm.constants[READ_BYTE()]);     
                 break;
@@ -248,23 +248,23 @@ ExecutionResult run() {
 
             case OP_JUMP: {
                 if (AS_BOOL((*peek(1))))
-                    compiler.ip += JUMP_BYTES;       // Go straight to instruction.
+                    compiler.function->ip += JUMP_BYTES;       // Go straight to instruction.
                 else
-                    compiler.ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    compiler.function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 break;
             }
 
             case OP_JUMP_BACK: {
-                compiler.ip = &compiler.chunk.chunk[bytesFusion(READ_BYTE(), READ_BYTE())];
+                compiler.function->ip = &compiler.function->chunk.chunk[bytesFusion(READ_BYTE(), READ_BYTE())];
                 break;
             }
 
             case OP_JUMP_FOR: {
                 if (AS_BOOL((*peek(1))))
-                    compiler.ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    compiler.function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 else {
-                    compiler.ip += 2;   // Ignore assignement bytes.
-                    compiler.ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    compiler.function->ip += 2;   // Ignore assignement bytes.
+                    compiler.function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 }
                 break;
             }
