@@ -24,8 +24,9 @@ typedef struct {
     int scopeDepth;
 } Local;
 
-typedef struct {
+typedef struct Compiler {
     ObjFunction* function;
+    Compiler* enclosedCompiler;
 
     Local locals[UINT8_MAX];
     size_t localsCount;

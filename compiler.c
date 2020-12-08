@@ -495,8 +495,15 @@ void initCompiler() {
     comp->function->chunk.capacity = ARRAY_INITIAL_SIZE;
     comp->function->ip = comp->function->chunk.chunk;
 
+    // Compilers' chain.
     if (compiler == NULL) {
         compiler = comp;
+        compiler->enclosedCompiler = NULL;
+    } else {
+        comp->enclosedCompiler = compiler;
+        compiler = comp;
+        // From now and until global 'compiler' change
+        // all compiler's related operations will be applied on new one.
     }
 }
 
