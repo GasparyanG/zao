@@ -29,6 +29,7 @@ typedef struct {
     Obj obj;
     Chunk chunk;
     uint8_t* ip;
+    size_t arity;   // Amount of arguments.
 } ObjFunction;
 
 #endif

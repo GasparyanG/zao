@@ -447,6 +447,7 @@ ParseRule rules[] = {
     [TOKEN_RIGHT_PAREN]     = {NULL,     NULL,       PREC_NONE},
     [TOKEN_LEFT_CURLY]      = {block,    NULL,       PREC_NONE},
     [TOKEN_RIGHT_CURLY]     = {NULL,     NULL,       PREC_NONE},
+    [TOKEN_COMMA]           = {NULL,     NULL,       PREC_NONE},
     [TOKEN_SEMI_COLON]      = {NULL,     NULL,       PREC_NONE},
     [TOKEN_QUESTION]        = {NULL,     NULL,       PREC_NONE}, 
     [TOKEN_COLON]           = {NULL,     NULL,       PREC_NONE},
@@ -494,6 +495,7 @@ void initCompiler() {
     comp->scopeDepth = 0;
     comp->function->chunk.capacity = ARRAY_INITIAL_SIZE;
     comp->function->ip = comp->function->chunk.chunk;
+    comp->function->arity = 0;
 
     // Compilers' chain.
     if (compiler == NULL) {
@@ -555,6 +557,8 @@ static int resolveLocal(Token* local) {
     return -1;
 }
 
+
+// Declaration (grammer) section.
 static int isDeclared(Token* local, size_t depth) {
     for (int i = compiler->localsCount - 1; i >= 0; i--) {
         if (depth == compiler->locals[i].scopeDepth &&
@@ -579,10 +583,11 @@ static void declareLocalVariable() {
 
 
     advance();      // Consume identifier.
-    advance();      // Consume = token as well.
-
-    // TODO: implement declaration as well (this is just initialization).
-    expression();   // Semicolon (;) is being consumed in this function.
+    if (parser.current.type != TOKEN_LEFT_PAREN) {
+        advance();      // Consume = token as well.
+        // TODO: implement declaration as well (this is just initialization).
+        expression();   // Semicolon (;) is being consumed in this function.
+    }
 
     addInstructions(OP_SET_LOCAL, (uint8_t)position);
 }
@@ -617,15 +622,54 @@ static void declareVariable() {
         value.type = VAL_STRING;
         value.as.obj = AS_OBJ(entry.key);
         addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
-    } else
+    } else if (parser.current.type == TOKEN_LEFT_PAREN)
+        return;
+    else
         consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
 }
 
+static void endFunction() {
+    // This condition can be avoided, because first compiler isn't 
+    // defined through 'declareFunction()', but extra caution will not hurt.
+    if (compiler->enclosedCompiler != NULL)
+        compiler = compiler->enclosedCompiler;  // Get back to previous function.
+}
+
+static void argumentList() {
+    consume(TOKEN_LEFT_PAREN, "argument list is required after function name.");
+
+    for (;;) {
+        advance();
+        if (parser.current.type == ')') break;
+        expression();
+        compiler->function->arity++;    // increment amount of arguments by one.
+        consume(TOKEN_COMMA, "',' is required after every argument.");
+    }
+}
+
+static void declareFunction() {
+    initCompiler();
+    
+    declareVariable();  // TODO: pass identifier error message.
+    scopeStart();       // Function should have its own scope for arguments and locals.
+    argumentList();     // parser argument list.
+    scopeSimpleEnd();   // This scope will be handled by function's block.
+
+    consume(TOKEN_RIGHT_PAREN, "')' is required after argument list.");
+    advance();
+
+    block(true);
+
+    endFunction();
+}
 
 void declaration() {
     switch(parser.current.type) {
         case TOKEN_VAR:
             declareVariable();
+            break;
+        case TOKEN_FUN:
+            declareFunction();
             break;
         default:
             statement();
