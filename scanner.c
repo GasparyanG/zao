@@ -408,7 +408,7 @@ Token scanToken() {
         case '*': return prepToken(TOKEN_STAR);
 
         case ';': return prepToken(TOKEN_SEMI_COLON);
-
+        case ',': return prepToken(TOKEN_COMMA);
 
         // TODO: deal with other tokens too.
         default:

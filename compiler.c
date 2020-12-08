@@ -583,7 +583,7 @@ static void declareLocalVariable() {
 
 
     advance();      // Consume identifier.
-    if (parser.current.type != TOKEN_LEFT_PAREN) {
+    if (parser.current.type == TOKEN_EQUAL) {
         advance();      // Consume = token as well.
         // TODO: implement declaration as well (this is just initialization).
         expression();   // Semicolon (;) is being consumed in this function.
@@ -640,9 +640,10 @@ static void argumentList() {
 
     for (;;) {
         advance();
-        if (parser.current.type == ')') break;
+        if (parser.current.type == TOKEN_RIGHT_PAREN) return;
         declareLocalVariable();
         compiler->function->arity++;    // increment amount of arguments by one.
+        if (parser.current.type == TOKEN_RIGHT_PAREN) return;
         consume(TOKEN_COMMA, "',' is required after every argument.");
     }
 }
