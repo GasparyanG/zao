@@ -27,15 +27,12 @@ typedef struct {
 typedef struct {
     Chunk chunk;
     uint8_t* ip;
-    Value constants[UINT8_MAX];
     
     Local locals[UINT8_MAX];
     size_t localsCount;
     int scopeDepth;
 
     bool panicMode;
-
-    size_t constPos;
 } Compiler;
 
 void initCompiler();

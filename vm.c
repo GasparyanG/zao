@@ -7,6 +7,7 @@ VM vm;
 void initVM() {
     vm.stackTop = vm.stack;
     vm.stringCount = 0;
+    vm.constPos = 0;
     
     Table glob;
     initTable(&glob);
@@ -108,7 +109,7 @@ static void boolOperator(OpCode op) {
 ExecutionResult run() {
     for (;;) {
 #define READ_BYTE()   *compiler.ip++
-#define READ_STRING() AS_STRING(compiler.constants[(*compiler.ip++)].as.obj)
+#define READ_STRING() AS_STRING(vm.constants[(*compiler.ip++)].as.obj)
 #define BOOL_BINARY_OP(op) \
     do { \
         Value* b = pop(); \
@@ -139,7 +140,7 @@ ExecutionResult run() {
 
         switch(*compiler.ip++) {
             case OP_CONSTANT:
-                push(&compiler.constants[READ_BYTE()]);     
+                push(&vm.constants[READ_BYTE()]);     
                 break;
             case OP_FALSE: {
                 Value value;
