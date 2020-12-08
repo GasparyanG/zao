@@ -496,6 +496,7 @@ void initCompiler() {
     comp->function->chunk.capacity = ARRAY_INITIAL_SIZE;
     comp->function->ip = comp->function->chunk.chunk;
     comp->function->arity = 0;
+    comp->function->name = NULL;
 
     // Compilers' chain.
     if (compiler == NULL) {
@@ -592,6 +593,13 @@ static void declareLocalVariable() {
     addInstructions(OP_SET_LOCAL, (uint8_t)position);
 }
 
+Value prepareValue(Obj* obj, ValueType type) {
+    Value value;
+    value.type = type;
+    value.as.obj = obj;
+    return value;
+}
+
 static void declareVariable() {
     advance();
     if (parser.current.type != TOKEN_IDENTIFIER) {
@@ -618,13 +626,14 @@ static void declareVariable() {
         expression();
         
         // Add string to constants' table.
-        Value value;
-        value.type = VAL_STRING;
-        value.as.obj = AS_OBJ(entry.key);
+        Value value = prepareValue(AS_OBJ(entry.key), VAL_STRING);
         addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
-    } else if (parser.current.type == TOKEN_LEFT_PAREN)
-        return;
-    else
+    } else if (parser.current.type == TOKEN_LEFT_PAREN) {
+        // Add string to constants' table.
+        compiler->function->name = entry.key;
+        Value value = prepareValue(AS_OBJ(entry.key), VAL_STRING);
+        addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
+    } else
         consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
 }
 
@@ -651,7 +660,10 @@ static void argumentList() {
 static void declareFunction() {
     initCompiler();
     
+    Value value = prepareValue(AS_OBJ(compiler->function), VAL_FUNCTION);
+    addInstructions(OP_CONSTANT, addConstant(value));
     declareVariable();  // TODO: pass identifier error message.
+
     scopeStart();       // Function should have its own scope for arguments and locals.
     argumentList();     // parser argument list.
     scopeSimpleEnd();   // This scope will be handled by function's block.

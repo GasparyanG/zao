@@ -14,7 +14,8 @@ typedef enum {
     VAL_FALSE,
     VAL_TRUE,
     VAL_NUMBER,
-    VAL_STRING
+    VAL_STRING,
+    VAL_FUNCTION
 } ValueType;
 
 typedef struct {

@@ -6,6 +6,7 @@
 #include "chunk.h"
 
 #define AS_STRING(obj)    ((ObjString*)(obj))
+#define AS_FUNCTION(obj)  ((ObjFunction*)(obj))
 
 #define AS_OBJ(obj)       ((Obj*)(obj))
 
@@ -27,6 +28,7 @@ typedef struct {
 
 typedef struct {
     Obj obj;
+    ObjString* name;
     Chunk chunk;
     uint8_t* ip;
     size_t arity;   // Amount of arguments.

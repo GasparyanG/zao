@@ -76,6 +76,9 @@ static void printValue(Value* value) {
         case VAL_STRING:
             printf("%s\n", AS_STRING(value->as.obj)->value);
             break;
+        case VAL_FUNCTION:
+            printf("<function> %s\n", AS_FUNCTION(value->as.obj)->name->value);
+            break;
         default:
             return; // Unreachable.
     }

@@ -8,6 +8,9 @@ static size_t constantInstruction(const char* name, uint8_t* ip) {
         case VAL_STRING:
             printf("%-20s %s\n", name, AS_STRING(vm.constants[*ip].as.obj)->value);
             break;
+        case VAL_FUNCTION:
+            printf("%-20s <function> %s\n", name, AS_FUNCTION(vm.constants[*ip].as.obj)->name->value);
+            break;
     }
 
     return 1;
