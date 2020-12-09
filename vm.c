@@ -111,19 +111,36 @@ static void boolOperator(OpCode op) {
             (op == OP_AND) ? "and": "or");
 }
 
-static CallFrame* prepareCallFrame() {
+static CallFrame* initCallFrame() {
     CallFrame* callFrame = (CallFrame*)malloc(sizeof(CallFrame));
 
     callFrame->function = compiler->function;
     callFrame->nextFrame = NULL;
     callFrame->functionLocals = vm.locals;
+    callFrame->position = 0;
+
+    return callFrame;
+}
+
+static void updatePosition(uint8_t pos) {
+    vm.callFrame->position = 
+        (vm.callFrame->position < pos) 
+        ? pos : vm.callFrame->position;
+}
+
+static CallFrame* updateCallFrame() {
+    CallFrame* callFrame = (CallFrame*)malloc(sizeof(CallFrame));
+
+    callFrame->function = AS_FUNCTION(pop());
+    callFrame->nextFrame = vm.callFrame;
+    callFrame->position = vm.callFrame->position + 1;
+    callFrame->functionLocals = &vm.locals[callFrame->position];
 
     return callFrame;
 }
 
 ExecutionResult run() {
-
-    vm.callFrame = prepareCallFrame();
+    vm.callFrame = initCallFrame();
 
     for (;;) {
 #define READ_BYTE()   *vm.callFrame->function->ip++
@@ -256,14 +273,20 @@ ExecutionResult run() {
                 break;
             }
 
-            case OP_SET_LOCAL:
-                vm.locals[READ_BYTE()] = *pop();
+            case OP_SET_LOCAL: {
+                uint8_t pos = READ_BYTE();
+                vm.callFrame->functionLocals[pos] = *pop();
+                updatePosition(pos);
                 break;
+            }
 
-            case OP_GET_LOCAL:
+            case OP_GET_LOCAL: {
                 // TODO: you will feel that Value* is wrong in here, so chagne it to Value.
-                push(&vm.locals[READ_BYTE()]);
+                uint8_t pos = READ_BYTE();
+                push(&vm.callFrame->functionLocals[pos]);
+                updatePosition(pos);
                 break; 
+            }
 
             case OP_JUMP: {
                 if (AS_BOOL((*peek(1))))
@@ -285,6 +308,11 @@ ExecutionResult run() {
                     vm.callFrame->function->ip += JUMP_BYTES;   // Ignore assignement bytes.
                     vm.callFrame->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 }
+                break;
+            }
+
+            case OP_CALL: {
+                vm.callFrame = updateCallFrame();
                 break;
             }
 

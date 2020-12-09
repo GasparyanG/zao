@@ -245,6 +245,18 @@ static void grouping(bool canAssign) {
     advance();
 }
 
+static void call(bool canAssign) {
+    for (;;) {
+        advance();
+        if (parser.current.type == TOKEN_RIGHT_PAREN)
+            break;
+        expression();
+        if (parser.current.type == TOKEN_COMMA) continue;
+    }
+
+    addInstruction(OP_CALL);
+}
+
 static void scopeStart() {
     compiler->scopeDepth++;
 }
@@ -443,7 +455,7 @@ ParseRule rules[] = {
     [TOKEN_FRD_SLASH]       = {NULL,     binary,     PREC_MULT_DIV},
     [TOKEN_NUMBER]          = {literal,  NULL,       PREC_LITERAL},
     [TOKEN_EOF]             = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_LEFT_PAREN]      = {grouping, NULL,       PREC_GROUP},
+    [TOKEN_LEFT_PAREN]      = {grouping, call,       PREC_GROUP},
     [TOKEN_RIGHT_PAREN]     = {NULL,     NULL,       PREC_NONE},
     [TOKEN_LEFT_CURLY]      = {block,    NULL,       PREC_NONE},
     [TOKEN_RIGHT_CURLY]     = {NULL,     NULL,       PREC_NONE},

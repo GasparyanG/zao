@@ -39,6 +39,7 @@ typedef enum {
     OP_JUMP,
     OP_JUMP_BACK,
     OP_JUMP_FOR,
+    OP_CALL,
     OP_POP
 } OpCode;
 

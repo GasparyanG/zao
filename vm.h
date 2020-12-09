@@ -20,6 +20,7 @@ typedef struct CallFrame {
     CallFrame* nextFrame;
     Value* functionLocals;
     ObjFunction* function;
+    uint8_t position;
 } CallFrame;
 
 typedef struct {
