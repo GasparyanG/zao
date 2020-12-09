@@ -111,6 +111,8 @@ static void boolOperator(OpCode op) {
             (op == OP_AND) ? "and": "or");
 }
 
+
+// Fcuntion call operations.
 static CallFrame* initCallFrame() {
     CallFrame* callFrame = (CallFrame*)malloc(sizeof(CallFrame));
 
@@ -131,9 +133,9 @@ static void updatePosition(uint8_t pos) {
 static CallFrame* updateCallFrame() {
     CallFrame* callFrame = (CallFrame*)malloc(sizeof(CallFrame));
 
-    callFrame->function = AS_FUNCTION(pop());
+    callFrame->function = AS_FUNCTION(peek(4)->as.obj);
     callFrame->nextFrame = vm.callFrame;
-    callFrame->position = vm.callFrame->position + 1;
+    callFrame->position = (vm.callFrame->position == 0) ? 0: (vm.callFrame->position + 1);
     callFrame->functionLocals = &vm.locals[callFrame->position];
 
     return callFrame;

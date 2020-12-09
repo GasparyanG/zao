@@ -247,11 +247,17 @@ static void grouping(bool canAssign) {
 
 static void call(bool canAssign) {
     for (;;) {
-        advance();
-        if (parser.current.type == TOKEN_RIGHT_PAREN)
+        if (parser.current.type == TOKEN_RIGHT_PAREN) {
+            advance();
             break;
+        }
         expression();
-        if (parser.current.type == TOKEN_COMMA) continue;
+        if (parser.current.type == TOKEN_COMMA)
+            advance();
+        else if (parser.current.type == TOKEN_RIGHT_PAREN) {
+            advance();
+            break;
+        }
     }
 
     addInstruction(OP_CALL);
@@ -694,7 +700,8 @@ static void declareFunction() {
     ObjFunction* function = (ObjFunction*)malloc(sizeof(ObjFunction));
 
     Value value = prepareValue(AS_OBJ(function), VAL_FUNCTION);
-    addInstructions(OP_CONSTANT, addConstant(value));
+    uint8_t pos = addConstant(value);
+    addInstructions(OP_CONSTANT, pos);
     declareFunctionName(function);  // TODO: pass identifier error message.
     
     initCompiler(function);
