@@ -16,9 +16,17 @@ typedef enum {
     EXECUTION_SUCCESS
 } ExecutionResult;
 
+typedef struct CallFrame {
+    CallFrame* nextFrame;
+    Value* functionLocals;
+    ObjFunction* function;
+} CallFrame;
+
 typedef struct {
     Value stack[UINT8_MAX];
     Value* stackTop;
+
+    CallFrame* callFrame;
 
     Table globals;              // Hash table for variables.
     Value locals[UINT8_MAX];

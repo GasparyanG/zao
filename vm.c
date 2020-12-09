@@ -9,6 +9,8 @@ void initVM() {
     vm.stringCount = 0;
     vm.constPos = 0;
     
+    vm.callFrame = NULL;
+
     Table glob;
     initTable(&glob);
 }
@@ -109,10 +111,23 @@ static void boolOperator(OpCode op) {
             (op == OP_AND) ? "and": "or");
 }
 
+static CallFrame* prepareCallFrame() {
+    CallFrame* callFrame = (CallFrame*)malloc(sizeof(CallFrame));
+
+    callFrame->function = compiler->function;
+    callFrame->nextFrame = NULL;
+    callFrame->functionLocals = vm.locals;
+
+    return callFrame;
+}
+
 ExecutionResult run() {
+
+    vm.callFrame = prepareCallFrame();
+
     for (;;) {
-#define READ_BYTE()   *compiler->function->ip++
-#define READ_STRING() AS_STRING(vm.constants[(*compiler->function->ip++)].as.obj)
+#define READ_BYTE()   *vm.callFrame->function->ip++
+#define READ_STRING() AS_STRING(vm.constants[(*vm.callFrame->function->ip++)].as.obj)
 #define BOOL_BINARY_OP(op) \
     do { \
         Value* b = pop(); \
@@ -136,13 +151,13 @@ ExecutionResult run() {
     } while(false)
 
 #ifdef ZAO_DEBUGGER_MODE_ON
-    displayInstruction(compiler->function->ip);
+    displayInstruction(vm.callFrame->function->ip);
 #endif 
 
-        if (*compiler->function->ip == OP_NONE)
+        if (*vm.callFrame->function->ip == OP_NONE)
             return EXECUTION_SUCCESS;
 
-        switch(*compiler->function->ip++) {
+        switch(*vm.callFrame->function->ip++) {
             case OP_CONSTANT:
                 push(&vm.constants[READ_BYTE()]);     
                 break;
@@ -252,23 +267,23 @@ ExecutionResult run() {
 
             case OP_JUMP: {
                 if (AS_BOOL((*peek(1))))
-                    compiler->function->ip += JUMP_BYTES;       // Go straight to instruction.
+                    vm.callFrame->function->ip += JUMP_BYTES;       // Go straight to instruction.
                 else
-                    compiler->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    vm.callFrame->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 break;
             }
 
             case OP_JUMP_BACK: {
-                compiler->function->ip = &compiler->function->chunk.chunk[bytesFusion(READ_BYTE(), READ_BYTE())];
+                vm.callFrame->function->ip = &vm.callFrame->function->chunk.chunk[bytesFusion(READ_BYTE(), READ_BYTE())];
                 break;
             }
 
             case OP_JUMP_FOR: {
                 if (AS_BOOL((*peek(1))))
-                    compiler->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    vm.callFrame->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 else {
-                    compiler->function->ip += JUMP_BYTES;   // Ignore assignement bytes.
-                    compiler->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    vm.callFrame->function->ip += JUMP_BYTES;   // Ignore assignement bytes.
+                    vm.callFrame->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 }
                 break;
             }
