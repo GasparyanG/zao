@@ -3,11 +3,22 @@
     - `type`                - value type (e.g. number, string, bool, etc.).
     - `as`                  - value gor given type.
         - to be able to store values in the same memory location union is used.
+    - `obj`                 - pointer meant for objects with variable sizes.
 
 ## VM
+* CallFrame::properties
+    - `nextFrame`           - serves as intrusive DS.
+    - `functionLocals`      - locals pointer.
+    - `function`            - function to use for interpretation.
+    - `position`            - locals position.
+
 * properties
     - `stack`               - meant for maintaining implementation flow.
     - `stackTop`            - meant for keeping track on one-past the end element.
+    - `globals`             - global variables.
+    - `constants`           - constant values.
+    - `constPos`            - next constant index.
+    - `callFrame`           - function call frame (i.e. function local variables pointer).
     - `internedStrings`     - ObjString array.
     - `stringCount`         - amount of interned strings. Serves as index and size indicator.
     - `locals`              - scope local values.
@@ -49,11 +60,8 @@
     - `capacity`   - space to hold bytes.
 
 * Compiler properties
-    - `Chunk`       - Chunk (see above).
-    - `ip`          - instruction pointer.
-    - `constants`   - some instructions require values, so this DS will hold it.
+    - `function`    - function mentioned below.
     - `panicMode`   - should be true when compiler encounters error.
-    - `table`       - hash table for variables.
     - `locals`      - Local objects array. Meant for local variables (neasted in scopes).
     - `scopeDepth`  - in which scope are we right now ?
     - `localsCount` - amount of locals currently being stored in _locals_.
@@ -147,6 +155,12 @@
 
 * OP_JUMP, OP_JUMP_BACK, OP_JUMP_FOR
     - effect: 0
+
+* OP_CALL
+    - effect: 0
+
+* OP_RETURN
+    -effect: 0
 
 ### Scanner
 * protperties
@@ -312,3 +326,10 @@
     - `obj`             - to be able to use polymorphism.
     - `string`          - payload.
     - `hash`            - string hash.
+
+* ObjFunction::properties
+    - `obj`             - to be able to use polymorphism.
+    - `name`            - function name.
+    - `ip`              - instruction pointer.
+    - `chunk`           - actual instructions.
+    - `arity`           - amount of arguments.

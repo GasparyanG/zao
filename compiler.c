@@ -661,7 +661,6 @@ static void endFunction() {
     // This condition can be avoided, because first compiler isn't 
     // defined through 'declareFunction()', but extra caution will not hurt.
     if (compiler->enclosedCompiler != NULL) {
-        addInstruction(OP_RETURN);              // Return back to caller.
         compiler = compiler->enclosedCompiler;  // Get back to previous function.
     }
 }
@@ -710,8 +709,7 @@ static void declareFunction() {
     ObjFunction* function = (ObjFunction*)malloc(sizeof(ObjFunction));
 
     Value value = prepareValue(AS_OBJ(function), VAL_FUNCTION);
-    uint8_t pos = addConstant(value);
-    addInstructions(OP_CONSTANT, pos);
+    addInstructions(OP_CONSTANT, addConstant(value));
     declareFunctionName(function);  // TODO: pass identifier error message.
     
     initCompiler(function);
