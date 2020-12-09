@@ -35,7 +35,7 @@ typedef struct Compiler {
     bool panicMode;
 } Compiler;
 
-void initCompiler();
+void initCompiler(ObjFunction* function);
 void freeCompiler();
 
 uint8_t addConstant(Value value);

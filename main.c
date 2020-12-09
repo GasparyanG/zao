@@ -1,7 +1,10 @@
+#include <stdio.h>
+
 #include "compiler.h"
 #include "vm.h"
 #include "scanner.h"
-#include <stdio.h>
+#include "object.h"
+
 
 static bool isEof() {
     if (parser.current.type == TOKEN_EOF)
@@ -23,7 +26,9 @@ static bool runtimeResult(ExecutionResult result) {
 }
 
 int main(int argc, char* argv[]) {
-    initCompiler();
+    ObjFunction* function = (ObjFunction*)malloc(sizeof(ObjFunction));
+
+    initCompiler(function);
     initVM();
 
     if (argc > 1) {

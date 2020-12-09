@@ -482,10 +482,10 @@ ParseRule* getRule(TokenType type) {
 // Compiler section.
 Compiler* compiler = NULL;
 
-void initCompiler() {
+void initCompiler(ObjFunction* function) {
     Compiler* comp = (Compiler*)malloc(sizeof(Compiler));
 
-    comp->function = (ObjFunction*)malloc(sizeof(ObjFunction));
+    comp->function = function;
 
     comp->function->chunk.chunk 
         = ALLOCATE(uint8_t, comp->function->chunk.chunk, comp->function->chunk.size);
@@ -496,7 +496,6 @@ void initCompiler() {
     comp->function->chunk.capacity = ARRAY_INITIAL_SIZE;
     comp->function->ip = comp->function->chunk.chunk;
     comp->function->arity = 0;
-    comp->function->name = NULL;
 
     // Compilers' chain.
     if (compiler == NULL) {
@@ -628,11 +627,6 @@ static void declareVariable() {
         // Add string to constants' table.
         Value value = prepareValue(AS_OBJ(entry.key), VAL_STRING);
         addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
-    } else if (parser.current.type == TOKEN_LEFT_PAREN) {
-        // Add string to constants' table.
-        compiler->function->name = entry.key;
-        Value value = prepareValue(AS_OBJ(entry.key), VAL_STRING);
-        addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
     } else
         consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
 }
@@ -657,12 +651,41 @@ static void argumentList() {
     }
 }
 
+static void declareFunctionName(ObjFunction* function) {
+    advance();
+    if (parser.current.type != TOKEN_IDENTIFIER) {
+        error(&parser.current, "Identifier is expected after 'var'.");
+        return;
+    }
+
+    if (compiler->scopeDepth > 0)
+        return declareLocalVariable(); // Return just meant for termination.
+
+    Entry entry;
+    entry.key = copyString(parser.current.string);
+    entry.tombstone = false;
+
+    if (addEntry(&vm.globals, &entry)) {
+        error(&parser.current, "Variable already exists");
+        return; // Terminate.
+    }
+
+    advance();
+
+    // Add string to constants' table.
+    function->name = entry.key;
+    Value value = prepareValue(AS_OBJ(entry.key), VAL_STRING);
+    addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
+}
+
 static void declareFunction() {
-    initCompiler();
-    
-    Value value = prepareValue(AS_OBJ(compiler->function), VAL_FUNCTION);
+    ObjFunction* function = (ObjFunction*)malloc(sizeof(ObjFunction));
+
+    Value value = prepareValue(AS_OBJ(function), VAL_FUNCTION);
     addInstructions(OP_CONSTANT, addConstant(value));
-    declareVariable();  // TODO: pass identifier error message.
+    declareFunctionName(function);  // TODO: pass identifier error message.
+    
+    initCompiler(function);
 
     scopeStart();       // Function should have its own scope for arguments and locals.
     argumentList();     // parser argument list.

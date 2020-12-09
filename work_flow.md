@@ -61,8 +61,9 @@
 
 ### 12/07/2020
 - [x] -:- - -:-          - Design functions parsing.
-- [] -:- - -:-          - Compilers chain.
+- [x] -:- - -:-          - Compilers chain.
 - [] -:- - -:-          - Call frame.
+- [] -:- - -:-          - Function call.
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine
