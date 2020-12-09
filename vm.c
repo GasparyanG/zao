@@ -130,10 +130,10 @@ static void updatePosition(uint8_t pos) {
         ? pos : vm.callFrame->position;
 }
 
-static CallFrame* updateCallFrame() {
+static CallFrame* updateCallFrame(uint8_t argCount) {
     CallFrame* callFrame = (CallFrame*)malloc(sizeof(CallFrame));
 
-    callFrame->function = AS_FUNCTION(peek(4)->as.obj);
+    callFrame->function = AS_FUNCTION(peek(argCount + 1)->as.obj);
     callFrame->nextFrame = vm.callFrame;
     callFrame->position = (vm.callFrame->position == 0) ? 0: (vm.callFrame->position + 1);
     callFrame->functionLocals = &vm.locals[callFrame->position];
@@ -314,7 +314,7 @@ ExecutionResult run() {
             }
 
             case OP_CALL: {
-                vm.callFrame = updateCallFrame();
+                vm.callFrame = updateCallFrame(READ_BYTE());
                 break;
             }
 

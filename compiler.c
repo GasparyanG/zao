@@ -246,12 +246,14 @@ static void grouping(bool canAssign) {
 }
 
 static void call(bool canAssign) {
+    uint8_t numOfArgs = 0;
     for (;;) {
         if (parser.current.type == TOKEN_RIGHT_PAREN) {
             advance();
             break;
         }
         expression();
+        numOfArgs++;
         if (parser.current.type == TOKEN_COMMA)
             advance();
         else if (parser.current.type == TOKEN_RIGHT_PAREN) {
@@ -260,7 +262,7 @@ static void call(bool canAssign) {
         }
     }
 
-    addInstruction(OP_CALL);
+    addInstructions(OP_CALL, numOfArgs);
 }
 
 static void scopeStart() {
