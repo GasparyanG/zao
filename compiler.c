@@ -552,6 +552,12 @@ void statement() {
             consume(TOKEN_SEMI_COLON, "';' is required after expression.");
             addInstruction(OP_PRINT);
             break;
+        case TOKEN_RETURN:
+            advance();
+            expression();
+            consume(TOKEN_SEMI_COLON, "';' is required after expression.");
+            addInstruction(OP_RETURN);
+            break;
         case TOKEN_IF:
             if_(true);
             break;
@@ -654,8 +660,10 @@ static void declareVariable() {
 static void endFunction() {
     // This condition can be avoided, because first compiler isn't 
     // defined through 'declareFunction()', but extra caution will not hurt.
-    if (compiler->enclosedCompiler != NULL)
+    if (compiler->enclosedCompiler != NULL) {
+        addInstruction(OP_RETURN);              // Return back to caller.
         compiler = compiler->enclosedCompiler;  // Get back to previous function.
+    }
 }
 
 static void argumentList() {

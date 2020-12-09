@@ -137,6 +137,7 @@ static CallFrame* updateCallFrame(uint8_t argCount) {
     callFrame->nextFrame = vm.callFrame;
     callFrame->position = (vm.callFrame->position == 0) ? 0: (vm.callFrame->position + 1);
     callFrame->functionLocals = &vm.locals[callFrame->position];
+    callFrame->function->ip = callFrame->function->chunk.chunk;
 
     return callFrame;
 }
@@ -232,9 +233,12 @@ ExecutionResult run() {
                 printValue(value);
                 break;
             }
-            case OP_RETURN:
-                printf("OP_RETURN\n");
+            
+            case OP_RETURN: {
+                vm.callFrame = vm.callFrame->nextFrame;
                 break;
+            }
+                
             case OP_NEGATE: {
                 Value value;
                 value.type = VAL_NUMBER;
