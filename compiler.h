@@ -46,7 +46,7 @@ void recover();     // Recover from error state.
 extern Compiler* compiler;
 
 // Generating bytecode.
-void compile();
+void compile(bool cmd);
 
 ObjString* copyString(const char* str);
 #include "vm.h"

@@ -80,10 +80,8 @@ void parsePrecedence(Precedence precedence) {
     ParseRule* rule = getRule(parser.previous.type);
     ParseFn prefixFunc = rule->prefix;
 
-    if (prefixFunc == NULL) {
-        printf("type of token - %d\n", parser.previous.type);
+    if (prefixFunc == NULL)
         error(&parser.previous, "Wrong prefix operation.");
-    }
     
     bool canAssign = precedence <= PREC_ASSIGN;
     prefixFunc(canAssign);
@@ -744,10 +742,12 @@ void declaration() {
     }
 }
 
-void compile() {
+void compile(bool cmd) {
     advance();
-    while(parser.current.type != TOKEN_EOF)
+    while(parser.current.type != TOKEN_EOF) {
         declaration();
+        if (cmd) break;
+    }
 }
 
 ObjString* copyString(const char* str) {

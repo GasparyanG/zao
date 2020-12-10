@@ -25,6 +25,22 @@ static bool runtimeResult(ExecutionResult result) {
     }
 }
 
+static void repl() {
+    for(;;) {
+        printf("> ");
+        initScanner(cmdInput());
+        
+        compile(true);
+        
+        if (compiler->panicMode)
+            recover();
+        else
+            if (!runtimeResult(run())) break;
+
+        freeScanner();
+    }
+}
+
 int main(int argc, char* argv[]) {
     ObjFunction* function = (ObjFunction*)malloc(sizeof(ObjFunction));
 
@@ -33,33 +49,13 @@ int main(int argc, char* argv[]) {
 
     if (argc > 1) {
         initScanner(fileInput(argv[1]));
-        for(;;) {
-            compile();
-            
-            if (compiler->panicMode)
-                recover();
-            else
-                if (!runtimeResult(run())) break;
-
-            if (isEof()) break;
-        }
+        
+        compile(false);
+        run();
 
         freeScanner();
-    } else {
-        for(;;) {
-            printf("> ");
-            initScanner(cmdInput());
-            
-            compile();
-            
-            if (compiler->panicMode)
-                recover();
-            else
-                if (!runtimeResult(run())) break;
-
-            freeScanner();
-        }
-    }
+    } else
+        repl();
 
     freeCompiler();
 
