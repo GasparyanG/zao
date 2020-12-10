@@ -492,7 +492,7 @@ ParseRule rules[] = {
     [TOKEN_IF]              = {if_,      NULL,       PREC_NONE}, 
     [TOKEN_ELSE]            = {else_,    NULL,       PREC_NONE},
     [TOKEN_FOR]             = {for_,     NULL,       PREC_NONE},
-    [TOKEN_WHILE]           = {while_,   NULL,       PREC_NONE},
+    [TOKEN_WHILE]           = {while_,   NULL,       PREC_NONE}
 };
 
 ParseRule* getRule(TokenType type) {

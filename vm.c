@@ -142,6 +142,14 @@ static CallFrame* updateCallFrame(uint8_t argCount) {
     return callFrame;
 }
 
+static void updateVariables(uint8_t arity) {
+    for (int8_t j = (arity - 1); j >= 0; j--)
+        vm.callFrame->functionLocals[j] = *pop();
+    
+    // Don't handle local variable setting.
+    vm.callFrame->function->ip += 2*arity;
+}
+
 ExecutionResult run() {
     vm.callFrame = initCallFrame();
 
@@ -318,7 +326,10 @@ ExecutionResult run() {
             }
 
             case OP_CALL: {
-                vm.callFrame = updateCallFrame(READ_BYTE());
+                uint8_t arity = READ_BYTE();
+                vm.callFrame = updateCallFrame(arity);
+                updateVariables(arity);
+                pop();      // Pop function from stack.
                 break;
             }
 
