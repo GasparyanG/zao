@@ -80,8 +80,10 @@ void parsePrecedence(Precedence precedence) {
     ParseRule* rule = getRule(parser.previous.type);
     ParseFn prefixFunc = rule->prefix;
 
-    if (prefixFunc == NULL)
+    if (prefixFunc == NULL) {
+        printf("type of token - %d\n", parser.previous.type);
         error(&parser.previous, "Wrong prefix operation.");
+    }
     
     bool canAssign = precedence <= PREC_ASSIGN;
     prefixFunc(canAssign);
@@ -297,7 +299,7 @@ static void block(bool canAssign) {
 
     consume(TOKEN_RIGHT_CURLY, "'}' is required at the end of block.");
     scopeEnd();
-    if (compiler->scopeDepth > 0) advance();
+    advance();
 }
 
 static void addSizeToJumpPos(uint8_t currentPosition, uint16_t jumpingSize) {
@@ -512,7 +514,7 @@ void initCompiler(ObjFunction* function) {
     comp->function->chunk.size = 0;
     comp->panicMode = false;     // There is no error in bytecode.
     comp->localsCount = 0;
-    comp->scopeDepth = 0;
+    comp->scopeDepth = compiler == NULL ? 0: compiler->scopeDepth;
     comp->function->chunk.capacity = ARRAY_INITIAL_SIZE;
     comp->function->ip = comp->function->chunk.chunk;
     comp->function->arity = 0;
@@ -550,6 +552,7 @@ void statement() {
             advance();
             expression();
             consume(TOKEN_SEMI_COLON, "';' is required after expression.");
+            advance();
             addInstruction(OP_PRINT);
             break;
         case TOKEN_RETURN:
@@ -608,10 +611,9 @@ static void declareLocalVariable() {
     }
 
 
-    advance();      // Consume identifier.
+    advance();          // Consume identifier.
     if (parser.current.type == TOKEN_EQUAL) {
         advance();      // Consume = token as well.
-        // TODO: implement declaration as well (this is just initialization).
         expression();   // Semicolon (;) is being consumed in this function.
     }
 
@@ -681,7 +683,7 @@ static void argumentList() {
 static void declareFunctionName(ObjFunction* function) {
     advance();
     if (parser.current.type != TOKEN_IDENTIFIER) {
-        error(&parser.current, "Identifier is expected after 'var'.");
+        error(&parser.current, "Identifier is expected after 'fun'.");
         return;
     }
 
@@ -741,7 +743,8 @@ void declaration() {
 
 void compile() {
     advance();
-    declaration();
+    while(parser.current.type != TOKEN_EOF)
+        declaration();
 }
 
 ObjString* copyString(const char* str) {

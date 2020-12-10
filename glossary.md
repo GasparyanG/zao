@@ -31,7 +31,7 @@
 - [] cm.c       : show line of error.
 - [x] compiler   : think about a + b = c + d expression's compilation.
 - [] vm.c       : you will feel that Value* is wrong in here, so chagne it to Value.
-- [] compiler.c : implement declaration as well (this is just initialization).
+- [x] compiler.c : implement declaration as well (this is just initialization).
 - [x] vm.c       : implement bang case.
 - [] compiler.c : why does 1 is being subtracted ?
 - [] compiler.c : why does 0 is being converted to 8 ?
