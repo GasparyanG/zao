@@ -150,6 +150,15 @@ static void updateVariables(uint8_t arity) {
     vm.callFrame->function->ip += 2*arity;
 }
 
+static void opReturn(bool nilReturned) {
+    vm.callFrame = vm.callFrame->nextFrame;
+    
+    if (!nilReturned) return;
+    Value value;
+    value.type = VAL_NIL;
+    push(&value);
+}
+
 ExecutionResult run() {
     vm.callFrame = initCallFrame();
 
@@ -182,8 +191,12 @@ ExecutionResult run() {
     displayInstruction(vm.callFrame->function->ip);
 #endif 
 
-        if (*vm.callFrame->function->ip == OP_NONE)
-            return EXECUTION_SUCCESS;
+        if (*vm.callFrame->function->ip == OP_NONE) {
+            if (vm.callFrame->nextFrame != NULL)
+                opReturn(true);
+            else
+                return EXECUTION_SUCCESS;
+        }
 
         switch(*vm.callFrame->function->ip++) {
             case OP_CONSTANT:
@@ -243,7 +256,7 @@ ExecutionResult run() {
             }
             
             case OP_RETURN: {
-                vm.callFrame = vm.callFrame->nextFrame;
+                opReturn(false);
                 break;
             }
                 
@@ -337,8 +350,12 @@ ExecutionResult run() {
                 pop();
                 break;
 
-            default:
-                return EXECUTION_SUCCESS;
+            default: {
+                if (vm.callFrame->nextFrame != NULL)
+                    opReturn(true);
+                else
+                    return EXECUTION_SUCCESS;            
+            }
         }
 #undef READ_BYTE
 #undef READ_STRING
