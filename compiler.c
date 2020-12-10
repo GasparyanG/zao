@@ -339,7 +339,6 @@ static void if_(bool canAssign) {
     
     condition();                // Block statement bytecode preparation.
 
-    advance();
     if (parser.current.type == TOKEN_ELSE)
         else_(canAssign);
     else
@@ -559,6 +558,7 @@ void statement() {
             advance();
             expression();
             consume(TOKEN_SEMI_COLON, "';' is required after expression.");
+            advance();
             addInstruction(OP_RETURN);
             break;
         case TOKEN_IF:
@@ -573,6 +573,7 @@ void statement() {
         default: {
             expression();
             consume(TOKEN_SEMI_COLON, "';' is required after expression.");
+            advance();
         }
     }
 }
@@ -655,8 +656,10 @@ static void declareVariable() {
         // Add string to constants' table.
         Value value = prepareValue(AS_OBJ(entry.key), VAL_STRING);
         addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
-    } else
-        consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
+    }
+    
+    consume(TOKEN_SEMI_COLON, "';' is expected after variable declaration.");
+    advance();
 }
 
 static void endFunction() {
