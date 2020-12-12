@@ -7,7 +7,7 @@ void expression();
 void statement();
 static void declareVariable();
 void declaration();
-static int resolveLocal(Token* local);
+static int resolveLocal(Compiler* cmpl, Token* local);
 
 // Parser section.
 Parser parser;
@@ -167,7 +167,7 @@ static void identifier(bool canAssign) {
     OpCode opGet = OP_GET_GLOBAL;
     OpCode opSet = OP_SET_GLOBAL;
     if (compiler->scopeDepth > 0 && 
-    (resLocPos = resolveLocal(&parser.previous)) >= 0) {
+    (resLocPos = resolveLocal(compiler, &parser.previous)) >= 0) {
         opGet = OP_GET_LOCAL;
         opSet = OP_SET_LOCAL;
         position = resLocPos;
@@ -587,11 +587,37 @@ void statement() {
     }
 }
 
-static int resolveLocal(Token* local) {
-    for (int i = compiler->localsCount - 1; i >= 0; i--) {
-        if (strcmp(local->string, compiler->locals[i].name.string) == 0)
+static int resolveLocal(Compiler* cmpl, Token* local) {
+    for (int i = cmpl->localsCount - 1; i >= 0; i--) {
+        if (strcmp(local->string, cmpl->locals[i].name.string) == 0)
             return i;   // Found at index.
     }
+
+    return -1;
+}
+
+static int addUpvalue(Compiler* cmpl, uint8_t index, bool isLocal) {
+    for (uint8_t i = 0; i < cmpl->function->upvaluesCount; i++) {
+        if (cmpl->function->upvalues[i] != NULL 
+            && cmpl->function->upvalues[i]->index == index)
+            return i;
+    }
+
+    cmpl->function->upvalues[cmpl->function->upvaluesCount]->isLocal = isLocal;
+    cmpl->function->upvalues[cmpl->function->upvaluesCount]->index = index;
+    return cmpl->function->upvaluesCount++;
+} 
+
+static int resolveUpvalue(Compiler* cmpl, Token* local) {
+    if (cmpl == NULL) return -1;
+
+    int index = resolveLocal(cmpl->enclosedCompiler, local);
+    if (index >= 0)
+        return addUpvalue(cmpl, (uint8_t)index, true);
+
+    index = resolveUpvalue(cmpl->enclosedCompiler, local);
+    if (index >= 0)
+        return addUpvalue(cmpl, (uint8_t)index, false);
 
     return -1;
 }
