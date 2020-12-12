@@ -8,6 +8,7 @@ void statement();
 static void declareVariable();
 void declaration();
 static int resolveLocal(Compiler* cmpl, Token* local);
+static int resolveUpvalue(Compiler* cmpl, Token* local);
 
 // Parser section.
 Parser parser;
@@ -170,6 +171,11 @@ static void identifier(bool canAssign) {
     (resLocPos = resolveLocal(compiler, &parser.previous)) >= 0) {
         opGet = OP_GET_LOCAL;
         opSet = OP_SET_LOCAL;
+        position = resLocPos;
+    } else if (compiler->scopeDepth > 0 &&
+    (resLocPos = resolveUpvalue(compiler, &parser.previous)) >= 0) {
+        opGet = OP_GET_UPVALUE;
+        opSet = OP_SET_UPVALUE;
         position = resLocPos;
     } else {
         Value value;
@@ -765,6 +771,8 @@ static void declareFunction() {
 
     endFunction();
 
+    addInstructions(OP_CLOSURE, 
+        addConstant(prepareValue(AS_OBJ(compiler->function), VAL_FUNCTION)));
 }
 
 void declaration() {

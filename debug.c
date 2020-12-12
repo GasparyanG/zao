@@ -94,6 +94,15 @@ void displayInstruction(uint8_t* ip) {
         case OP_SET_LOCAL:
             offset = constantInstruction("OP_SET_LOCAL", ip);
             break;
+        case OP_GET_UPVALUE:
+            offset = constantInstruction("OP_GET_UPVALUE", ip);
+            break;
+        case OP_SET_UPVALUE:
+            offset = constantInstruction("OP_SET_UPVALUE", ip);
+            break;
+        case OP_CLOSURE:
+            offset = simpleInstruction("OP_CLOSURE");
+            break;
         case OP_GREATER_THAN:
             offset = simpleInstruction("OP_GREATER_THAN");
             break;

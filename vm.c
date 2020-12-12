@@ -315,6 +315,21 @@ ExecutionResult run() {
                 break; 
             }
 
+            case OP_SET_UPVALUE: {
+                // TODO: coming soon.
+                break;
+            }
+
+            case OP_GET_UPVALUE: {
+                // TODO: coming soon.
+                break;
+            }
+
+            case OP_CLOSURE: {
+                // TODO: coming soon.
+                break;
+            }
+
             case OP_JUMP: {
                 if (AS_BOOL((*peek(1))))
                     vm.callFrame->function->ip += JUMP_BYTES;       // Go straight to instruction.
