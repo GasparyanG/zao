@@ -319,6 +319,10 @@
         - grow table if it's near to max load space (in our case 0.75).
 
 ## Objects
+* UpValue::properties
+    - `index`           - position of parents corresponding upvalue.
+    - `isLocal`         - indicator of being as enclosing scope upvalue or not.
+
 * Obj::properties
     - `type`            - type of object.
 
@@ -333,3 +337,5 @@
     - `ip`              - instruction pointer.
     - `chunk`           - actual instructions.
     - `arity`           - amount of arguments.
+    - `upvalues`        - outer scope variable dispatcher.
+    - `upvaluesCount`   - amount of upvalues detected.

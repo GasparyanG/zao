@@ -67,6 +67,12 @@
 - [x] -:- - -:-          - Function return.
 - [x] -:- - -:-          - Nested functions.
 
+### 12/11 - 12 - 13/2020
+- [x] -:- - -:-          - Design closure.
+- [x] -:- - -:-          - Handle upvalue resolving in compiler side.
+- [] -:- - -:-          - Handle upvalue capturing in vm side.
+- [] -:- - -:-          - Handle upvalue closing.
+
 ### ZaO Implementation Path
 1) Set Up Virtual Machine
     1.1) instruction pointer
