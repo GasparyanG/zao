@@ -37,6 +37,7 @@
 - [] compiler.c : why does 0 is being converted to 8 ?
 - [] compiler.c : for optimization same, implement short circuit.
 - [] compiler.c : pass identifier error message.
+- [] compiler.c : extract method initCompiler -> initFunction.
 
 ### In Progress
 

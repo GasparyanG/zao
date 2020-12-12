@@ -14,6 +14,10 @@ typedef enum {
     OBJ_STRING
 } ObjType;
 
+typedef struct {
+    bool isLocal;           // Whether value is from parent function or not.
+    uint8_t index;          // Index to make upvalue chaining possible.
+} UpValue;
 
 // Mainly meant for polymorphism.
 typedef struct {
@@ -32,6 +36,9 @@ typedef struct {
     Chunk chunk;
     uint8_t* ip;
     size_t arity;   // Amount of arguments.
+
+    UpValue* upvalues[UINT8_MAX];
+    uint8_t upvaluesCount;
 } ObjFunction;
 
 #endif

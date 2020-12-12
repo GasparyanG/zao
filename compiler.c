@@ -501,20 +501,31 @@ ParseRule* getRule(TokenType type) {
 // Compiler section.
 Compiler* compiler = NULL;
 
+static void initFunctionUpvalues(ObjFunction* function) {
+    function->upvaluesCount = 0;
+    for (uint8_t i = 0; i < UINT8_MAX; i++)
+        function->upvalues[i] = NULL;
+}
+
 void initCompiler(ObjFunction* function) {
     Compiler* comp = (Compiler*)malloc(sizeof(Compiler));
 
-    comp->function = function;
-
-    comp->function->chunk.chunk 
-        = ALLOCATE(uint8_t, comp->function->chunk.chunk, comp->function->chunk.size);
-    comp->function->chunk.size = 0;
     comp->panicMode = false;     // There is no error in bytecode.
     comp->localsCount = 0;
     comp->scopeDepth = compiler == NULL ? 0: compiler->scopeDepth;
-    comp->function->chunk.capacity = ARRAY_INITIAL_SIZE;
-    comp->function->ip = comp->function->chunk.chunk;
-    comp->function->arity = 0;
+    
+    // Function section.
+    // TODO: extract method initCompiler -> initFunction.
+    function->chunk.size = 0;
+    function->chunk.chunk 
+        = ALLOCATE(uint8_t, function->chunk.chunk, function->chunk.size);
+    function->chunk.size = 0;    
+    function->chunk.capacity = ARRAY_INITIAL_SIZE;
+    function->ip = function->chunk.chunk;
+    function->arity = 0;
+
+    initFunctionUpvalues(function);
+    comp->function = function;
 
     // Compilers' chain.
     if (compiler == NULL) {
@@ -727,6 +738,7 @@ static void declareFunction() {
     block(true);
 
     endFunction();
+
 }
 
 void declaration() {
