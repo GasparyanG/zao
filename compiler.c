@@ -609,8 +609,11 @@ static int addUpvalue(Compiler* cmpl, uint8_t index, bool isLocal) {
             return i;
     }
 
-    cmpl->function->upvalues[cmpl->function->upvaluesCount]->isLocal = isLocal;
-    cmpl->function->upvalues[cmpl->function->upvaluesCount]->index = index;
+    UpValue* upvalue = (UpValue*)malloc(sizeof(UpValue));
+
+    upvalue->isLocal = isLocal;
+    upvalue->index = index;
+    cmpl->function->upvalues[cmpl->function->upvaluesCount] = upvalue;
     return cmpl->function->upvaluesCount++;
 } 
 
