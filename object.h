@@ -2,11 +2,14 @@
 #define ZAO_OBJECT_H
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #include "chunk.h"
+#include "value.h"
 
 #define AS_STRING(obj)    ((ObjString*)(obj))
 #define AS_FUNCTION(obj)  ((ObjFunction*)(obj))
+#define AS_CLOSURE(obj)   ((ObjClosure*)(obj))
 
 #define AS_OBJ(obj)       ((Obj*)(obj))
 
@@ -20,7 +23,7 @@ typedef struct {
 } UpValue;
 
 // Mainly meant for polymorphism.
-typedef struct {
+typedef struct Obj {
     ObjType type;
 } Obj;
 
@@ -40,5 +43,18 @@ typedef struct {
     UpValue* upvalues[UINT8_MAX];
     uint8_t upvaluesCount;
 } ObjFunction;
+
+typedef struct {
+    Value* location;
+    Value value;
+} ObjUpValue;
+
+typedef struct {
+    Obj obj;
+    ObjFunction* function;
+    ObjUpValue** upvalues;
+} ObjClosure;
+
+ObjClosure* newClosure(ObjFunction* function);
 
 #endif

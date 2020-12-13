@@ -759,6 +759,7 @@ static void declareFunction() {
 
     Value value = prepareValue(AS_OBJ(function), VAL_FUNCTION);
     addInstructions(OP_CONSTANT, addConstant(value));
+    addInstruction(OP_CLOSURE);
     declareFunctionName(function);  // TODO: pass identifier error message.
     
     initCompiler(function);
@@ -773,9 +774,6 @@ static void declareFunction() {
     block(true);
 
     endFunction();
-
-    addInstructions(OP_CLOSURE, 
-        addConstant(prepareValue(AS_OBJ(compiler->function), VAL_FUNCTION)));
 }
 
 void declaration() {

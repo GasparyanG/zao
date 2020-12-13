@@ -115,8 +115,8 @@ static void boolOperator(OpCode op) {
 // Fcuntion call operations.
 static CallFrame* initCallFrame() {
     CallFrame* callFrame = (CallFrame*)malloc(sizeof(CallFrame));
+    callFrame->closure = newClosure(compiler->function);
 
-    callFrame->function = compiler->function;
     callFrame->nextFrame = NULL;
     callFrame->functionLocals = vm.locals;
     callFrame->position = 0;
@@ -133,11 +133,11 @@ static void updatePosition(uint8_t pos) {
 static CallFrame* updateCallFrame(uint8_t argCount) {
     CallFrame* callFrame = (CallFrame*)malloc(sizeof(CallFrame));
 
-    callFrame->function = AS_FUNCTION(peek(argCount + 1)->as.obj);
+    callFrame->closure = AS_CLOSURE(peek(argCount + 1)->as.obj);
     callFrame->nextFrame = vm.callFrame;
     callFrame->position = (vm.callFrame->position == 0) ? 0: (vm.callFrame->position + 1);
     callFrame->functionLocals = &vm.locals[callFrame->position];
-    callFrame->function->ip = callFrame->function->chunk.chunk;
+    callFrame->closure->function->ip = callFrame->closure->function->chunk.chunk;
 
     return callFrame;
 }
@@ -147,7 +147,7 @@ static void updateVariables(uint8_t arity) {
         vm.callFrame->functionLocals[j] = *pop();
     
     // Don't handle local variable setting.
-    vm.callFrame->function->ip += 2*arity;
+    vm.callFrame->closure->function->ip += 2*arity;
 }
 
 static void opReturn(bool nilReturned) {
@@ -159,12 +159,17 @@ static void opReturn(bool nilReturned) {
     push(&value);
 }
 
+static ObjUpValue* captureUpValue(Value* slot) {
+    // TODO: implement captureUpValue.
+}
+
 ExecutionResult run() {
     vm.callFrame = initCallFrame();
 
     for (;;) {
-#define READ_BYTE()   *vm.callFrame->function->ip++
-#define READ_STRING() AS_STRING(vm.constants[(*vm.callFrame->function->ip++)].as.obj)
+#define READ_BYTE()         *vm.callFrame->closure->function->ip++
+#define READ_STRING()       AS_STRING(vm.constants[(*vm.callFrame->closure->function->ip++)].as.obj)
+#define READ_FUNCTION()     AS_FUNCTION(vm.constants[(*vm.callFrame->closure->function->ip++)].as.obj)
 #define BOOL_BINARY_OP(op) \
     do { \
         Value* b = pop(); \
@@ -188,17 +193,17 @@ ExecutionResult run() {
     } while(false)
 
 #ifdef ZAO_DEBUGGER_MODE_ON
-    displayInstruction(vm.callFrame->function->ip);
+    displayInstruction(vm.callFrame->closure->function->ip);
 #endif 
 
-        if (*vm.callFrame->function->ip == OP_NONE) {
+        if (*vm.callFrame->closure->function->ip == OP_NONE) {
             if (vm.callFrame->nextFrame != NULL)
                 opReturn(true);
             else
                 return EXECUTION_SUCCESS;
         }
 
-        switch(*vm.callFrame->function->ip++) {
+        switch(*vm.callFrame->closure->function->ip++) {
             case OP_CONSTANT:
                 push(&vm.constants[READ_BYTE()]);     
                 break;
@@ -316,39 +321,59 @@ ExecutionResult run() {
             }
 
             case OP_SET_UPVALUE: {
+                printf("OP_SET_UPVALUE ACCESSED\n");
                 // TODO: coming soon.
                 break;
             }
 
             case OP_GET_UPVALUE: {
+                printf("OP_GET_UPVALUE ACCESSED\n");
                 // TODO: coming soon.
                 break;
             }
 
             case OP_CLOSURE: {
-                // TODO: coming soon.
+                ObjFunction* function = AS_FUNCTION(pop()->as.obj);
+                ObjClosure* closure = newClosure(function);
+                
+                Value value;
+                value.type = VAL_FUNCTION;
+                value.as.obj = AS_OBJ(closure);
+                push(&value);
+                
+                for (uint8_t i = 0; i < function->upvaluesCount; i++) {
+                    UpValue* upvalue = function->upvalues[i];
+
+                    if (upvalue->isLocal) {
+                        closure->upvalues[i] = captureUpValue(vm.callFrame->functionLocals + upvalue->index);
+                    } else {
+                        closure->upvalues[i] = vm.callFrame->closure->upvalues[i];
+                    }
+                }
+
                 break;
             }
 
             case OP_JUMP: {
                 if (AS_BOOL((*peek(1))))
-                    vm.callFrame->function->ip += JUMP_BYTES;       // Go straight to instruction.
+                    vm.callFrame->closure->function->ip += JUMP_BYTES;       // Go straight to instruction.
                 else
-                    vm.callFrame->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    vm.callFrame->closure->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 break;
             }
 
             case OP_JUMP_BACK: {
-                vm.callFrame->function->ip = &vm.callFrame->function->chunk.chunk[bytesFusion(READ_BYTE(), READ_BYTE())];
+                vm.callFrame->closure->function->ip 
+                    = &vm.callFrame->closure->function->chunk.chunk[bytesFusion(READ_BYTE(), READ_BYTE())];
                 break;
             }
 
             case OP_JUMP_FOR: {
                 if (AS_BOOL((*peek(1))))
-                    vm.callFrame->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    vm.callFrame->closure->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 else {
-                    vm.callFrame->function->ip += JUMP_BYTES;   // Ignore assignement bytes.
-                    vm.callFrame->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    vm.callFrame->closure->function->ip += JUMP_BYTES;   // Ignore assignement bytes.
+                    vm.callFrame->closure->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 }
                 break;
             }
@@ -374,6 +399,7 @@ ExecutionResult run() {
         }
 #undef READ_BYTE
 #undef READ_STRING
+#undef READ_FUNCTION
 #undef BOOL_BINARY_OP
 #undef BINARY_OP
     }

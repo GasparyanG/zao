@@ -19,7 +19,7 @@ typedef enum {
 typedef struct CallFrame {
     CallFrame* nextFrame;
     Value* functionLocals;
-    ObjFunction* function;
+    ObjClosure* closure;
     uint8_t position;
 } CallFrame;
 
