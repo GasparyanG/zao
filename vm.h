@@ -46,6 +46,10 @@ ObjString* internString(ObjString* strToCmp);
 
 // VM operations.
 void initVM();
+void freeVM();
+
+CallFrame* initCallFrame();
+void freeCallFrame(CallFrame* callFrame);
 
 // Stack operations.
 Value* pop();

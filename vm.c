@@ -15,6 +15,19 @@ void initVM() {
     initTable(&glob);
 }
 
+void freeVM() {
+    free(vm.callFrame);
+    free(vm.stackTop);
+}
+
+CallFrame* initCallFrame() {
+    return (CallFrame*)malloc(sizeof(CallFrame));
+}
+
+void freeCallFrame(CallFrame* callFrame) {
+    free(callFrame);
+}
+
 ObjString* internString(ObjString* strToCmp) {
     for (uint32_t i = 0; i < vm.stringCount; i++) {
         if (strToCmp->hash == vm.internedStrings[i]->hash) {
@@ -113,8 +126,8 @@ static void boolOperator(OpCode op) {
 
 
 // Fcuntion call operations.
-static CallFrame* initCallFrame() {
-    CallFrame* callFrame = (CallFrame*)malloc(sizeof(CallFrame));
+static CallFrame* initCallFrameFromCompiler() {
+    CallFrame* callFrame = initCallFrame();
     callFrame->closure = newClosure(compiler->function);
 
     callFrame->nextFrame = NULL;
@@ -131,7 +144,7 @@ static void updatePosition(uint8_t pos) {
 }
 
 static CallFrame* updateCallFrame(uint8_t argCount) {
-    CallFrame* callFrame = (CallFrame*)malloc(sizeof(CallFrame));
+    CallFrame* callFrame = initCallFrame();
 
     callFrame->closure = AS_CLOSURE(peek(argCount + 1)->as.obj);
     callFrame->nextFrame = vm.callFrame;
@@ -162,9 +175,17 @@ static void closeUpValues(ObjClosure* closure) {
     }
 }
 
+static void changeCallFrameBack() {
+    CallFrame* callFrameToFree = vm.callFrame;
+    vm.callFrame = vm.callFrame->nextFrame;
+    freeCallFrame(callFrameToFree);
+}
+
 static void opReturn(bool nilReturned) {
     if (!nilReturned) return;
-    vm.callFrame = vm.callFrame->nextFrame;
+
+    changeCallFrameBack();
+    
     Value value;
     value.type = VAL_NIL;
     push(&value);
@@ -178,7 +199,7 @@ static ObjUpValue* captureUpValue(Value* value) {
 }
 
 ExecutionResult run() {
-    vm.callFrame = initCallFrame();
+    vm.callFrame = initCallFrameFromCompiler();
 
     for (;;) {
 #define READ_BYTE()         *vm.callFrame->closure->function->ip++
@@ -284,7 +305,7 @@ ExecutionResult run() {
                 if (value->type == VAL_FUNCTION)
                     closeUpValues(AS_CLOSURE(value->as.obj));
                 
-                vm.callFrame = vm.callFrame->nextFrame;
+                changeCallFrameBack();
                 break;
             }    
             
