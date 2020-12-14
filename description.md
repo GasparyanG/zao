@@ -1,7 +1,7 @@
 ## Value
 * properties
     - `type`                - value type (e.g. number, string, bool, etc.).
-    - `as`                  - value gor given type.
+    - `as`                  - value for given type.
         - to be able to store values in the same memory location union is used.
     - `obj`                 - pointer meant for objects with variable sizes.
 

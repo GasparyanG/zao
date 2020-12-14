@@ -36,7 +36,7 @@ typedef struct Compiler {
 } Compiler;
 
 void initCompiler(ObjFunction* function);
-void freeCompiler();
+void freeCompiler(Compiler* cmpl);
 
 uint8_t addConstant(Value value);
 void addInstruction(uint8_t instruction);

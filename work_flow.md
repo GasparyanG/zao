@@ -13,7 +13,7 @@
 - [x] 01:50 - 03:45       - Operation's stack effect and check today work's correctness with actual implementation.
 
 ### 11/23/2020
-- [x] 9:30 - 10:30       - Design
+- [x] 9:30 - 10:30        - Design
 - [x] 10:30 - 12:30       - Compiler and Chunk
     - Dynamic array
 - [x] 12:30 - 13:30       - VM

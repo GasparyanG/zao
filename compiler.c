@@ -545,8 +545,8 @@ void initCompiler(ObjFunction* function) {
     }
 }
 
-void freeCompiler() {
-    free((void*)compiler->function->chunk.chunk);
+void freeCompiler(Compiler* cmpl) {
+    free(cmpl);
 }
 
 // Generating bytecode.
@@ -710,7 +710,9 @@ static void endFunction() {
     // This condition can be avoided, because first compiler isn't 
     // defined through 'declareFunction()', but extra caution will not hurt.
     if (compiler->enclosedCompiler != NULL) {
+        Compiler* compilerToFree = compiler;
         compiler = compiler->enclosedCompiler;  // Get back to previous function.
+        freeCompiler(compilerToFree);
     }
 }
 

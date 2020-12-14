@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
     } else
         repl();
 
-    freeCompiler();
+    freeCompiler(compiler);
 
     return 0;
 }
