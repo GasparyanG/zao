@@ -339,3 +339,12 @@
     - `arity`           - amount of arguments.
     - `upvalues`        - outer scope variable dispatcher.
     - `upvaluesCount`   - amount of upvalues detected.
+
+* ObjUpValue
+    - `location`        - pointer to value (this can either point to siblig or to locals' value).
+    - `value`           - value which will be copied to structure after return operation.
+
+* ObjClosure::properties
+    - `obj`             - to be able to use polymorphism.
+    - `function`        - ObjFunction*.
+    - `upvalues`        - keep track on not local variables.
