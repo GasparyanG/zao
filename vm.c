@@ -150,10 +150,21 @@ static void updateVariables(uint8_t arity) {
     vm.callFrame->closure->function->ip += 2*arity;
 }
 
+static void closeUpValues(ObjClosure* closure) {
+    for (uint8_t i = 0; i < closure->function->upvaluesCount; i++) {
+        // Copy Value from locals to upvalue.
+        closure->upvalues[i]->value 
+            = *closure->upvalues[i]->location;
+
+        // Change location pointer.
+        closure->upvalues[i]->location = 
+            &closure->upvalues[i]->value;
+    }
+}
+
 static void opReturn(bool nilReturned) {
-    vm.callFrame = vm.callFrame->nextFrame;
-    
     if (!nilReturned) return;
+    vm.callFrame = vm.callFrame->nextFrame;
     Value value;
     value.type = VAL_NIL;
     push(&value);
@@ -267,7 +278,16 @@ ExecutionResult run() {
                 opReturn(false);
                 break;
             }
+
+            case OP_CLOSE: {
+                Value* value = peek(1);
+                if (value->type == VAL_FUNCTION)
+                    closeUpValues(AS_CLOSURE(value->as.obj));
                 
+                vm.callFrame = vm.callFrame->nextFrame;
+                break;
+            }    
+            
             case OP_NEGATE: {
                 Value value;
                 value.type = VAL_NUMBER;

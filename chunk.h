@@ -17,6 +17,7 @@ typedef enum {
     OP_CONSTANT,
     OP_PRINT,
     OP_RETURN,
+    OP_CLOSE,
     OP_ADD,
     OP_SUBTRACT,
     OP_DIVIDE,

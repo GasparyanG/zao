@@ -574,7 +574,7 @@ void statement() {
             expression();
             consume(TOKEN_SEMI_COLON, "';' is required after expression.");
             advance();
-            addInstruction(OP_RETURN);
+            addInstructions(OP_RETURN, OP_CLOSE);
             break;
         case TOKEN_IF:
             if_(true);
