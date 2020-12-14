@@ -159,8 +159,11 @@ static void opReturn(bool nilReturned) {
     push(&value);
 }
 
-static ObjUpValue* captureUpValue(Value* slot) {
-    // TODO: implement captureUpValue.
+static ObjUpValue* captureUpValue(Value* value) {
+    ObjUpValue* upvalue = (ObjUpValue*)malloc(sizeof(ObjUpValue));
+    upvalue->location = value;
+
+    return upvalue;
 }
 
 ExecutionResult run() {
@@ -321,14 +324,12 @@ ExecutionResult run() {
             }
 
             case OP_SET_UPVALUE: {
-                printf("OP_SET_UPVALUE ACCESSED\n");
-                // TODO: coming soon.
+                *vm.callFrame->closure->upvalues[READ_BYTE()]->location = *pop();
                 break;
             }
 
             case OP_GET_UPVALUE: {
-                printf("OP_GET_UPVALUE ACCESSED\n");
-                // TODO: coming soon.
+                push(vm.callFrame->closure->upvalues[READ_BYTE()]->location);
                 break;
             }
 
