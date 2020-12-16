@@ -101,11 +101,11 @@ void parsePrecedence(Precedence precedence) {
 
 // Parser's functions(pointer).
 uint8_t addConstant(const Value value) {
-    if (vm.constPos == UINT8_MAX);
+    if (compiler->function->constPos == UINT8_MAX);
         // TODO: display `constants table overflow` error.
-    vm.constants[vm.constPos] = value;
+    compiler->function->constants[compiler->function->constPos] = value;
 
-    return vm.constPos++;
+    return compiler->function->constPos++;
 }
 
 void addInstruction(uint8_t instruction) {
@@ -529,6 +529,7 @@ void initCompiler(ObjFunction* function) {
     function->chunk.capacity = ARRAY_INITIAL_SIZE;
     function->ip = function->chunk.chunk;
     function->arity = 0;
+    function->constPos = 0;
 
     initFunctionUpvalues(function);
     comp->function = function;

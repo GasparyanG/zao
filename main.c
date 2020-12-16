@@ -4,6 +4,7 @@
 #include "vm.h"
 #include "scanner.h"
 #include "object.h"
+#include "memory.h"
 
 
 static bool isEof() {
@@ -42,10 +43,11 @@ static void repl() {
 }
 
 int main(int argc, char* argv[]) {
-    ObjFunction* function = (ObjFunction*)malloc(sizeof(ObjFunction));
+    ObjFunction* function = (ObjFunction*)allocateObject(OBJ_FUNCTION);
 
     initCompiler(function);
     initVM();
+
 
     if (argc > 1) {
         initScanner(fileInput(argv[1]));

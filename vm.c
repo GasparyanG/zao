@@ -7,7 +7,6 @@ VM vm;
 void initVM() {
     vm.stackTop = vm.stack;
     vm.stringCount = 0;
-    vm.constPos = 0;
     
     vm.callFrame = NULL;
     vm.objects = NULL;
@@ -204,8 +203,10 @@ ExecutionResult run() {
 
     for (;;) {
 #define READ_BYTE()         *vm.callFrame->closure->function->ip++
-#define READ_STRING()       AS_STRING(vm.constants[(*vm.callFrame->closure->function->ip++)].as.obj)
-#define READ_FUNCTION()     AS_FUNCTION(vm.constants[(*vm.callFrame->closure->function->ip++)].as.obj)
+#define READ_STRING() \
+    AS_STRING(vm.callFrame->closure->function->constants[(*vm.callFrame->closure->function->ip++)].as.obj)
+#define READ_FUNCTION() \
+    AS_FUNCTION(vm.callFrame->closure->function->constants[(*vm.callFrame->closure->function->ip++)].as.obj)
 #define BOOL_BINARY_OP(op) \
     do { \
         Value* b = pop(); \
@@ -241,7 +242,7 @@ ExecutionResult run() {
 
         switch(*vm.callFrame->closure->function->ip++) {
             case OP_CONSTANT:
-                push(&vm.constants[READ_BYTE()]);     
+                push(&vm.callFrame->closure->function->constants[READ_BYTE()]);     
                 break;
             case OP_FALSE: {
                 Value value;

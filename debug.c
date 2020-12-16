@@ -1,12 +1,12 @@
 #include "debug.h"
 
 static size_t constantInstruction(const char* name, uint8_t* ip) {
-    switch(vm.constants[*ip].type) {
+    switch(vm.callFrame->closure->function->constants[*ip].type) {
         case VAL_NUMBER:
-            printf("%-20s %g\n", name, vm.constants[*ip].as.number);
+            printf("%-20s %g\n", name, vm.callFrame->closure->function->constants[*ip].as.number);
             break;
         case VAL_STRING:
-            printf("%-20s %s\n", name, AS_STRING(vm.constants[*ip].as.obj)->value);
+            printf("%-20s %s\n", name, AS_STRING(vm.callFrame->closure->function->constants[*ip].as.obj)->value);
             break;
         case VAL_FUNCTION:
             printf("%-20s <function>\n", name);

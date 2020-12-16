@@ -44,6 +44,9 @@ typedef struct {
     uint8_t* ip;
     size_t arity;   // Amount of arguments.
 
+    Value constants[UINT8_MAX];
+    size_t constPos;
+
     UpValue* upvalues[UINT8_MAX];
     uint8_t upvaluesCount;
 } ObjFunction;

@@ -75,8 +75,8 @@
 
 ### 12/15 - 16/2020
 - [x] -:- - -:-          - Design GC.
-- [] -:- - -:-          - Object allocation and object singly-linked list in vm.
-- [] -:- - -:-          - Move constants from vm to compilers.
+- [x] -:- - -:-          - Object allocation and object singly-linked list in vm.
+- [x] -:- - -:-          - Move constants from vm to compilers.
 - [] -:- - -:-          - Marking.
 - [] -:- - -:-          - Sweeping.
 - [] -:- - -:-          - GC call frequency.

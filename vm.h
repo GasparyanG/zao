@@ -32,9 +32,6 @@ typedef struct {
     Table globals;              // Hash table for variables.
     Value locals[UINT8_MAX];
 
-    Value constants[UINT8_MAX];
-    size_t constPos;
-
     ObjString* internedStrings[UINT8_MAX];
     size_t stringCount;
 
