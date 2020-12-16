@@ -14,7 +14,10 @@
 #define AS_OBJ(obj)       ((Obj*)(obj))
 
 typedef enum {
-    OBJ_STRING
+    OBJ_STRING,
+    OBJ_FUNCTION,
+    OBJ_CLOSURE,
+    OBJ_UPVALUE
 } ObjType;
 
 typedef struct {
@@ -25,6 +28,7 @@ typedef struct {
 // Mainly meant for polymorphism.
 typedef struct Obj {
     ObjType type;
+    Obj* next;
 } Obj;
 
 typedef struct {

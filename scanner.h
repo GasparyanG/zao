@@ -1,13 +1,10 @@
 #ifndef ZAO_SCANNER_H
 #define ZAO_SCANNER_H
 
-#include "ctype.h"
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
-#include "memory.h"
-
 
 // Token section.
 typedef enum {
@@ -89,4 +86,5 @@ const char* cmdInput();
 Token scanToken();
 char getChar(bool noWS);
 
+#include "memory.h"
 #endif

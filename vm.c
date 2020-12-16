@@ -193,7 +193,7 @@ static void opReturn(bool nilReturned) {
 }
 
 static ObjUpValue* captureUpValue(Value* value) {
-    ObjUpValue* upvalue = (ObjUpValue*)malloc(sizeof(ObjUpValue));
+    ObjUpValue* upvalue = (ObjUpValue*)allocateObject(OBJ_UPVALUE);
     upvalue->location = value;
 
     return upvalue;

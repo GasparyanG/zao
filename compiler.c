@@ -757,7 +757,7 @@ static void declareFunctionName(ObjFunction* function) {
 }
 
 static void declareFunction() {
-    ObjFunction* function = (ObjFunction*)malloc(sizeof(ObjFunction));
+    ObjFunction* function = (ObjFunction*)allocateObject(OBJ_FUNCTION);
 
     Value value = prepareValue(AS_OBJ(function), VAL_FUNCTION);
     addInstructions(OP_CONSTANT, addConstant(value));
@@ -800,7 +800,7 @@ void compile(bool cmd) {
 }
 
 ObjString* copyString(const char* str) {
-    ObjString* strObj = (ObjString*)malloc(sizeof(ObjString));
+    ObjString* strObj = (ObjString*)allocateObject(OBJ_STRING);
     strObj->value = str;
     strObj->hash = hashString(strObj->value);
 

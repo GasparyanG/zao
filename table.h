@@ -5,7 +5,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "memory.h"
 #include "object.h"
 #include "value.h"
 
@@ -35,4 +34,5 @@ Entry* findEntry(Table* table, ObjString* key);
 bool addEntry(Table* table, Entry* entry);
 void deleteEntry(Table* table, ObjString* key);
 
+#include "memory.h"
 #endif
