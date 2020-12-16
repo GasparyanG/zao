@@ -36,6 +36,10 @@ typedef struct {
     size_t stringCount;
 
     Obj* objects;
+
+    Obj** greyStack;
+    size_t greyCount;
+    size_t greyCapacity;
 } VM;
 
 extern VM vm;

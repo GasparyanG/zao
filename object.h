@@ -28,6 +28,7 @@ typedef struct {
 // Mainly meant for polymorphism.
 typedef struct Obj {
     ObjType type;
+    bool isMarked;
     Obj* next;
 } Obj;
 
