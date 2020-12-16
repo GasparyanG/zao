@@ -21,7 +21,33 @@ void* reallocate(void* pointer, size_t size) {
     return pointer;
 }
 
+static void mark() {
+    
+}
+
+static void blacken() {
+
+}
+
+static void sweep() {
+
+}
+
+static void collectGarbage() {
+    printf("--GC-Start\n");
+
+    mark();
+    blacken();
+    sweep();
+
+    printf("--GC-End\n");
+}
+
 Obj* allocateObject(ObjType type) {
+#ifdef ZAO_GC
+    collectGarbage();
+#endif
+
     Obj* obj;
     switch(type) {
         case OBJ_STRING:
