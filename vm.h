@@ -37,6 +37,8 @@ typedef struct {
 
     ObjString* internedStrings[UINT8_MAX];
     size_t stringCount;
+
+    Obj* objects;
 } VM;
 
 extern VM vm;

@@ -1,15 +1,13 @@
 ### Questions
 - [x] What kind of role does integers play in program exit/termination ?
-- [] What does happen with values which is being replaced in array with aother values just via subscript operator ?
+- [x] What does happen with values which is being replaced in array with aother values just via subscript operator ?
 - [x] Get comfortable with pointer arithmetics, especially with pointers difference.
 - [x] What is the name of DS against which keywords are being compared ?
     - Trie.
 - [] Why doesn't ALLOCATE macro worked for Entry allocation ?
 - [] How does  CPU cache works ?
-- [] What is Valgrind ?
-- [] How to handle value update in vm.c ?
-    - hint 1: change return value of pop from `Value*` to `Value`.
-    - hint 2: change argument value of push from `Value*` to `Value`.
+- [x] What is Valgrind ?
+- [x] How to handle value update in vm.c ?
 - [] Why I couldn't use pointers explicitly in debug.c (jumpInstruction) ?
 
 ### To Do

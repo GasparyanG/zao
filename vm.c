@@ -10,7 +10,8 @@ void initVM() {
     vm.constPos = 0;
     
     vm.callFrame = NULL;
-
+    vm.objects = NULL;
+    
     Table glob;
     initTable(&glob);
 }
