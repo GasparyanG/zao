@@ -26,11 +26,13 @@ static void markObject(Obj* object) {
     object->isMarked = true;
 
     if (vm.greyCapacity == 0) {
-        vm.greyStack = ALLOCATE(Obj*, vm.greyStack, 0);
         vm.greyCapacity = ARRAY_INITIAL_SIZE;
+        size_t size = vm.greyCapacity * sizeof(Obj*);
+        vm.greyStack = (Obj**)malloc(size);
     } else if (vm.greyCapacity < vm.greyCount + 1) {
-        vm.greyStack = ALLOCATE(Obj*, vm.greyStack, vm.greyCapacity);
         vm.greyCapacity *= ENLARGEMENT_FACTOR;
+        size_t size = vm.greyCapacity * sizeof(Obj*);
+        vm.greyStack = (Obj**)realloc(vm.greyStack, size);
     }
 
     vm.greyStack[vm.greyCount++] = object;
@@ -53,8 +55,20 @@ static void markCompilers() {
     }
 }
 
+static void markTable(Table table) {
+    for (size_t i = 0; i < table.capacity; i++) {
+        Entry entry = table.entries[i];
+        if (entry.key == NULL) continue;
+        
+        markObject(AS_OBJ(entry.key));
+        if (IS_OBJ(entry.value))
+            markObject(entry.value.as.obj);
+    }
+}
+
 static void mark() {
     markArray(vm.stack, (vm.stackTop - vm.stack));
+    markTable(vm.globals);
     markCompilers();
 }
 
@@ -67,6 +81,11 @@ static void blacken(Obj* object) {
                 markObject(AS_OBJ(function->name));
             break;
         }
+
+        // case OBJ_CLOSURE: {
+        //     ObjClosure* closure = AS_CLOSURE(object);
+        //     markObject(AS_OBJ(closure->function));
+        // }
 
         case OBJ_STRING:
             markObject(AS_OBJ(object));
@@ -88,13 +107,15 @@ static void freeObject(Obj* object) {
     switch(object->type) {
         case OBJ_STRING:
             printf("free string\n");
-            // free(AS_STRING(object));
             break;
         case OBJ_FUNCTION: {
             printf("free function\n");
             break;
         } case OBJ_CLOSURE: {
             printf("free closure\n");
+            break;
+        } case OBJ_UPVALUE: {
+            printf("free upvalue\n");
             break;
         }
     }

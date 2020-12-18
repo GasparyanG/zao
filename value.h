@@ -6,6 +6,8 @@
 
 #define IS_NUMBER(value)    (value.type == VAL_NUMBER)
 #define IS_BOOL(value)      (value.type == VAL_FALSE || value.type == VAL_TRUE)
+#define IS_OBJ(value)       (value.type == VAL_FUNCTION || value.type == VAL_STRING)
+
 
 struct Obj;
 
