@@ -36,6 +36,9 @@ typedef struct {
     size_t stringCount;
 
     Obj* objects;
+    size_t amountOfObjs;
+
+    size_t nextGC;
 
     Obj** greyStack;
     size_t greyCount;

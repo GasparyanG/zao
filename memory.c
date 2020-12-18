@@ -102,8 +102,9 @@ static void blacken(Obj* object) {
             ObjClosure* closure = AS_CLOSURE(object);
             markObject(AS_OBJ(closure->function));
 
-            // for (uint8_t i = 0; i < closure->function->upvaluesCount; i++)
-            //     markObject(AS_OBJ(closure->upvalues[i]));
+            for (uint8_t i = 0; i < closure->function->upvaluesCount; i++)
+                if (closure->upvalues[i] != NULL)
+                    markObject(AS_OBJ(closure->upvalues[i]));
         }
     }
 }
@@ -124,7 +125,7 @@ static void freeObject(Obj* object) {
             free(AS_STRING(object));
             break;
         case OBJ_FUNCTION: {
-            printf("free function");
+            free(AS_FUNCTION(object));
             break;
         } case OBJ_CLOSURE: {
             free(AS_CLOSURE(object));
@@ -156,11 +157,19 @@ static void sweep() {
                 freeObject(current);
                 current = previous->next;
             }
+
+            vm.amountOfObjs--;
         }
     }
 }
 
+static bool isEnoughGarbage() {
+    return vm.nextGC * GC_THRESHOLD_FACTOR <= vm.amountOfObjs;
+}
+
 static void collectGarbage() {
+    if (!isEnoughGarbage()) return;
+
     printf("--GC-Start\n");
 
     mark();
@@ -168,6 +177,9 @@ static void collectGarbage() {
     sweep();
 
     printf("--GC-End\n");
+
+    if (vm.nextGC* GC_ENLARGEMENT_THRESHOLD <= vm.amountOfObjs)
+        vm.nextGC *= GC_ENLARGEMENT_FACTOR;
 }
 
 Obj* allocateObject(ObjType type) {
@@ -200,6 +212,7 @@ Obj* allocateObject(ObjType type) {
     obj->next = vm.objects;
     obj->isMarked = false;
     vm.objects = obj;
+    vm.amountOfObjs++;
 
     return obj;
 }

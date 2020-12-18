@@ -11,6 +11,9 @@ void initVM() {
     vm.callFrame = NULL;
     vm.objects = NULL;
     
+    vm.nextGC = 12;
+    vm.amountOfObjs = 0;
+
     vm.greyStack = NULL;
     vm.greyCount = 0;
     vm.greyCapacity = 0;

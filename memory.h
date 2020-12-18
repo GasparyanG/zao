@@ -8,6 +8,10 @@
 #define ENLARGEMENT_FACTOR 2
 #define ARRAY_INITIAL_SIZE 8
 
+#define GC_THRESHOLD_FACTOR 0.75
+#define GC_ENLARGEMENT_THRESHOLD 0.65
+#define GC_ENLARGEMENT_FACTOR 2
+
 #define ALLOCATE(type, pointer, size) \
     (type*)allocate((void*)pointer, size * sizeof(type))
 
