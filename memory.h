@@ -10,6 +10,7 @@
 
 #define GC_THRESHOLD_FACTOR 0.75
 #define GC_ENLARGEMENT_THRESHOLD 0.65
+#define GC_REDUCTION_THRESHOLD 0.5
 #define GC_ENLARGEMENT_FACTOR 2
 
 #define ALLOCATE(type, pointer, size) \

@@ -178,8 +178,10 @@ static void collectGarbage() {
 
     printf("--GC-End\n");
 
-    if (vm.nextGC* GC_ENLARGEMENT_THRESHOLD <= vm.amountOfObjs)
+    if (vm.nextGC * GC_ENLARGEMENT_THRESHOLD <= vm.amountOfObjs)
         vm.nextGC *= GC_ENLARGEMENT_FACTOR;
+    else if (vm.nextGC * GC_REDUCTION_THRESHOLD >= vm.amountOfObjs)
+        vm.nextGC *= GC_ENLARGEMENT_THRESHOLD;
 }
 
 Obj* allocateObject(ObjType type) {
