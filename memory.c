@@ -84,9 +84,44 @@ static void processGrey() {
     vm.greyCapacity = 0;
 }
 
+static void freeObject(Obj* object) {
+    switch(object->type) {
+        case OBJ_STRING:
+            printf("free string\n");
+            // free(AS_STRING(object));
+            break;
+        case OBJ_FUNCTION: {
+            printf("free function\n");
+            break;
+        } case OBJ_CLOSURE: {
+            printf("free closure\n");
+            break;
+        }
+    }
+}
 
 static void sweep() {
+    Obj* previous = NULL;
+    Obj* current = vm.objects;
 
+    while (current != NULL) {
+        if (current->isMarked) {
+            current->isMarked = false;
+            previous = current;
+            current = current->next;
+        } else {
+            if (current == vm.objects) {
+                vm.objects = current->next;
+                freeObject(current);
+                current = vm.objects;
+            } else {
+                previous->next = current->next;
+                current->next = NULL;
+                freeObject(current);
+                current = previous->next;
+            }
+        }
+    }
 }
 
 static void collectGarbage() {
@@ -106,23 +141,28 @@ Obj* allocateObject(ObjType type) {
 
     Obj* obj;
     switch(type) {
-        case OBJ_STRING:
+        case OBJ_STRING: {
             obj = AS_OBJ(ALLOCATE_WP(ObjString, 1));
             break;
-        case OBJ_FUNCTION:
+        }
+        case OBJ_FUNCTION: {
             obj = AS_OBJ(ALLOCATE_WP(ObjFunction, 1));
             break;
-        case OBJ_CLOSURE:
+        }
+        case OBJ_CLOSURE: {
             obj = AS_OBJ(ALLOCATE_WP(ObjClosure, 1));
             break;
-        case OBJ_UPVALUE:
+        }
+        case OBJ_UPVALUE: {
             obj = AS_OBJ(ALLOCATE_WP(ObjUpValue, 1));
             break;
+        }
     }
 
     // Prepare object and chain in singly-linked list.
     obj->type = type;
     obj->next = vm.objects;
+    obj->isMarked = false;
     vm.objects = obj;
 
     return obj;

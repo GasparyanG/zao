@@ -53,6 +53,7 @@ typedef struct {
 } ObjFunction;
 
 typedef struct {
+    Obj obj;
     Value* location;
     Value value;
 } ObjUpValue;

@@ -1,7 +1,8 @@
 #include "object.h"
+#include "memory.h"
 
 ObjClosure* newClosure(ObjFunction* function) {
-    ObjClosure* closure = (ObjClosure*)malloc(sizeof(ObjClosure));
+    ObjClosure* closure = (ObjClosure*)allocateObject(OBJ_CLOSURE);
 
     closure->function = function;
 

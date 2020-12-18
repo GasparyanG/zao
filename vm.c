@@ -35,8 +35,6 @@ void freeCallFrame(CallFrame* callFrame) {
 ObjString* internString(ObjString* strToCmp) {
     for (uint32_t i = 0; i < vm.stringCount; i++) {
         if (strToCmp->hash == vm.internedStrings[i]->hash) {
-            free((char*)strToCmp->value);
-            free(strToCmp);
             return vm.internedStrings[i];
         }
     }
