@@ -66,9 +66,25 @@ static void markTable(Table table) {
     }
 }
 
+static void markLocals() {
+    for (uint8_t i = 0; i < UINT8_MAX; i++)
+        if (IS_OBJ(vm.locals[i]))
+            markObject(vm.locals[i].as.obj);
+}
+
+static void markCallFrame() {
+    CallFrame* callFrame = vm.callFrame;
+    while (callFrame != NULL) {
+        markObject(AS_OBJ(callFrame->closure));
+        callFrame = callFrame->nextFrame;
+    }
+}
+
 static void mark() {
     markArray(vm.stack, (vm.stackTop - vm.stack));
     markTable(vm.globals);
+    markLocals();
+    markCallFrame();
     markCompilers();
 }
 
@@ -82,14 +98,13 @@ static void blacken(Obj* object) {
             break;
         }
 
-        // case OBJ_CLOSURE: {
-        //     ObjClosure* closure = AS_CLOSURE(object);
-        //     markObject(AS_OBJ(closure->function));
-        // }
+        case OBJ_CLOSURE: {
+            ObjClosure* closure = AS_CLOSURE(object);
+            markObject(AS_OBJ(closure->function));
 
-        case OBJ_STRING:
-            markObject(AS_OBJ(object));
-            break;
+            // for (uint8_t i = 0; i < closure->function->upvaluesCount; i++)
+            //     markObject(AS_OBJ(closure->upvalues[i]));
+        }
     }
 }
 
@@ -106,16 +121,16 @@ static void processGrey() {
 static void freeObject(Obj* object) {
     switch(object->type) {
         case OBJ_STRING:
-            printf("free string\n");
+            free(AS_STRING(object));
             break;
         case OBJ_FUNCTION: {
-            printf("free function\n");
+            printf("free function");
             break;
         } case OBJ_CLOSURE: {
-            printf("free closure\n");
+            free(AS_CLOSURE(object));
             break;
         } case OBJ_UPVALUE: {
-            printf("free upvalue\n");
+            free(AS_UPVALUE(object));
             break;
         }
     }

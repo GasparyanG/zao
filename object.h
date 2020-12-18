@@ -10,6 +10,7 @@
 #define AS_STRING(obj)    ((ObjString*)(obj))
 #define AS_FUNCTION(obj)  ((ObjFunction*)(obj))
 #define AS_CLOSURE(obj)   ((ObjClosure*)(obj))
+#define AS_UPVALUE(obj)   ((ObjUpValue*)(obj))
 
 #define AS_OBJ(obj)       ((Obj*)(obj))
 
