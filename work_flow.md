@@ -73,13 +73,13 @@
 - [x] -:- - -:-          - Handle upvalue capturing in vm side.
 - [x] -:- - -:-          - Handle upvalue closing.
 
-### 12/15 - 16 - 17/2020
+### 12/15 - 16 - 17 - 18/2020
 - [x] -:- - -:-          - Design GC.
 - [x] -:- - -:-          - Object allocation and object singly-linked list in vm.
 - [x] -:- - -:-          - Move constants from vm to compilers.
-- [~] -:- - -:-          - Marking.
-- [] -:- - -:-          - Sweeping.
-- [] -:- - -:-          - GC call frequency.
+- [x] -:- - -:-          - Marking.
+- [x] -:- - -:-          - Sweeping.
+- [x] -:- - -:-          - GC call frequency.
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine

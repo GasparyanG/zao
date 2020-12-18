@@ -16,12 +16,15 @@
     - `stack`               - meant for maintaining implementation flow.
     - `stackTop`            - meant for keeping track on one-past the end element.
     - `globals`             - global variables.
-    - `constants`           - constant values.
-    - `constPos`            - next constant index.
     - `callFrame`           - function call frame (i.e. function local variables pointer).
     - `internedStrings`     - ObjString array.
     - `stringCount`         - amount of interned strings. Serves as index and size indicator.
     - `locals`              - scope local values.
+    - `nextGC`              - when does the gc will be called next ?
+    - `objects`             - allocated objects singly-linked list.
+    - `greyStack`           - tri-color abstraction helper (a.k.a worklist).
+    - `greyCount`           - amount of "grayed" objects.
+    - `greyCapacity`        - amount of space for "gray" objects.
 
 * [WIP]void runtimeError(const char* format, ...)
     - description
@@ -325,6 +328,8 @@
 
 * Obj::properties
     - `type`            - type of object.
+    - `next`            - for intrusive ds sake.
+    - `isMarked`        - tri-color abstraction helper (a.k.a "blacked").
 
 * ObjString::properties
     - `obj`             - to be able to use polymorphism.
@@ -339,8 +344,11 @@
     - `arity`           - amount of arguments.
     - `upvalues`        - outer scope variable dispatcher.
     - `upvaluesCount`   - amount of upvalues detected.
+    - `constants`           - constant values.
+    - `constPos`            - next constant index.
 
 * ObjUpValue
+    - `obj`             - to be able to use polymorphism.
     - `location`        - pointer to value (this can either point to siblig or to locals' value).
     - `value`           - value which will be copied to structure after return operation.
 
