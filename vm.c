@@ -206,6 +206,25 @@ static ObjUpValue* captureUpValue(Value* value) {
     return upvalue;
 }
 
+static void call(uint8_t arity) {
+    Obj* obj = peek(arity + 1)->as.obj;
+
+    switch(obj->type) {
+        case OBJ_CLOSURE: {
+            vm.callFrame = updateCallFrame(arity);
+            updateVariables(arity);
+            pop();      // Pop function from stack.
+            break;
+        }
+
+        case OBJ_CLASS: {
+            // TODO: implement instantiation logic.
+            break;
+        }
+    }
+
+}
+
 ExecutionResult run() {
     vm.callFrame = initCallFrameFromCompiler();
 
@@ -431,10 +450,7 @@ ExecutionResult run() {
             }
 
             case OP_CALL: {
-                uint8_t arity = READ_BYTE();
-                vm.callFrame = updateCallFrame(arity);
-                updateVariables(arity);
-                pop();      // Pop function from stack.
+                call(READ_BYTE());
                 break;
             }
 
