@@ -41,7 +41,9 @@ static void markObject(Obj* object) {
 static void markArray(Value* arr, ssize_t size) {
     if (size <= 0) return;
     for (size_t i = 0; i < size; i++) {
-        if (arr[i].type == VAL_FUNCTION || arr[i].type == VAL_STRING) {
+        if (arr[i].type == VAL_FUNCTION 
+            || arr[i].type == VAL_STRING 
+            || arr[i].type == VAL_CLASS) {
             markObject(arr[i].as.obj);
         }
     }
@@ -124,14 +126,24 @@ static void freeObject(Obj* object) {
         case OBJ_STRING:
             free(AS_STRING(object));
             break;
+
         case OBJ_FUNCTION: {
             free(AS_FUNCTION(object));
             break;
-        } case OBJ_CLOSURE: {
+        } 
+        
+        case OBJ_CLOSURE: {
             free(AS_CLOSURE(object));
             break;
-        } case OBJ_UPVALUE: {
+        } 
+        
+        case OBJ_UPVALUE: {
             free(AS_UPVALUE(object));
+            break;
+        } 
+        
+        case OBJ_CLASS: {
+            free(AS_CLASS(object));
             break;
         }
     }
@@ -205,6 +217,10 @@ Obj* allocateObject(ObjType type) {
         }
         case OBJ_UPVALUE: {
             obj = AS_OBJ(ALLOCATE_WP(ObjUpValue, 1));
+            break;
+        }
+        case OBJ_CLASS: {
+            obj = AS_OBJ(ALLOCATE_WP(ObjClass, 1));
             break;
         }
     }

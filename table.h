@@ -5,10 +5,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "object.h"
 #include "value.h"
 
 #define LOAD_FACTOR 0.75    // Enlarge Table if size/capacity > LOAD_FACTOR.
+
+struct ObjString;
 
 typedef struct {
     ObjString* key;     // Key to search with.
@@ -16,12 +17,11 @@ typedef struct {
     bool tombstone;     // Are we deleted or not ?
 } Entry;
 
-typedef struct {
+typedef struct Table {
     Entry* entries;     // Array of entires.
     size_t size;        // Amount of entires.
     size_t capacity;    // Amount of space to store entires.
 } Table;
-
 
 // Helper functions.
 // Resource management.

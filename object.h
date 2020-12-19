@@ -11,6 +11,7 @@
 #define AS_FUNCTION(obj)  ((ObjFunction*)(obj))
 #define AS_CLOSURE(obj)   ((ObjClosure*)(obj))
 #define AS_UPVALUE(obj)   ((ObjUpValue*)(obj))
+#define AS_CLASS(obj)     ((ObjClass*)(obj))
 
 #define AS_OBJ(obj)       ((Obj*)(obj))
 
@@ -18,7 +19,9 @@ typedef enum {
     OBJ_STRING,
     OBJ_FUNCTION,
     OBJ_CLOSURE,
-    OBJ_UPVALUE
+    OBJ_UPVALUE,
+    OBJ_CLASS,
+    OBJ_INSTANCE
 } ObjType;
 
 typedef struct {
@@ -33,7 +36,7 @@ typedef struct Obj {
     Obj* next;
 } Obj;
 
-typedef struct {
+typedef struct ObjString {
     Obj obj;            // Type identifier.
     const char* value;  // Payload.
     uint32_t hash;      // Hashed string;
@@ -69,6 +72,7 @@ typedef struct {
     Obj obj;
 } ObjClass;
 
+#include "table.h"
 typedef struct {
     Obj obj;
     ObjClass* blueprint;
