@@ -102,6 +102,9 @@ static void printValue(Value* value) {
         case VAL_CLASS:
             printf("<class>\n");
             break;
+        case VAL_INSTANCE:
+            printf("<Instace>\n");
+            break;
         default:
             return; // Unreachable.
     }
@@ -218,7 +221,14 @@ static void call(uint8_t arity) {
         }
 
         case OBJ_CLASS: {
-            // TODO: implement instantiation logic.
+            // TODO: think about initialization arguments.
+            // Above code will eliminate arguments, thus leaving class obj in stackTop.
+            Value classObj = *pop();
+            ObjInstance* instance = newObjInstance(AS_CLASS(classObj.as.obj));
+            Value value;
+            value.type = VAL_INSTANCE;
+            value.as.obj = AS_OBJ(instance);
+            push(&value);
             break;
         }
     }

@@ -12,6 +12,7 @@
 #define AS_CLOSURE(obj)   ((ObjClosure*)(obj))
 #define AS_UPVALUE(obj)   ((ObjUpValue*)(obj))
 #define AS_CLASS(obj)     ((ObjClass*)(obj))
+#define AS_INSTANCE(obj)  ((ObjInstance*)(obj))
 
 #define AS_OBJ(obj)       ((Obj*)(obj))
 
@@ -80,5 +81,6 @@ typedef struct {
 } ObjInstance;
 
 ObjClosure* newClosure(ObjFunction* function);
+ObjInstance* newObjInstance(ObjClass* objClass);
 
 #endif

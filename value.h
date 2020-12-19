@@ -9,7 +9,8 @@
 #define IS_OBJ(value)       ( \
     value.type == VAL_FUNCTION \
     || value.type == VAL_STRING \
-    || value.type == VAL_CLASS)
+    || value.type == VAL_CLASS \
+    || value.type == VAL_INSTANCE)
 
 
 struct Obj;
@@ -21,7 +22,8 @@ typedef enum {
     VAL_NUMBER,
     VAL_STRING,
     VAL_FUNCTION,
-    VAL_CLASS
+    VAL_CLASS,
+    VAL_INSTANCE
 } ValueType;
 
 typedef struct {

@@ -36,6 +36,7 @@
 - [] compiler.c : for optimization same, implement short circuit.
 - [] compiler.c : pass identifier error message.
 - [] compiler.c : extract method initCompiler -> initFunction.
+- [] vm.c       : think about initialization arguments.
 
 ### In Progress
 

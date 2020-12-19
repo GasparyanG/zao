@@ -16,3 +16,15 @@ ObjClosure* newClosure(ObjFunction* function) {
 
     return closure;
 }
+
+ObjInstance* newObjInstance(ObjClass* objClass) {
+    ObjInstance* instance = (ObjInstance*)allocateObject(OBJ_INSTANCE);
+    instance->blueprint = objClass;
+
+    // Initialize properties container.
+    Table properties;
+    initTable(&properties);
+    instance->properties = properties;
+
+    return instance;
+}

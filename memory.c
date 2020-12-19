@@ -43,7 +43,8 @@ static void markArray(Value* arr, ssize_t size) {
     for (size_t i = 0; i < size; i++) {
         if (arr[i].type == VAL_FUNCTION 
             || arr[i].type == VAL_STRING 
-            || arr[i].type == VAL_CLASS) {
+            || arr[i].type == VAL_CLASS 
+            || arr[i].type == VAL_INSTANCE) {
             markObject(arr[i].as.obj);
         }
     }
@@ -107,6 +108,13 @@ static void blacken(Obj* object) {
             for (uint8_t i = 0; i < closure->function->upvaluesCount; i++)
                 if (closure->upvalues[i] != NULL)
                     markObject(AS_OBJ(closure->upvalues[i]));
+            break;
+        }
+
+        case OBJ_INSTANCE: {
+            ObjClass* objClass = AS_INSTANCE(object)->blueprint;
+            markObject(AS_OBJ(objClass));
+            break;
         }
     }
 }
@@ -144,6 +152,11 @@ static void freeObject(Obj* object) {
         
         case OBJ_CLASS: {
             free(AS_CLASS(object));
+            break;
+        }
+
+        case OBJ_INSTANCE: {
+            free(AS_INSTANCE(object));
             break;
         }
     }
@@ -221,6 +234,10 @@ Obj* allocateObject(ObjType type) {
         }
         case OBJ_CLASS: {
             obj = AS_OBJ(ALLOCATE_WP(ObjClass, 1));
+            break;
+        }
+        case OBJ_INSTANCE: {
+            obj = AS_OBJ(ALLOCATE_WP(ObjInstance, 1));
             break;
         }
     }
