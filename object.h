@@ -65,6 +65,16 @@ typedef struct {
     ObjUpValue** upvalues;
 } ObjClosure;
 
+typedef struct {
+    Obj obj;
+} ObjClass;
+
+typedef struct {
+    Obj obj;
+    ObjClass* blueprint;
+    Table properties;
+} ObjInstance;
+
 ObjClosure* newClosure(ObjFunction* function);
 
 #endif

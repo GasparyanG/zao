@@ -503,7 +503,6 @@ ParseRule* getRule(TokenType type) {
     return &rules[type];
 }
 
-
 // Compiler section.
 Compiler* compiler = NULL;
 
@@ -779,6 +778,10 @@ static void declareFunction() {
     endFunction();
 }
 
+static void declareClass() {
+    
+}
+
 void declaration() {
     switch(parser.current.type) {
         case TOKEN_VAR:
@@ -786,6 +789,9 @@ void declaration() {
             break;
         case TOKEN_FUN:
             declareFunction();
+            break;
+        case TOKEN_CLASS:
+            declareClass();
             break;
         default:
             statement();

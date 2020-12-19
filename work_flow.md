@@ -81,6 +81,13 @@
 - [x] -:- - -:-          - Sweeping.
 - [x] -:- - -:-          - GC call frequency.
 
+### 12/19/2020
+- [x] -:- - -:-          - Design Classes and Instances.
+- [] -:- - -:-          - Implement class compilation.
+- [] -:- - -:-          - Implement object instantiation.
+- [] -:- - -:-          - Implement property getters and setters.
+
+
 ### ZaO Implementation Path
 1) Set Up Virtual Machine
     1.1) instruction pointer
