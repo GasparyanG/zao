@@ -85,7 +85,7 @@
 - [x] -:- - -:-          - Design Classes and Instances.
 - [x] -:- - -:-          - Implement class compilation.
 - [x] -:- - -:-          - Implement object instantiation.
-- [] -:- - -:-          - Implement property getters and setters.
+- [x] -:- - -:-          - Implement property getters and setters.
 
 
 ### ZaO Implementation Path

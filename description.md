@@ -165,6 +165,16 @@
 * OP_RETURN
     -effect: 0
 
+* OP_SET_LOCAL, OP_SET_UPVALUE, OP_SET_PROPRETY
+    - effect: -1
+    - pop value which is required to set with.
+
+* OP_GET_LOCAL, OP_GET_UPVALUE
+    - effect: 1
+
+* OP_GET_PROPERTY
+    - effect: 0
+
 ### Scanner
 * protperties
     - `sourceCode`      - self-explanatory.
@@ -233,6 +243,11 @@
     - description
         - handles (expression), while being prioritized againset some operations 
         (e.g. litterals, arithmetics, etc.)
+
+* void dot(bool canAssign)
+    - description
+        - handles property access (e.g. human.name, human.age = 25).
+        - handles neasted propetry access (e.g. car.door.window, car.engine.gear = 4).
 
 * expression()
     - description
@@ -356,3 +371,11 @@
     - `obj`             - to be able to use polymorphism.
     - `function`        - ObjFunction*.
     - `upvalues`        - keep track on not local variables.
+
+* ObjClass::properties
+    - `obj`             - to be able to use polymorphism.
+
+* ObjInstance::propetries
+    - `obj`             - to be able to use polymorphism.
+    - `blueprint`       - ObjClass. [WIP]Inherit methods.
+    - `properties`      - table of protperties.
