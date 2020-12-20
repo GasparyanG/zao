@@ -114,6 +114,7 @@ static void blacken(Obj* object) {
         case OBJ_INSTANCE: {
             ObjClass* objClass = AS_INSTANCE(object)->blueprint;
             markObject(AS_OBJ(objClass));
+            markTable(AS_INSTANCE(object)->properties);
             break;
         }
     }
