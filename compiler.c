@@ -294,6 +294,7 @@ static void dot(bool canAssign) {
         }
 
         case TOKEN_DOT: {
+            addInstructions(OP_GET_PROPERTY, addConstant(value));
             advance();
             dot(true);
             break;
