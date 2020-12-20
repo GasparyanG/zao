@@ -43,11 +43,10 @@ static void repl() {
 }
 
 int main(int argc, char* argv[]) {
-    ObjFunction* function = (ObjFunction*)allocateObject(OBJ_FUNCTION);
-
-    initCompiler(function);
     initVM();
 
+    ObjFunction* function = (ObjFunction*)allocateObject(OBJ_FUNCTION);
+    initCompiler(function);
 
     if (argc > 1) {
         initScanner(fileInput(argv[1]));

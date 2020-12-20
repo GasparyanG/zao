@@ -81,7 +81,7 @@
 - [x] -:- - -:-          - Sweeping.
 - [x] -:- - -:-          - GC call frequency.
 
-### 12/19/2020
+### 12/19 - 20/2020
 - [x] -:- - -:-          - Design Classes and Instances.
 - [x] -:- - -:-          - Implement class compilation.
 - [x] -:- - -:-          - Implement object instantiation.
