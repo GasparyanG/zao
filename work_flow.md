@@ -83,8 +83,8 @@
 
 ### 12/19/2020
 - [x] -:- - -:-          - Design Classes and Instances.
-- [] -:- - -:-          - Implement class compilation.
-- [] -:- - -:-          - Implement object instantiation.
+- [x] -:- - -:-          - Implement class compilation.
+- [x] -:- - -:-          - Implement object instantiation.
 - [] -:- - -:-          - Implement property getters and setters.
 
 

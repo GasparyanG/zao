@@ -103,7 +103,7 @@ static void printValue(Value* value) {
             printf("<class>\n");
             break;
         case VAL_INSTANCE:
-            printf("<Instace>\n");
+            printf("<instace>\n");
             break;
         default:
             return; // Unreachable.
@@ -410,6 +410,32 @@ ExecutionResult run() {
 
             case OP_GET_UPVALUE: {
                 push(vm.callFrame->closure->upvalues[READ_BYTE()]->location);
+                break;
+            }
+
+            case OP_GET_PROPERTY: {
+                ObjInstance* instance = AS_INSTANCE(pop()->as.obj);
+                Entry entry = *findEntry(&instance->properties, READ_STRING());
+                push(&entry.value);
+                break;
+            }
+
+            case OP_SET_PROPERTY: {
+                Value value = *pop();
+                ObjInstance* instance = AS_INSTANCE(peek(1)->as.obj);
+                ObjString* key = READ_STRING();
+                
+                Entry* entry = NULL;
+                if (instance->properties.capacity > 0)
+                    entry = findEntry(&instance->properties, key);
+                if (entry == NULL) {
+                    Entry newEntry;
+                    newEntry.key = key;
+                    newEntry.value = value;
+                    addEntry(&instance->properties, &newEntry);
+                } else
+                    entry->value = value;                
+
                 break;
             }
 

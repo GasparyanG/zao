@@ -411,6 +411,7 @@ Token scanToken() {
 
         case ';': return prepToken(TOKEN_SEMI_COLON);
         case ',': return prepToken(TOKEN_COMMA);
+        case '.': return prepToken(TOKEN_DOT);
 
         // TODO: deal with other tokens too.
         default:

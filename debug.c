@@ -103,6 +103,12 @@ void displayInstruction(uint8_t* ip) {
         case OP_SET_UPVALUE:
             offset = constantInstruction("OP_SET_UPVALUE", ip);
             break;
+        case OP_GET_PROPERTY:
+            offset = simpleInstruction("OP_GET_PROPERTY");
+            break;
+        case OP_SET_PROPERTY:
+            offset = simpleInstruction("OP_SET_PROPERTY");
+            break;
         case OP_CLOSURE:
             offset = simpleInstruction("OP_CLOSURE");
             break;

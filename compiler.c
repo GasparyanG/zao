@@ -9,6 +9,7 @@ static void declareVariable();
 void declaration();
 static int resolveLocal(Compiler* cmpl, Token* local);
 static int resolveUpvalue(Compiler* cmpl, Token* local);
+Value prepareValue(Obj* obj, ValueType type);
 
 // Parser section.
 Parser parser;
@@ -58,6 +59,7 @@ typedef enum {
     PREC_NONE,          // Interupt when encountered.
     PREC_LITERAL,
     PREC_ASSIGN,        // a + b = c + d should fail.
+    PREC_INVOKE,        // .
     PREC_MINUS_PLUS,    // -, +
     PREC_MULT_DIV,      // *,/
     PREC_COMPARISION,   // >, <, ==
@@ -271,6 +273,39 @@ static void call(bool canAssign) {
     addInstructions(OP_CALL, numOfArgs);
 }
 
+static void dot(bool canAssign) {
+    consume(TOKEN_IDENTIFIER, "Identifier is expected after '.'.");
+
+    ObjString* string = copyString(parser.current.string);
+    Value value = prepareValue(AS_OBJ(string), VAL_STRING);
+
+    advance();
+    switch(parser.current.type) {
+        case TOKEN_EQUAL: {
+            advance();
+            expression();
+            addInstructions(OP_SET_PROPERTY, addConstant(value));
+            break;
+        }
+
+        case TOKEN_SEMI_COLON: {
+            addInstructions(OP_GET_PROPERTY, addConstant(value));
+            break;
+        }
+
+        case TOKEN_DOT: {
+            advance();
+            dot(true);
+            break;
+        }
+
+        case TOKEN_LEFT_PAREN: {
+            // TODO: implement method invocation.
+            break;
+        }
+    }
+}
+
 static void scopeStart() {
     compiler->scopeDepth++;
 }
@@ -474,7 +509,7 @@ ParseRule rules[] = {
     [TOKEN_RIGHT_CURLY]     = {NULL,     NULL,       PREC_NONE},
     [TOKEN_COMMA]           = {NULL,     NULL,       PREC_NONE},
     [TOKEN_SEMI_COLON]      = {NULL,     NULL,       PREC_NONE},
-    [TOKEN_QUESTION]        = {NULL,     NULL,       PREC_NONE}, 
+    [TOKEN_DOT]             = {NULL,     dot,        PREC_INVOKE}, 
     [TOKEN_COLON]           = {NULL,     NULL,       PREC_NONE},
     [TOKEN_BANG]            = {unary,    NULL,       PREC_NONE},
     [TOKEN_FALSE]           = {literal,  NULL,       PREC_LITERAL},
