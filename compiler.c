@@ -11,6 +11,18 @@ static int resolveLocal(Compiler* cmpl, Token* local);
 static int resolveUpvalue(Compiler* cmpl, Token* local);
 Value prepareValue(Obj* obj, ValueType type);
 
+
+// Class compiler section.
+typedef struct {
+    ObjClass* objClass;
+} ClassCompiler;
+
+ClassCompiler classCompiler;
+
+void initClassCompiler() {
+    classCompiler.objClass = NULL;
+}
+
 // Parser section.
 Parser parser;
 
