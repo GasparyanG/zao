@@ -159,7 +159,7 @@
 * OP_JUMP, OP_JUMP_BACK, OP_JUMP_FOR
     - effect: 0
 
-* OP_CALL
+* OP_CALL, OP_INVOKE
     - effect: 0
 
 * OP_RETURN
@@ -174,6 +174,10 @@
 
 * OP_GET_PROPERTY
     - effect: 0
+
+* OP_SET_METHOD
+    - effect: -2
+    - pop class to access methods after which pop function to set method.
 
 ### Scanner
 * protperties
@@ -374,6 +378,7 @@
 
 * ObjClass::properties
     - `obj`             - to be able to use polymorphism.
+    - `methods`         - table for methods.
 
 * ObjInstance::propetries
     - `obj`             - to be able to use polymorphism.

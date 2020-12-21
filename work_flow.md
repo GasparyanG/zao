@@ -89,7 +89,7 @@
 
 ### 12/21/2020
 - [x] -:- - -:-          - Design Initialization and Methods.
-- [] -:- - -:-          - Implement Method invokation.
+- [x] -:- - -:-          - Implement Method invokation.
 - [] -:- - -:-          - Implement Initialization with arguments.
 - [] -:- - -:-          - Handle `this` keyword.
 
