@@ -313,7 +313,9 @@ static void dot(bool canAssign) {
         }
 
         case TOKEN_LEFT_PAREN: {
-            // TODO: implement method invocation.
+            addInstructions(OP_INVOKE, addConstant(value));
+            advance();
+            call(true);
             break;
         }
     }

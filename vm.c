@@ -497,6 +497,16 @@ ExecutionResult run() {
                 break;
             }
 
+            case OP_INVOKE: {
+                // Add closure to stack.
+                ObjInstance* instance = AS_INSTANCE(pop()->as.obj);
+                ObjClass* objClass = instance->blueprint;
+
+                Entry* entry = findEntry(&objClass->methods, READ_STRING());
+                push(&entry->value);
+                break;
+            }
+
             case OP_POP:
                 pop();
                 break;

@@ -145,6 +145,9 @@ void displayInstruction(uint8_t* ip) {
         case OP_CALL:
             offset = simpleInstruction("OP_CALL");
             break;
+        case OP_INVOKE:
+            offset = simpleInstruction("OP_INVOKE");
+            break;
         case OP_POP:
             offset = simpleInstruction("OP_POP");
             break;
