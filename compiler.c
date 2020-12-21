@@ -847,15 +847,25 @@ static void declareClassName() {
     advance();
 }
 
+static void classStart(ObjClass* objClass) {
+    classCompiler.objClass = objClass;
+}
+
+static void classEnd() {
+    classCompiler.objClass = NULL;
+}
+
 static void declareClass() {
     ObjClass* objClass = (ObjClass*)allocateObject(OBJ_CLASS);
 
+    classStart(objClass);
     Value value = prepareValue(AS_OBJ(objClass), VAL_CLASS);
     addInstructions(OP_CONSTANT, addConstant(value));
     declareClassName();
 
     consume(TOKEN_LEFT_CURLY, "'{' is required after class name.");
     block(true);
+    classEnd();
 }
 
 void declaration() {
