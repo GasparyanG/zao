@@ -552,7 +552,7 @@ void initCompiler(ObjFunction* function) {
     Compiler* comp = (Compiler*)malloc(sizeof(Compiler));
 
     comp->panicMode = false;     // There is no error in bytecode.
-    comp->localsCount = 0;
+    comp->localsCount = 1;       // Function offset.
     comp->scopeDepth = compiler == NULL ? 0: compiler->scopeDepth;
     
     // Function section.
