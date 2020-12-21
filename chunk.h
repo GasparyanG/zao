@@ -39,6 +39,7 @@ typedef enum {
     OP_SET_UPVALUE,
     OP_SET_PROPERTY,
     OP_GET_PROPERTY,
+    OP_SET_METHOD,
     OP_CLOSURE,
     OP_AND,
     OP_OR,

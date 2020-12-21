@@ -109,6 +109,9 @@ void displayInstruction(uint8_t* ip) {
         case OP_SET_PROPERTY:
             offset = simpleInstruction("OP_SET_PROPERTY");
             break;
+        case OP_SET_METHOD:
+            offset = simpleInstruction("OP_SET_METHOD");
+            break;
         case OP_CLOSURE:
             offset = simpleInstruction("OP_CLOSURE");
             break;

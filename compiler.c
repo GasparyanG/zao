@@ -791,7 +791,12 @@ static void declareFunctionName(ObjFunction* function) {
     entry.key = copyString(parser.current.string);
     entry.tombstone = false;
 
-    if (addEntry(&vm.globals, &entry)) {
+    if (classCompiler.objClass != NULL) {
+        if (addEntry(&classCompiler.objClass->methods, &entry)) {
+            error(&parser.current, "Method name already exists");
+            return; // Terminate.
+        }
+    } else if (addEntry(&vm.globals, &entry)) {
         error(&parser.current, "Variable already exists");
         return; // Terminate.
     }
@@ -801,7 +806,10 @@ static void declareFunctionName(ObjFunction* function) {
     // Add string to constants' table.
     function->name = entry.key;
     Value value = prepareValue(AS_OBJ(entry.key), VAL_STRING);
-    addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
+    if (classCompiler.objClass != NULL) {
+        addInstructions(OP_SET_METHOD, addConstant(value));
+    } else
+        addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
 }
 
 static void declareFunction() {
@@ -855,6 +863,17 @@ static void classEnd() {
     classCompiler.objClass = NULL;
 }
 
+static void declareMethods() {
+    consume(TOKEN_LEFT_CURLY, "'{' is required after class name.");
+    advance();
+
+    while (parser.current.type != TOKEN_RIGHT_CURLY)
+        declareFunction();
+    
+    consume(TOKEN_RIGHT_CURLY, "'}' is required after class body.");
+    advance();
+}
+
 static void declareClass() {
     ObjClass* objClass = (ObjClass*)allocateObject(OBJ_CLASS);
 
@@ -862,9 +881,7 @@ static void declareClass() {
     Value value = prepareValue(AS_OBJ(objClass), VAL_CLASS);
     addInstructions(OP_CONSTANT, addConstant(value));
     declareClassName();
-
-    consume(TOKEN_LEFT_CURLY, "'{' is required after class name.");
-    block(true);
+    declareMethods();
     classEnd();
 }
 

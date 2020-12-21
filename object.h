@@ -69,11 +69,12 @@ typedef struct {
     ObjUpValue** upvalues;
 } ObjClosure;
 
+#include "table.h"
 typedef struct {
     Obj obj;
+    Table methods;
 } ObjClass;
 
-#include "table.h"
 typedef struct {
     Obj obj;
     ObjClass* blueprint;
