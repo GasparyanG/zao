@@ -439,6 +439,13 @@ ExecutionResult run() {
                 break;
             }
 
+            case OP_SET_METHOD: {
+                ObjClass* objClass = AS_CLASS(pop()->as.obj);
+                Entry* entry = findEntry(&objClass->methods, READ_STRING());
+                entry->value = *pop();
+                break;
+            }
+
             case OP_CLOSURE: {
                 ObjFunction* function = AS_FUNCTION(pop()->as.obj);
                 ObjClosure* closure = newClosure(function);

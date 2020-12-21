@@ -212,7 +212,7 @@ static void collectGarbage() {
 
 Obj* allocateObject(ObjType type) {
 #ifdef ZAO_GC
-    collectGarbage();
+    // collectGarbage();
 #endif
 
     Obj* obj;

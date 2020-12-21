@@ -807,6 +807,8 @@ static void declareFunctionName(ObjFunction* function) {
     function->name = entry.key;
     Value value = prepareValue(AS_OBJ(entry.key), VAL_STRING);
     if (classCompiler.objClass != NULL) {
+        Value classValue = prepareValue(AS_OBJ(classCompiler.objClass), VAL_CLASS);
+        addInstructions(OP_CONSTANT, addConstant(classValue));
         addInstructions(OP_SET_METHOD, addConstant(value));
     } else
         addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
@@ -819,7 +821,7 @@ static void declareFunction() {
     addInstructions(OP_CONSTANT, addConstant(value));
     addInstruction(OP_CLOSURE);
     declareFunctionName(function);  // TODO: pass identifier error message.
-    
+
     initCompiler(function);
 
     scopeStart();       // Function should have its own scope for arguments and locals.
@@ -834,6 +836,7 @@ static void declareFunction() {
     endFunction();
 }
 
+// Class Section.
 static void declareClassName() {
     advance();
     consume(TOKEN_IDENTIFIER, "Identifier is expected after 'class'.");
