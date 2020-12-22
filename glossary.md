@@ -36,7 +36,8 @@
 - [] compiler.c : for optimization same, implement short circuit.
 - [] compiler.c : pass identifier error message.
 - [] compiler.c : extract method initCompiler -> initFunction.
-- [] vm.c       : think about initialization arguments.
+- [x] vm.c       : think about initialization arguments.
+- [] table.c    : entries are repeating. To reproduce run test/table.zao
 
 ### In Progress
 

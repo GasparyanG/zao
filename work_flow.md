@@ -90,7 +90,7 @@
 ### 12/21/2020
 - [x] -:- - -:-          - Design Initialization and Methods.
 - [x] -:- - -:-          - Implement Method invokation.
-- [] -:- - -:-          - Implement Initialization with arguments.
+- [x] -:- - -:-          - Implement Initialization with arguments.
 - [x] -:- - -:-          - Handle `this` keyword.
 
 ### ZaO Implementation Path

@@ -63,11 +63,12 @@
     - `capacity`   - space to hold bytes.
 
 * Compiler properties
-    - `function`    - function mentioned below.
-    - `panicMode`   - should be true when compiler encounters error.
+    - `function`    - Function mentioned below.
+    - `panicMode`   - Should be true when compiler encounters error.
     - `locals`      - Local objects array. Meant for local variables (neasted in scopes).
-    - `scopeDepth`  - in which scope are we right now ?
-    - `localsCount` - amount of locals currently being stored in _locals_.
+    - `scopeDepth`  - In which scope are we right now ?
+    - `localsCount` - Amount of locals currently being stored in _locals_.
+    - `isInit`      - Are we in a `init` function or not ?
 
 * Local
     - `name`        - Token, which stores identifier's name.
@@ -178,6 +179,11 @@
 * OP_SET_METHOD
     - effect: -2
     - pop class to access methods after which pop function to set method.
+
+* OP_THIS
+    - effect: 1
+    - add class instance to stack.
+
 
 ### Scanner
 * protperties
