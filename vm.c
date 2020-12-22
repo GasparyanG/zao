@@ -217,6 +217,11 @@ static void call(uint8_t arity) {
             vm.callFrame = updateCallFrame(arity);
             updateVariables(arity);
             pop();      // Pop function from stack.
+
+            // Be prepared to handle 'this' keyword.
+            if (peek(1)->as.obj->type == OBJ_INSTANCE)
+                vm.callFrame->functionLocals[0] = *pop();
+
             break;
         }
 
@@ -499,7 +504,7 @@ ExecutionResult run() {
 
             case OP_INVOKE: {
                 // Add closure to stack.
-                ObjInstance* instance = AS_INSTANCE(pop()->as.obj);
+                ObjInstance* instance = AS_INSTANCE(peek(1)->as.obj);
                 ObjClass* objClass = instance->blueprint;
 
                 Entry* entry = findEntry(&objClass->methods, READ_STRING());

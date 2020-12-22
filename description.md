@@ -363,8 +363,8 @@
     - `arity`           - amount of arguments.
     - `upvalues`        - outer scope variable dispatcher.
     - `upvaluesCount`   - amount of upvalues detected.
-    - `constants`           - constant values.
-    - `constPos`            - next constant index.
+    - `constants`       - constant values.
+    - `constPos`        - next constant index.
 
 * ObjUpValue
     - `obj`             - to be able to use polymorphism.
