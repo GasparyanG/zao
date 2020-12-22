@@ -166,7 +166,7 @@ static CallFrame* updateCallFrame(uint8_t argCount) {
 }
 
 static void updateVariables(uint8_t arity) {
-    for (int8_t j = arity; j > 0; j--)
+    for (int16_t j = arity; j > 0; j--)
         vm.callFrame->functionLocals[j] = *pop();
     
     // Don't handle local variable setting.
