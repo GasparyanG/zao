@@ -229,6 +229,12 @@ static void literal(bool canAssign) {
         case TOKEN_IDENTIFIER:
             identifier(canAssign);
             break;
+        case TOKEN_THIS: {
+            if (classCompiler.objClass == NULL)
+                error(&parser.previous, "'this' keyword can't be used outside of a class.");
+            addInstruction(OP_THIS);
+            break;
+        }
         default:
             return; // Unreachable.
     }
@@ -546,7 +552,8 @@ ParseRule rules[] = {
     [TOKEN_IF]              = {if_,      NULL,       PREC_NONE}, 
     [TOKEN_ELSE]            = {else_,    NULL,       PREC_NONE},
     [TOKEN_FOR]             = {for_,     NULL,       PREC_NONE},
-    [TOKEN_WHILE]           = {while_,   NULL,       PREC_NONE}
+    [TOKEN_WHILE]           = {while_,   NULL,       PREC_NONE},
+    [TOKEN_THIS]            = {literal,  NULL,       PREC_LITERAL},
 };
 
 ParseRule* getRule(TokenType type) {

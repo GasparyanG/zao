@@ -181,8 +181,16 @@ static void lookForKeyword(Token* token) {
             break;
         }
 
-        case 't':
-            return compareForKeyword(token, 1, "rue", TOKEN_TRUE);      // true
+        case 't': {
+            if (strlen(token->string) == 1) return; // Terminate.
+            switch(token->string[1]) {
+                case 'h': return compareForKeyword(token, 2, "is", TOKEN_THIS);      // true
+                case 'r': return compareForKeyword(token, 2, "ue", TOKEN_TRUE);      // true
+                default:
+                    return; // Terminate.
+            }
+        }
+        
         case 'w':
             return compareForKeyword(token, 1, "hile", TOKEN_WHILE);    // while
         case 'c': {

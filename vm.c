@@ -512,6 +512,11 @@ ExecutionResult run() {
                 break;
             }
 
+            case OP_THIS:
+                // Change 'this' keyword with actual instance. 
+                push(&vm.callFrame->functionLocals[0]);
+                break;
+
             case OP_POP:
                 pop();
                 break;
