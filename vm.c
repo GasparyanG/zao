@@ -37,9 +37,8 @@ void freeCallFrame(CallFrame* callFrame) {
 
 ObjString* internString(ObjString* strToCmp) {
     for (uint32_t i = 0; i < vm.stringCount; i++) {
-        if (strToCmp->hash == vm.internedStrings[i]->hash) {
+        if (strToCmp->hash == vm.internedStrings[i]->hash)
             return vm.internedStrings[i];
-        }
     }
 
     if ((vm.stringCount + 1) >= UINT8_MAX) {
@@ -226,14 +225,31 @@ static void call(uint8_t arity) {
         }
 
         case OBJ_CLASS: {
-            // TODO: think about initialization arguments.
-            // Above code will eliminate arguments, thus leaving class obj in stackTop.
-            Value classObj = *pop();
+            Value classObj = *peek(arity + 1);
             ObjInstance* instance = newObjInstance(AS_CLASS(classObj.as.obj));
             Value value;
             value.type = VAL_INSTANCE;
             value.as.obj = AS_OBJ(instance);
-            push(&value);
+
+            ObjString* string = copyString("init");
+            Entry* entry = findEntry(&(AS_CLASS(classObj.as.obj)->methods), string);
+
+            if (entry->key == NULL && arity == 0) {
+                pop();  // Get rid of class object
+                push(&value);       // Push instance to stack.
+            }
+            else {
+                *peek(arity + 1) = value;       // Replace class with instance.
+                
+                // Make room for closure.
+                memcpy((vm.stackTop - arity + 1), (vm.stackTop - arity), sizeof(Value) * arity);
+                vm.stackTop++;
+                *peek(arity + 1) = entry->value; // Put closure to that room.
+
+                // Initialize.
+                call(arity);    // Instance will be poped here.
+            }
+
             break;
         }
     }

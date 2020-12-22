@@ -569,13 +569,14 @@ static void initFunctionUpvalues(ObjFunction* function) {
         function->upvalues[i] = NULL;
 }
 
-void initCompiler(ObjFunction* function) {
+void initCompiler(ObjFunction* function, bool isInit) {
     Compiler* comp = (Compiler*)malloc(sizeof(Compiler));
 
     comp->panicMode = false;     // There is no error in bytecode.
     comp->localsCount = 1;       // Function offset.
     comp->scopeDepth = compiler == NULL ? 0: compiler->scopeDepth;
-    
+    comp->isInit = isInit;
+
     // Function section.
     // TODO: extract method initCompiler -> initFunction.
     function->chunk.size = 0;
@@ -767,6 +768,11 @@ static void endFunction() {
     // This condition can be avoided, because first compiler isn't 
     // defined through 'declareFunction()', but extra caution will not hurt.
     if (compiler->enclosedCompiler != NULL) {
+        if (classCompiler.objClass && compiler->isInit) {
+            addInstruction(OP_THIS);                // Return instance.
+            addInstructions(OP_RETURN, OP_CLOSE);   // Implicit return.
+        }
+            
         Compiler* compilerToFree = compiler;
         compiler = compiler->enclosedCompiler;  // Get back to previous function.
         freeCompiler(compilerToFree);
@@ -823,6 +829,12 @@ static void declareFunctionName(ObjFunction* function) {
         addInstructions(OP_DEFINE_GLOBAL, addConstant(value));
 }
 
+static bool isInit(ObjFunction* function) {
+    if (strncmp(function->name->value, "init", 4) == 0)
+        return true;
+    return false;
+}
+
 static void declareFunction() {
     ObjFunction* function = (ObjFunction*)allocateObject(OBJ_FUNCTION);
 
@@ -831,7 +843,7 @@ static void declareFunction() {
     addInstruction(OP_CLOSURE);
     declareFunctionName(function);  // TODO: pass identifier error message.
 
-    initCompiler(function);
+    initCompiler(function, isInit(function));
 
     scopeStart();       // Function should have its own scope for arguments and locals.
     argumentList();     // parser argument list.

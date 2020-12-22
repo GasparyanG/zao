@@ -33,9 +33,10 @@ typedef struct Compiler {
     int scopeDepth;
 
     bool panicMode;
+    bool isInit;
 } Compiler;
 
-void initCompiler(ObjFunction* function);
+void initCompiler(ObjFunction* function, bool isInit);
 void freeCompiler(Compiler* cmpl);
 
 uint8_t addConstant(Value value);

@@ -91,7 +91,7 @@
 - [x] -:- - -:-          - Design Initialization and Methods.
 - [x] -:- - -:-          - Implement Method invokation.
 - [] -:- - -:-          - Implement Initialization with arguments.
-- [] -:- - -:-          - Handle `this` keyword.
+- [x] -:- - -:-          - Handle `this` keyword.
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine

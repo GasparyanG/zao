@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
     initVM();
 
     ObjFunction* function = (ObjFunction*)allocateObject(OBJ_FUNCTION);
-    initCompiler(function);
+    initCompiler(function, false);
 
     if (argc > 1) {
         initScanner(fileInput(argv[1]));
