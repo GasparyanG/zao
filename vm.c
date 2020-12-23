@@ -208,6 +208,16 @@ static ObjUpValue* captureUpValue(Value* value) {
     return upvalue;
 }
 
+static Entry* initCall(ObjClass* objClass, ObjString* string) {
+    if (objClass == NULL) return NULL;
+
+    Entry* entry = findEntry(&objClass->methods, string);
+    if (entry->key == NULL)
+        return initCall(objClass->parent, string);
+    
+    return entry;
+}
+
 static void call(uint8_t arity) {
     Obj* obj = peek(arity + 1)->as.obj;
 
@@ -232,13 +242,12 @@ static void call(uint8_t arity) {
             value.as.obj = AS_OBJ(instance);
 
             ObjString* string = copyString("init");
-            Entry* entry = findEntry(&(AS_CLASS(classObj.as.obj)->methods), string);
+            Entry* entry = initCall(AS_CLASS(classObj.as.obj), string);
 
-            if (entry->key == NULL && arity == 0) {
-                pop();  // Get rid of class object
-                push(&value);       // Push instance to stack.
-            }
-            else {
+            if ((entry == NULL || entry->key == NULL) && arity == 0) {
+                pop();                          // Get rid of class object
+                push(&value);                   // Push instance to stack.
+            } else {
                 *peek(arity + 1) = value;       // Replace class with instance.
                 
                 // Make room for closure.
@@ -246,8 +255,7 @@ static void call(uint8_t arity) {
                 vm.stackTop++;
                 *peek(arity + 1) = entry->value; // Put closure to that room.
 
-                // Initialize.
-                call(arity);    // Instance will be poped here.
+                call(arity);                     // Instance will be poped here.
             }
 
             break;
@@ -447,7 +455,14 @@ ExecutionResult run() {
 
             case OP_GET_PROPERTY: {
                 ObjInstance* instance = AS_INSTANCE(pop()->as.obj);
-                Entry entry = *findEntry(&instance->properties, READ_STRING());
+                ObjString* string = READ_STRING();
+
+                if (instance->properties.size == 0) {
+                    runtimeError("Instance don't have property named '%s'.", string->value);
+                    return INTERPRETER_RUNTIME_ERROR;
+                }
+
+                Entry entry = *findEntry(&instance->properties, string);
                 push(&entry.value);
                 break;
             }

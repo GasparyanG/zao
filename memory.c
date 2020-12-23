@@ -121,6 +121,13 @@ static void blacken(Obj* object) {
         case OBJ_CLASS: {
             ObjClass* objClass = AS_CLASS(object);
             markTable(objClass->methods);
+
+            ObjClass* classInChain = objClass->parent;
+            while (classInChain != NULL) {
+                markObject(AS_OBJ(classInChain));
+                classInChain = classInChain->parent;
+            }
+
             break;
         }
     }
@@ -218,7 +225,7 @@ static void collectGarbage() {
 
 Obj* allocateObject(ObjType type) {
 #ifdef ZAO_GC
-    collectGarbage();
+    // collectGarbage();
 #endif
 
     Obj* obj;
