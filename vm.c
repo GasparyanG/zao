@@ -578,7 +578,24 @@ ExecutionResult run() {
             }
 
             case OP_SUPER: {
-                // TODO: handle OP_SUPER instruciton.
+                // Take instance and create new one with the same properties, 
+                // but with parent's methods.
+                ObjInstance* instance = AS_INSTANCE(vm.callFrame->functionLocals[0].as.obj);
+                ObjClass* parent = instance->blueprint->parent;
+                if (parent == NULL) {
+                    runtimeError("This instance doesn't have parent.");
+                    return INTERPRETER_RUNTIME_ERROR;
+                }
+
+                ObjInstance* parentInstance = AS_INSTANCE(allocateObject(OBJ_INSTANCE));
+                parentInstance->blueprint = parent;
+                parentInstance->properties = instance->properties;
+
+                Value value;
+                value.type = VAL_INSTANCE;
+                value.as.obj = AS_OBJ(parentInstance);
+
+                push(&value);
                 break;
             }
 
