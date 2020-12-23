@@ -39,7 +39,7 @@
 - [x] -:- - -:-          - Design.
 - [x] -:- - -:-          - Hash table, Entry, hash function.
 - [x] -:- - -:-          - Find, insertion, deletion.
-- [~] -:- - -:-          - Declaration, definition, assignement.
+- [x] -:- - -:-          - Declaration, definition, assignement.
 - [x] -:- - -:-          - tagged union.
 - [x] -:- - -:-          - nil, false, true.
 - [x] -:- - -:-          - strings.
@@ -87,11 +87,16 @@
 - [x] -:- - -:-          - Implement object instantiation.
 - [x] -:- - -:-          - Implement property getters and setters.
 
-### 12/21/2020
+### 12/21 - 22/2020
 - [x] -:- - -:-          - Design Initialization and Methods.
 - [x] -:- - -:-          - Implement Method invokation.
 - [x] -:- - -:-          - Implement Initialization with arguments.
 - [x] -:- - -:-          - Handle `this` keyword.
+
+### 12/23/2020
+- [x] -:- - -:-          - Design Inheritance.
+- [] -:- - -:-          - Implement ObjClass chaining.
+- [] -:- - -:-          - Handle `super` keyword.
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine

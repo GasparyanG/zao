@@ -898,6 +898,17 @@ static void declareMethods() {
     advance();
 }
 
+static void decalreInheritance() {
+    switch(parser.current.type) {
+        case TOKEN_INHERIT: {
+            printf("token inherit is working now\n");
+            break;
+        }
+        default:
+            return;
+    }
+}
+
 static void declareClass() {
     ObjClass* objClass = (ObjClass*)allocateObject(OBJ_CLASS);
 
@@ -905,6 +916,7 @@ static void declareClass() {
     Value value = prepareValue(AS_OBJ(objClass), VAL_CLASS);
     addInstructions(OP_CONSTANT, addConstant(value));
     declareClassName();
+    decalreInheritance();
     declareMethods();
     classEnd();
 }

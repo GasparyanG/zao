@@ -70,8 +70,9 @@ typedef struct {
 } ObjClosure;
 
 #include "table.h"
-typedef struct {
+typedef struct ObjClass {
     Obj obj;
+    ObjClass* parent;
     Table methods;
 } ObjClass;
 

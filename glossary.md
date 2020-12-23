@@ -38,6 +38,7 @@
 - [] compiler.c : extract method initCompiler -> initFunction.
 - [x] vm.c       : think about initialization arguments.
 - [] table.c    : entries are repeating. To reproduce run test/table.zao
+- [] vm.c       : handle method absence.
 
 ### In Progress
 

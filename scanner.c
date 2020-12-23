@@ -204,9 +204,24 @@ static void lookForKeyword(Token* token) {
         }
 
         case 'b':
-            return compareForKeyword(token, 1, "reak", TOKEN_BREAK);    // break
-        case 'i':
-            return compareForKeyword(token, 1, "f", TOKEN_IF);          // if
+            return compareForKeyword(token, 1, "reak", TOKEN_BREAK);                      // break
+        case 'i': {
+            if (strlen(token->string) == 1) return; // Terminate.
+            switch(token->string[1]) {
+                case 'f': {
+                    if (strcmp(token->string, "if") == 0) {
+                        token->type = TOKEN_IF;
+                        free(token->string);
+                        return; // Terminate.
+                    }
+                    break;
+                }
+
+                case 'n': return compareForKeyword(token, 2, "herits", TOKEN_INHERIT);    // inherits
+                default:
+                    return; // Terminate.
+            }
+        }
         case 'e':
             return compareForKeyword(token, 1, "lse", TOKEN_ELSE);      // else
         case 'p':
