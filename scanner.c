@@ -228,6 +228,8 @@ static void lookForKeyword(Token* token) {
             return compareForKeyword(token, 1, "rint", TOKEN_PRINT);    // print
         case 'r':
             return compareForKeyword(token, 1, "eturn", TOKEN_RETURN);  // return
+        case 's':
+            return compareForKeyword(token, 1, "uper", TOKEN_SUPER);    // super
         case 'v':
             return compareForKeyword(token, 1, "ar", TOKEN_VAR);        // var
         case 'N':

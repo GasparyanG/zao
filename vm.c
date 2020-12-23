@@ -577,6 +577,11 @@ ExecutionResult run() {
                 break;
             }
 
+            case OP_SUPER: {
+                // TODO: handle OP_SUPER instruciton.
+                break;
+            }
+
             case OP_POP:
                 pop();
                 break;

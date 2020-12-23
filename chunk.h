@@ -50,6 +50,7 @@ typedef enum {
     OP_INVOKE,
     OP_THIS,
     OP_INHERIT,
+    OP_SUPER,
     OP_POP
 } OpCode;
 

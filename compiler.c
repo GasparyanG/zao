@@ -235,6 +235,12 @@ static void literal(bool canAssign) {
             addInstruction(OP_THIS);
             break;
         }
+        case TOKEN_SUPER: {
+            if (classCompiler.objClass == NULL)
+                error(&parser.previous, "'super' keyword can't be used outside of a class.");
+            addInstruction(OP_SUPER);
+            break;
+        }
         default:
             return; // Unreachable.
     }
