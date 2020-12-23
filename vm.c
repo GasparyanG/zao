@@ -524,6 +524,7 @@ ExecutionResult run() {
                 ObjClass* objClass = instance->blueprint;
 
                 Entry* entry = findEntry(&objClass->methods, READ_STRING());
+                // TODO: handle method absence.
                 push(&entry->value);
                 break;
             }
@@ -532,6 +533,19 @@ ExecutionResult run() {
                 // Change 'this' keyword with actual instance. 
                 push(&vm.callFrame->functionLocals[0]);
                 break;
+            
+            case OP_INHERIT: {
+                Value value = *pop();
+                if (!IS_OBJ(value) || value.as.obj->type != OBJ_CLASS) {
+                    runtimeError("Can't inherit from non class object.");
+                    return INTERPRETER_RUNTIME_ERROR;
+                }
+
+                ObjClass* objClass = AS_CLASS(value.as.obj);
+                objClass->parent = AS_CLASS(pop()->as.obj);
+
+                break;
+            }
 
             case OP_POP:
                 pop();

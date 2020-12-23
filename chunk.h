@@ -49,6 +49,7 @@ typedef enum {
     OP_CALL,
     OP_INVOKE,
     OP_THIS,
+    OP_INHERIT,
     OP_POP
 } OpCode;
 

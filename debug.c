@@ -151,6 +151,9 @@ void displayInstruction(uint8_t* ip) {
         case OP_THIS:
             offset = simpleInstruction("OP_THIS");
             break;
+        case OP_INHERIT:
+            offset = simpleInstruction("OP_INHERIT");
+            break;
         case OP_POP:
             offset = simpleInstruction("OP_POP");
             break;

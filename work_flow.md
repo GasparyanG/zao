@@ -95,7 +95,7 @@
 
 ### 12/23/2020
 - [x] -:- - -:-          - Design Inheritance.
-- [] -:- - -:-          - Implement ObjClass chaining.
+- [x] -:- - -:-          - Implement ObjClass chaining.
 - [] -:- - -:-          - Handle `super` keyword.
 
 ### ZaO Implementation Path

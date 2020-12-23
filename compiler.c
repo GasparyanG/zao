@@ -898,14 +898,24 @@ static void declareMethods() {
     advance();
 }
 
-static void decalreInheritance() {
+static void declareInheritance() {
     switch(parser.current.type) {
         case TOKEN_INHERIT: {
-            printf("token inherit is working now\n");
+            advance();
+            consume(TOKEN_IDENTIFIER, "Identifier is expected after 'inherits'.");
+            advance();
+            
+            Value value = prepareValue(AS_OBJ(classCompiler.objClass), VAL_CLASS);
+            addInstructions(OP_CONSTANT, addConstant(value));
+            
+            identifier(false);
+            addInstruction(OP_INHERIT);
             break;
         }
-        default:
+        default: {
+            classCompiler.objClass->parent = NULL;
             return;
+        }
     }
 }
 
@@ -916,7 +926,7 @@ static void declareClass() {
     Value value = prepareValue(AS_OBJ(objClass), VAL_CLASS);
     addInstructions(OP_CONSTANT, addConstant(value));
     declareClassName();
-    decalreInheritance();
+    declareInheritance();
     declareMethods();
     classEnd();
 }

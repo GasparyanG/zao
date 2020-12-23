@@ -184,6 +184,10 @@
     - effect: 1
     - add class instance to stack.
 
+* OP_INHERIT
+    - effect: -2
+    - pop class and its parent to chain together.
+
 
 ### Scanner
 * protperties
@@ -384,6 +388,7 @@
 
 * ObjClass::properties
     - `obj`             - to be able to use polymorphism.
+    - `parent`          - this field handles inheritance.
     - `methods`         - table for methods.
 
 * ObjInstance::propetries
