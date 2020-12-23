@@ -256,6 +256,17 @@ static void call(uint8_t arity) {
 
 }
 
+static bool invoke(ObjClass* objClass, ObjString* string) {
+    if (objClass == NULL) return false; // Method doesn't exist.
+    
+    Entry* entry = findEntry(&objClass->methods, string);
+    if (entry->key == NULL)
+        return invoke(objClass->parent, string);
+
+    push(&entry->value);
+    return true;
+}
+
 ExecutionResult run() {
     vm.callFrame = initCallFrameFromCompiler();
 
@@ -523,9 +534,12 @@ ExecutionResult run() {
                 ObjInstance* instance = AS_INSTANCE(peek(1)->as.obj);
                 ObjClass* objClass = instance->blueprint;
 
-                Entry* entry = findEntry(&objClass->methods, READ_STRING());
-                // TODO: handle method absence.
-                push(&entry->value);
+                ObjString* string = READ_STRING();
+                if (!invoke(objClass, string)) {
+                    runtimeError("Methods '%s' doesn't exists.", string->value);
+                    return INTERPRETER_RUNTIME_ERROR;
+                }
+
                 break;
             }
 
@@ -542,7 +556,8 @@ ExecutionResult run() {
                 }
 
                 ObjClass* objClass = AS_CLASS(value.as.obj);
-                objClass->parent = AS_CLASS(pop()->as.obj);
+                ObjClass* childClass = AS_CLASS(pop()->as.obj);
+                childClass->parent = objClass;
 
                 break;
             }
