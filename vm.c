@@ -525,7 +525,7 @@ ExecutionResult run() {
                 if (AS_BOOL((*peek(1))))
                     vm.callFrame->closure->function->ip += JUMP_BYTES;       // Go straight to instruction.
                 else
-                    vm.callFrame->closure->function->ip += bytesFusion(READ_BYTE(), READ_BYTE());
+                    vm.callFrame->closure->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 break;
             }
 

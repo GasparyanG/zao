@@ -387,7 +387,7 @@ static void condition() {
     statement();    // Add bytecode for block statement.
 
     // Add jumping size in bytecode, next to OP_JUMP instruction.
-    uint16_t jumpingSize = compiler->function->chunk.size - currentPosition - JUMP_BYTES;
+    uint16_t jumpingSize = compiler->function->chunk.size - currentPosition - JUMP_BYTES - 1;
     addSizeToJumpPos(currentPosition, jumpingSize);
 }
 
