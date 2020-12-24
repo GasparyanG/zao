@@ -233,7 +233,8 @@ static void call(uint8_t arity) {
             pop();      // Pop function from stack.
 
             // Be prepared to handle 'this' keyword.
-            if (!isStackEmpty() && peek(1)->as.obj->type == OBJ_INSTANCE)
+            if (!isStackEmpty() && peek(1)->type == VAL_INSTANCE &&
+                peek(1)->as.obj->type == OBJ_INSTANCE)
                 vm.callFrame->functionLocals[0] = *pop();
 
             break;
