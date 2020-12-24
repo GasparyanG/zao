@@ -23,12 +23,12 @@
 - [] compiler.c : think this part through.
 - [x] table.h    : introduce StrObj which will store key and hash.
 - [x] table.c    : handle tombstones.
-- [] table.c    : create function in memory.h to handle allocation in one place
+- [~] table.c    : create function in memory.h to handle allocation in one place
 - [x] compiler.c : compute hash.
 - [] vm.c       : handle string stack overflow error properly.
-- [] cm.c       : show line of error.
+- [] vm.c       : show line of error.
 - [x] compiler   : think about a + b = c + d expression's compilation.
-- [] vm.c       : you will feel that Value* is wrong in here, so chagne it to Value.
+- [x] vm.c       : you will feel that Value* is wrong in here, so chagne it to Value.
 - [x] compiler.c : implement declaration as well (this is just initialization).
 - [x] vm.c       : implement bang case.
 - [] compiler.c : why does 1 is being subtracted ?

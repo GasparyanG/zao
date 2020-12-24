@@ -445,7 +445,6 @@ ExecutionResult run() {
             }
 
             case OP_GET_LOCAL: {
-                // TODO: you will feel that Value* is wrong in here, so chagne it to Value.
                 uint8_t pos = READ_BYTE();
                 push(&vm.callFrame->functionLocals[pos]);
                 updatePosition(pos);
