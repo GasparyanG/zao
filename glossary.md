@@ -12,8 +12,8 @@
 
 ### To Do
 - [] memory.c   : exit when pointer is not null.
-- [] vm.c       : display `empty stack` error.
-- [] vm.c       : display `stack overflow` error.
+- [x] vm.c       : display `empty stack` error.
+- [x] vm.c       : display `stack overflow` error.
 - [] compiler.c : display `constants table overflow` error.
 - [] scanner.c  : display `unknown token` error.
 - [~] scanner.c  : deal with other tokens too.

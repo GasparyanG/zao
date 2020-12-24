@@ -61,10 +61,17 @@ static void runtimeError(const char* format, ...) {
     // TODO: show line of error.
     // vm.stackTop = vm.stack;
     // compiler.ip = &compiler.chunk.chunk[compiler.chunk.capacity];
+    exit(1);
+}
+
+static bool isStackEmpty() {
+    if ((vm.stackTop - vm.stack) == 0) return true;
+    return false;
 }
 
 Value* pop() {
-    // TODO: display `empty stack` error.
+    if (isStackEmpty())
+        runtimeError("Stack is empty.");
     return --vm.stackTop;
 }
 
@@ -73,15 +80,11 @@ Value* peek(size_t n) {
 }
 
 void push(Value* value) {
-    if ((vm.stackTop - vm.stack) > UINT8_MAX);
-        // TODO: display `stack overflow` error.
+    if ((vm.stackTop - vm.stack) > UINT8_MAX)
+        runtimeError("Stack limit (256) is reached.");
     *vm.stackTop++ = *value;
 }
 
-static bool isStackEmpty() {
-    if ((vm.stackTop - vm.stack) == 0) return true;
-    return false;
-}
 
 static void printValue(Value* value) {
     switch(value->type) {
