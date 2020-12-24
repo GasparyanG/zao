@@ -78,6 +78,11 @@ void push(Value* value) {
     *vm.stackTop++ = *value;
 }
 
+static bool isStackEmpty() {
+    if ((vm.stackTop - vm.stack) == 0) return true;
+    return false;
+}
+
 static void printValue(Value* value) {
     switch(value->type) {
         case VAL_NUMBER:
@@ -228,7 +233,7 @@ static void call(uint8_t arity) {
             pop();      // Pop function from stack.
 
             // Be prepared to handle 'this' keyword.
-            if (peek(1)->as.obj->type == OBJ_INSTANCE)
+            if (!isStackEmpty() && peek(1)->as.obj->type == OBJ_INSTANCE)
                 vm.callFrame->functionLocals[0] = *pop();
 
             break;
