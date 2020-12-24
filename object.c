@@ -35,6 +35,7 @@ ObjClass* newClass() {
     Table methods;
     initTable(&methods);
     objClass->methods = methods;
+    objClass->parent = NULL;
 
     return objClass;
 }
