@@ -84,5 +84,6 @@ typedef struct {
 
 ObjClosure* newClosure(ObjFunction* function);
 ObjInstance* newObjInstance(ObjClass* objClass);
+ObjClass* newClass();
 
 #endif

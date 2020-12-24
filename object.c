@@ -28,3 +28,13 @@ ObjInstance* newObjInstance(ObjClass* objClass) {
 
     return instance;
 }
+
+ObjClass* newClass() {
+    ObjClass* objClass = (ObjClass*)allocateObject(OBJ_CLASS);
+
+    Table methods;
+    initTable(&methods);
+    objClass->methods = methods;
+
+    return objClass;
+}

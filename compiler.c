@@ -929,7 +929,7 @@ static void declareInheritance() {
 }
 
 static void declareClass() {
-    ObjClass* objClass = (ObjClass*)allocateObject(OBJ_CLASS);
+    ObjClass* objClass = newClass();
 
     classStart(objClass);
     Value value = prepareValue(AS_OBJ(objClass), VAL_CLASS);
