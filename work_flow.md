@@ -97,8 +97,7 @@
 - [x] -:- - -:-          - Design Inheritance.
 - [x] -:- - -:-          - Implement ObjClass chaining.
 - [x] -:- - -:-          - Implement inherited method call.
-- [~] -:- - -:-          - Handle `super` keyword.
-    - just run test.zao for unhandled bug.
+- [x] -:- - -:-          - Handle `super` keyword.
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine

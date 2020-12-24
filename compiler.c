@@ -659,7 +659,8 @@ void statement() {
 }
 
 static int resolveLocal(Compiler* cmpl, Token* local) {
-    for (int i = cmpl->localsCount - 1; i >= 0; i--) {
+    if (cmpl == NULL) return -1;
+    for (int i = cmpl->localsCount - 1; i > 0; i--) {
         if (strcmp(local->string, cmpl->locals[i].name.string) == 0)
             return i;   // Found at index.
     }
@@ -699,7 +700,7 @@ static int resolveUpvalue(Compiler* cmpl, Token* local) {
 
 // Declaration (grammer) section.
 static int isDeclared(Token* local, size_t depth) {
-    for (int i = compiler->localsCount - 1; i >= 0; i--) {
+    for (int i = compiler->localsCount - 1; i > 0; i--) {
         if (depth == compiler->locals[i].scopeDepth &&
             strcmp(local->string, compiler->locals[i].name.string) == 0)
             return i;   // Found at index.
