@@ -16,6 +16,8 @@
 
 #define AS_OBJ(obj)       ((Obj*)(obj))
 
+#define FUNC_LOCALS_OFFSET 0
+
 typedef enum {
     OBJ_STRING,
     OBJ_FUNCTION,

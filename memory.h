@@ -12,6 +12,7 @@
 #define GC_ENLARGEMENT_THRESHOLD 0.65
 #define GC_REDUCTION_THRESHOLD 0.5
 #define GC_ENLARGEMENT_FACTOR 2
+#define GC_INITIAL 12
 
 #define ALLOCATE(type, pointer, size) \
     (type*)allocate((void*)pointer, size * sizeof(type))

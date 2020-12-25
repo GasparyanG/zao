@@ -11,7 +11,7 @@ void initVM() {
     vm.callFrame = NULL;
     vm.objects = NULL;
     
-    vm.nextGC = 12;
+    vm.nextGC = GC_INITIAL;
     vm.amountOfObjs = 0;
 
     vm.greyStack = NULL;
@@ -235,7 +235,7 @@ static void call(uint8_t arity) {
             // Be prepared to handle 'this' keyword.
             if (!isStackEmpty() && peek(1)->type == VAL_INSTANCE &&
                 peek(1)->as.obj->type == OBJ_INSTANCE)
-                vm.callFrame->functionLocals[0] = *pop();
+                vm.callFrame->functionLocals[FUNC_LOCALS_OFFSET] = *pop();
 
             break;
         }
@@ -575,7 +575,7 @@ ExecutionResult run() {
 
             case OP_THIS:
                 // Change 'this' keyword with actual instance. 
-                push(&vm.callFrame->functionLocals[0]);
+                push(&vm.callFrame->functionLocals[FUNC_LOCALS_OFFSET]);
                 break;
             
             case OP_INHERIT: {
@@ -595,7 +595,7 @@ ExecutionResult run() {
             case OP_SUPER: {
                 // Take instance and create new one with the same properties, 
                 // but with parent's methods.
-                ObjInstance* instance = AS_INSTANCE(vm.callFrame->functionLocals[0].as.obj);
+                ObjInstance* instance = AS_INSTANCE(vm.callFrame->functionLocals[FUNC_LOCALS_OFFSET].as.obj);
                 ObjClass* parent = instance->blueprint->parent;
                 if (parent == NULL) {
                     runtimeError("This instance doesn't have parent.");

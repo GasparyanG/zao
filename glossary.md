@@ -9,6 +9,8 @@
 - [x] What is Valgrind ?
 - [x] How to handle value update in vm.c ?
 - [] Why I couldn't use pointers explicitly in debug.c (jumpInstruction) ?
+- [] compiler.c : why does 1 is being subtracted ?
+- [] compiler.c : why does 0 is being converted to 8 ?
 
 ### To Do
 - [x] memory.c   : exit when pointer is not null.
@@ -26,13 +28,10 @@
 - [~] table.c    : create function in memory.h to handle allocation in one place
 - [x] compiler.c : compute hash.
 - [x] vm.c       : handle string stack overflow error properly.
-- [] vm.c       : show line of error.
 - [x] compiler   : think about a + b = c + d expression's compilation.
 - [x] vm.c       : you will feel that Value* is wrong in here, so chagne it to Value.
 - [x] compiler.c : implement declaration as well (this is just initialization).
 - [x] vm.c       : implement bang case.
-- [] compiler.c : why does 1 is being subtracted ?
-- [] compiler.c : why does 0 is being converted to 8 ?
 - [x] compiler.c : for optimization same, implement short circuit.
 - [x] compiler.c : pass identifier error message.
 - [x] compiler.c : extract method initCompiler -> initFunction.
@@ -41,5 +40,6 @@
 - [x] vm.c       : handle method absence.
 
 ### In Progress
+- [] vm.c       : show line of error.
 
 ### Done
