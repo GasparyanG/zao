@@ -488,8 +488,10 @@ ExecutionResult run() {
                     newEntry.key = key;
                     newEntry.value = value;
                     addEntry(&instance->properties, &newEntry);
-                } else
+                } else {
+                    entry->key = key;
                     entry->value = value;                
+                }
 
                 break;
             }

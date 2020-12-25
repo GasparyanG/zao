@@ -18,9 +18,9 @@ typedef struct {
 } Entry;
 
 typedef struct Table {
-    Entry* entries;     // Array of entires.
-    size_t size;        // Amount of entires.
-    size_t capacity;    // Amount of space to store entires.
+    Entry* entries;     // Array of entries.
+    size_t size;        // Amount of entries.
+    size_t capacity;    // Amount of space to store entries.
 } Table;
 
 // Helper functions.

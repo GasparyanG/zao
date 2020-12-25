@@ -16,8 +16,8 @@
 - [x] vm.c       : display `stack overflow` error.
 - [] compiler.c : display `constants table overflow` error.
 - [] scanner.c  : display `unknown token` error.
-- [~] scanner.c  : deal with other tokens too.
-- [~] debug.c    : implement other tokens debugging too.
+- [x] scanner.c  : deal with other tokens too.
+- [x] debug.c    : implement other tokens debugging too.
 - [] compiler.c : display `EOF or some kind of error` error
 - [x] compiler.c : display `prefix function dosn't exists` error
 - [] compiler.c : think this part through.
@@ -37,7 +37,7 @@
 - [] compiler.c : pass identifier error message.
 - [] compiler.c : extract method initCompiler -> initFunction.
 - [x] vm.c       : think about initialization arguments.
-- [] table.c    : entries are repeating. To reproduce run test/table.zao
+- [x] table.c    : entries are repeating. To reproduce run test/table.zao
 - [x] vm.c       : handle method absence.
 
 ### In Progress

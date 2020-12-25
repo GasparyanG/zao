@@ -438,7 +438,6 @@ Token scanToken() {
         case ',': return prepToken(TOKEN_COMMA);
         case '.': return prepToken(TOKEN_DOT);
 
-        // TODO: deal with other tokens too.
         default:
             // TODO: display `unknown token` error
             return prepToken(TOKEN_EOF);

@@ -218,7 +218,6 @@ void displayToken(Token* token) {
         case TOKEN_EOF:
             simpleToken("EOF");
             break;
-        // TODO: implement other tokens debugging too.
         default:
             printf("Token %d is not handled yet.\n", token->type);
             break;
