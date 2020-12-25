@@ -5,7 +5,6 @@
 void* allocate(void* pointer, size_t size) {
 
     if (size == 0) 
-        // TODO: Check pointer and if it's not null then exit program
         return malloc(ARRAY_INITIAL_SIZE * size);
     else 
         return reallocate(pointer, ENLARGEMENT_FACTOR * size);

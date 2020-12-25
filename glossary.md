@@ -11,10 +11,10 @@
 - [] Why I couldn't use pointers explicitly in debug.c (jumpInstruction) ?
 
 ### To Do
-- [] memory.c   : exit when pointer is not null.
+- [x] memory.c   : exit when pointer is not null.
 - [x] vm.c       : display `empty stack` error.
 - [x] vm.c       : display `stack overflow` error.
-- [] compiler.c : display `constants table overflow` error.
+- [x] compiler.c : display `constants table overflow` error.
 - [] scanner.c  : display `unknown token` error.
 - [x] scanner.c  : deal with other tokens too.
 - [x] debug.c    : implement other tokens debugging too.
@@ -33,7 +33,7 @@
 - [x] vm.c       : implement bang case.
 - [] compiler.c : why does 1 is being subtracted ?
 - [] compiler.c : why does 0 is being converted to 8 ?
-- [] compiler.c : for optimization same, implement short circuit.
+- [x] compiler.c : for optimization same, implement short circuit.
 - [] compiler.c : pass identifier error message.
 - [] compiler.c : extract method initCompiler -> initFunction.
 - [x] vm.c       : think about initialization arguments.

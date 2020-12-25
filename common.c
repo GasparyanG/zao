@@ -7,3 +7,8 @@ uint16_t bytesFusion(uint8_t left, uint8_t right) {
 
     return combined;
 }
+
+void fatalError(const char* message) {
+    fprintf(stderr, "%s.\n", message);
+    exit(1);
+}

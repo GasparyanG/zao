@@ -116,8 +116,9 @@ void parsePrecedence(Precedence precedence) {
 
 // Parser's functions(pointer).
 uint8_t addConstant(const Value value) {
-    if (compiler->function->constPos == UINT8_MAX);
-        // TODO: display `constants table overflow` error.
+    if (compiler->function->constPos == UINT8_MAX)
+        fatalError("Constant table overflow.");    
+
     compiler->function->constants[compiler->function->constPos] = value;
 
     return compiler->function->constPos++;
