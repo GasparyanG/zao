@@ -142,6 +142,9 @@ void displayInstruction(uint8_t* ip) {
         case OP_JUMP_FOR:
             offset = jumpInstruction("OP_JUMP_FOR", OP_JUMP_FOR, ip);
             break;
+        case OP_JUMP_IF_TRUE:
+            offset = jumpInstruction("OP_JUMP_IF_TRUE", OP_JUMP_IF_TRUE, ip);
+            break;
         case OP_CALL:
             offset = simpleInstruction("OP_CALL");
             break;
@@ -221,6 +224,5 @@ void displayToken(Token* token) {
         default:
             printf("Token %d is not handled yet.\n", token->type);
             break;
-
     }
 }

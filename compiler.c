@@ -72,7 +72,8 @@ typedef enum {
     PREC_LITERAL,
     PREC_ASSIGN,        // a + b = c + d should fail.
     PREC_INVOKE,        // .
-    PREC_BOOL,          // and, or
+    PREC_OR,            // or
+    PREC_AND,           // and
     PREC_COMPARISION,   // >, <, ==
     PREC_MINUS_PLUS,    // -, +
     PREC_MULT_DIV,      // *,/
@@ -264,8 +265,6 @@ static void binary(bool canAssign) {
         case TOKEN_GREATER_EQUAL:   return addInstructions(OP_LESS_THAN, OP_BANG);
         case TOKEN_LESS_EQUAL:      return addInstructions(OP_GREATER_THAN, OP_BANG);
         case TOKEN_BANG_EQUAL:      return addInstructions(OP_EQUAL_EQUAL, OP_BANG);
-        case TOKEN_AND:             return addInstruction(OP_AND);
-        case TOKEN_OR:              return addInstruction(OP_OR);
         default:
             return; // Unreachable.
     }
@@ -379,6 +378,32 @@ static void addSizeToJumpPos(uint8_t currentPosition, uint16_t jumpingSize) {
     }
 }
 
+static void or_(bool canAssign) {
+    addInstruction(OP_JUMP_IF_TRUE);
+    size_t currentPosition = compiler->function->chunk.size;   // Position to insert jumping size.
+    addInstructions(0x00, 0x00);
+
+    parsePrecedence(PREC_OR);
+
+    uint16_t jumpingSize = compiler->function->chunk.size - currentPosition - JUMP_BYTES;
+    addSizeToJumpPos(currentPosition, jumpingSize);
+
+    addInstruction(OP_OR);
+}
+
+static void and_(bool canAssign) {
+    addInstruction(OP_JUMP);
+    size_t currentPosition = compiler->function->chunk.size;   // Position to insert jumping size.
+    addInstructions(0x00, 0x00);
+
+    parsePrecedence(PREC_AND);
+
+    uint16_t jumpingSize = compiler->function->chunk.size - currentPosition - JUMP_BYTES;
+    addSizeToJumpPos(currentPosition, jumpingSize);
+
+    addInstruction(OP_AND);
+}
+
 static void condition() {
     addInstruction(OP_JUMP);
     size_t currentPosition = compiler->function->chunk.size;   // Position to insert jumping size.
@@ -410,7 +435,6 @@ static void if_(bool canAssign) {
     else
         addInstruction(OP_POP); // Remove boolean from stack.
 }
-
 
 // for statement section.
 static void forDecl() {
@@ -553,8 +577,8 @@ ParseRule rules[] = {
     [TOKEN_GREATER_EQUAL]   = {NULL,     binary,     PREC_COMPARISION},
     [TOKEN_LESS_EQUAL]      = {NULL,     binary,     PREC_COMPARISION},
     [TOKEN_BANG_EQUAL]      = {NULL,     binary,     PREC_COMPARISION},
-    [TOKEN_AND]             = {NULL,     binary,     PREC_BOOL},
-    [TOKEN_OR]              = {NULL,     binary,     PREC_BOOL},
+    [TOKEN_AND]             = {NULL,     and_,       PREC_AND},
+    [TOKEN_OR]              = {NULL,     or_,        PREC_OR},
     [TOKEN_IF]              = {if_,      NULL,       PREC_NONE}, 
     [TOKEN_ELSE]            = {else_,    NULL,       PREC_NONE},
     [TOKEN_FOR]             = {for_,     NULL,       PREC_NONE},

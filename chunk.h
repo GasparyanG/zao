@@ -46,6 +46,7 @@ typedef enum {
     OP_JUMP,
     OP_JUMP_BACK,
     OP_JUMP_FOR,
+    OP_JUMP_IF_TRUE,
     OP_CALL,
     OP_INVOKE,
     OP_THIS,
