@@ -126,13 +126,17 @@ void addInstruction(uint8_t instruction) {
     if (compiler->function->chunk.size == compiler->function->chunk.capacity) {
         size_t interval = compiler->function->ip - compiler->function->chunk.chunk;   // Don't lose required position to continue.
 
-        compiler->function->chunk.chunk = ALLOCATE(uint8_t, compiler->function->chunk.chunk, compiler->function->chunk.size);
+        compiler->function->chunk.chunk 
+            = ALLOCATE(uint8_t, compiler->function->chunk.chunk, compiler->function->chunk.size);
+        compiler->function->chunk.lines 
+            = ALLOCATE(uint16_t, compiler->function->chunk.lines, compiler->function->chunk.size);
         compiler->function->chunk.capacity *= ENLARGEMENT_FACTOR;
         compiler->function->ip = compiler->function->chunk.chunk;
         compiler->function->ip += interval;                                // Add interval to reach desired instruction.
     }
 
     compiler->function->chunk.chunk[compiler->function->chunk.size++] = instruction;
+    compiler->function->chunk.lines[compiler->function->chunk.size - 1] = parser.current.lineNumber;
 }
 
 void addInstructions(uint8_t inst1, uint8_t inst2) {
@@ -599,12 +603,18 @@ static void initFunctionUpvalues(ObjFunction* function) {
         function->upvalues[i] = NULL;
 }
 
-static void initFunction(ObjFunction* function) {
+static void initChunk(ObjFunction* function) {
     function->chunk.size = 0;
     function->chunk.chunk 
         = ALLOCATE(uint8_t, function->chunk.chunk, function->chunk.size);
-    function->chunk.size = 0;    
+    function->chunk.lines
+        = ALLOCATE(uint16_t, function->chunk.lines, function->chunk.size);
+    function->chunk.size = 0;
     function->chunk.capacity = ARRAY_INITIAL_SIZE;
+}
+
+static void initFunction(ObjFunction* function) {
+    initChunk(function);
     function->ip = function->chunk.chunk;
     function->arity = 0;
     function->constPos = 0;

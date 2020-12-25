@@ -55,9 +55,11 @@ static void runtimeError(const char* format, ...) {
     va_end(args);
     fputs("\n", stderr);
 
-    // TODO: show line of error.
-    // vm.stackTop = vm.stack;
-    // compiler.ip = &compiler.chunk.chunk[compiler.chunk.capacity];
+    uint16_t currentPos 
+        = vm.callFrame->closure->function->ip - vm.callFrame->closure->function->chunk.chunk;
+    uint16_t lineNumber 
+        = vm.callFrame->closure->function->chunk.lines[currentPos];
+    fprintf(stderr, "[Line %d].\n", lineNumber);
     exit(1);
 }
 

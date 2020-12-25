@@ -8,6 +8,7 @@
 
 typedef struct {
     uint8_t* chunk;
+    uint16_t* lines;
     size_t size;
     size_t capacity;
 } Chunk;

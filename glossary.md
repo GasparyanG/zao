@@ -38,8 +38,8 @@
 - [x] vm.c       : think about initialization arguments.
 - [x] table.c    : entries are repeating. To reproduce run test/table.zao
 - [x] vm.c       : handle method absence.
+- [x] vm.c       : show line of error.
 
 ### In Progress
-- [] vm.c       : show line of error.
 
 ### Done
