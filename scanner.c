@@ -439,7 +439,6 @@ Token scanToken() {
         case '.': return prepToken(TOKEN_DOT);
 
         default:
-            fprintf(stderr, "unhandled token %c\n", ch);
             return prepToken(TOKEN_EOF);
     }
 }

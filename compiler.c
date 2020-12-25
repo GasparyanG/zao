@@ -49,14 +49,17 @@ static bool consume(TokenType type, const char* message) {
     return false;
 }
 
-void recover() {
+static void synchronize() {
+    if (!compiler->panicMode) return;
     // Ignore all tokens either until semicolon (;) - a.k.a. end of expression,
     // or until EOF - a.k.a. end of file.
     for (;;) {
         advance();
         if (parser.current.type == TOKEN_EOF 
-            || parser.current.type == TOKEN_SEMI_COLON)
+            || parser.current.type == TOKEN_SEMI_COLON) {
+            advance();
             break;
+        }
     }
 
     // Start compiling from new expression.
@@ -977,6 +980,8 @@ static void declareClass() {
 }
 
 void declaration() {
+    synchronize();
+
     switch(parser.current.type) {
         case TOKEN_VAR:
             declareVariable();

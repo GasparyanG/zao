@@ -32,11 +32,7 @@ static void repl() {
         initScanner(cmdInput());
         
         compile(true);
-        
-        if (compiler->panicMode)
-            recover();
-        else
-            run();
+        run();
 
         freeScanner();
     }

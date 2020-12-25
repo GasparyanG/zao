@@ -42,7 +42,6 @@ void freeCompiler(Compiler* cmpl);
 uint8_t addConstant(Value value);
 void addInstruction(uint8_t instruction);
 void advance();
-void recover();     // Recover from error state.
 
 extern Compiler* compiler;
 
