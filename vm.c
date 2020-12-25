@@ -11,7 +11,7 @@ void initVM() {
     vm.callFrame = NULL;
     vm.objects = NULL;
     
-    vm.nextGC = GC_INITIAL;
+    vm.nextGC = GC_INITIAL_THRESHOLD;
     vm.amountOfObjs = 0;
 
     vm.greyStack = NULL;
