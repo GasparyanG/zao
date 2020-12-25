@@ -412,6 +412,8 @@ ExecutionResult run() {
             }
 
             case OP_DEFINE_GLOBAL: {
+                // At this point we only need to set value, because
+                // entry was already prepared at compile time.
                 Entry* entry = findEntry(&vm.globals, READ_STRING());
                 entry->value = *pop();
                 break;

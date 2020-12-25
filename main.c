@@ -36,7 +36,7 @@ static void repl() {
         if (compiler->panicMode)
             recover();
         else
-            if (!runtimeResult(run())) break;
+            run();
 
         freeScanner();
     }
