@@ -72,11 +72,11 @@ typedef enum {
     PREC_LITERAL,
     PREC_ASSIGN,        // a + b = c + d should fail.
     PREC_INVOKE,        // .
+    PREC_BOOL,          // and, or
+    PREC_COMPARISION,   // >, <, ==
     PREC_MINUS_PLUS,    // -, +
     PREC_MULT_DIV,      // *,/
-    PREC_COMPARISION,   // >, <, ==
     PREC_GROUP,         // (expression)
-    PREC_BOOL,          // and, or
 } Precedence;
 
 typedef void (*ParseFn) (bool canAssign);
