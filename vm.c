@@ -55,12 +55,17 @@ static void runtimeError(const char* format, ...) {
     va_end(args);
     fputs("\n", stderr);
 
+    // Show row.
     uint16_t currentPos 
         = vm.callFrame->closure->function->ip - vm.callFrame->closure->function->chunk.chunk;
     uint16_t lineNumber 
         = vm.callFrame->closure->function->chunk.lines[currentPos];
     fprintf(stderr, "[Line %d].\n", lineNumber);
-    exit(1);
+
+    // Reset stack and call frame to be able to continue.
+    vm.stackTop = vm.stack;
+    vm.callFrame->closure->function->ip 
+        = &vm.callFrame->closure->function->chunk.chunk[vm.callFrame->closure->function->chunk.size];
 }
 
 static bool isStackEmpty() {
@@ -360,8 +365,10 @@ ExecutionResult run() {
                 if (IS_BOOL(value)) {
                     value.type = (value.type == VAL_FALSE) ? VAL_TRUE: VAL_FALSE;
                     push(&value);
-                } else
+                } else {
                     runtimeError("Can't convert not bool to bool.");
+                    return INTERPRETER_RUNTIME_ERROR;
+                }
                 
                 break;
             }
@@ -412,6 +419,11 @@ ExecutionResult run() {
 
             case OP_GET_GLOBAL: {
                 ObjString* str = READ_STRING();
+                if (vm.globals.size == 0) {
+                    runtimeError("Undefined variable '%s'.", str->value);
+                    return INTERPRETER_RUNTIME_ERROR;
+                }
+
                 Entry* entry = findEntry(&vm.globals, str);
 
                 if (entry->key == NULL) {
@@ -425,6 +437,11 @@ ExecutionResult run() {
             
             case OP_SET_GLOBAL: {
                 ObjString* str = READ_STRING();
+                if (vm.globals.size == 0) {
+                    runtimeError("Undefined variable '%s'.", str->value);
+                    return INTERPRETER_RUNTIME_ERROR;
+                }
+
                 Entry* entry = findEntry(&vm.globals, str);
 
                 if (entry->key == NULL) {
