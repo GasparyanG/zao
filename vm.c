@@ -78,7 +78,7 @@ Value* peek(size_t n) {
 
 void push(Value* value) {
     if ((vm.stackTop - vm.stack) > UINT8_MAX)
-        runtimeError("Stack limit (256) is reached.");
+        runtimeError("Stack limit (%d) is reached.", UINT8_MAX);
     *vm.stackTop++ = *value;
 }
 
