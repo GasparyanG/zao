@@ -41,11 +41,8 @@ ObjString* internString(ObjString* strToCmp) {
             return vm.internedStrings[i];
     }
 
-    if ((vm.stringCount + 1) >= UINT8_MAX) {
-        // TODO: handle string stack overflow error properly.
-        printf("String stack overflow.\n");
-        exit(1);
-    }
+    if ((vm.stringCount + 1) >= UINT8_MAX)
+        fatalError("String stack overflow.");
 
     vm.internedStrings[vm.stringCount++] = strToCmp;
     return strToCmp;

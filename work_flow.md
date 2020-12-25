@@ -99,6 +99,12 @@
 - [x] -:- - -:-          - Implement inherited method call.
 - [x] -:- - -:-          - Handle `super` keyword.
 
+### 12/24 - 25/2020
+- [x] -:- - -:-          - Fix property setting bug.
+- [x] -:- - -:-          - Implement boolean grouping properly.
+- [x] -:- - -:-          - Implement short circuit.
+- [] -:- - -:-          - Display errors properly.
+
 ### ZaO Implementation Path
 1) Set Up Virtual Machine
     1.1) instruction pointer

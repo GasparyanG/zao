@@ -15,17 +15,17 @@
 - [x] vm.c       : display `empty stack` error.
 - [x] vm.c       : display `stack overflow` error.
 - [x] compiler.c : display `constants table overflow` error.
-- [] scanner.c  : display `unknown token` error.
+- [x] scanner.c  : display `unknown token` error.
 - [x] scanner.c  : deal with other tokens too.
 - [x] debug.c    : implement other tokens debugging too.
-- [] compiler.c : display `EOF or some kind of error` error
+- [x] compiler.c : display `EOF or some kind of error` error
 - [x] compiler.c : display `prefix function dosn't exists` error
-- [] compiler.c : think this part through.
+- [x] compiler.c : think this part through.
 - [x] table.h    : introduce StrObj which will store key and hash.
 - [x] table.c    : handle tombstones.
 - [~] table.c    : create function in memory.h to handle allocation in one place
 - [x] compiler.c : compute hash.
-- [] vm.c       : handle string stack overflow error properly.
+- [x] vm.c       : handle string stack overflow error properly.
 - [] vm.c       : show line of error.
 - [x] compiler   : think about a + b = c + d expression's compilation.
 - [x] vm.c       : you will feel that Value* is wrong in here, so chagne it to Value.
@@ -34,8 +34,8 @@
 - [] compiler.c : why does 1 is being subtracted ?
 - [] compiler.c : why does 0 is being converted to 8 ?
 - [x] compiler.c : for optimization same, implement short circuit.
-- [] compiler.c : pass identifier error message.
-- [] compiler.c : extract method initCompiler -> initFunction.
+- [x] compiler.c : pass identifier error message.
+- [x] compiler.c : extract method initCompiler -> initFunction.
 - [x] vm.c       : think about initialization arguments.
 - [x] table.c    : entries are repeating. To reproduce run test/table.zao
 - [x] vm.c       : handle method absence.

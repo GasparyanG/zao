@@ -31,14 +31,12 @@ Compiler* current = NULL;
 
 void advance() {
     parser.previous = parser.current;
-
-    if ((parser.current = scanToken()).type == TOKEN_EOF);
-        // TODO: display `EOF or some kind of error` error
+    parser.current = scanToken();
 }
 
 static void error(Token* token, const char* message) {
     compiler->panicMode = true;      // Bytecode contains error.
-    printf("[Line %d] %s: %s\n",
+    fprintf(stderr, "[Line %d] %s: %s\n",
         token->lineNumber,
         (scanner.lineNumber == token->lineNumber) ? "Error at the end": "Error",
         message);
@@ -601,6 +599,17 @@ static void initFunctionUpvalues(ObjFunction* function) {
         function->upvalues[i] = NULL;
 }
 
+static void initFunction(ObjFunction* function) {
+    function->chunk.size = 0;
+    function->chunk.chunk 
+        = ALLOCATE(uint8_t, function->chunk.chunk, function->chunk.size);
+    function->chunk.size = 0;    
+    function->chunk.capacity = ARRAY_INITIAL_SIZE;
+    function->ip = function->chunk.chunk;
+    function->arity = 0;
+    function->constPos = 0;
+}
+
 void initCompiler(ObjFunction* function, bool isInit) {
     Compiler* comp = (Compiler*)malloc(sizeof(Compiler));
 
@@ -610,15 +619,7 @@ void initCompiler(ObjFunction* function, bool isInit) {
     comp->isInit = isInit;
 
     // Function section.
-    // TODO: extract method initCompiler -> initFunction.
-    function->chunk.size = 0;
-    function->chunk.chunk 
-        = ALLOCATE(uint8_t, function->chunk.chunk, function->chunk.size);
-    function->chunk.size = 0;    
-    function->chunk.capacity = ARRAY_INITIAL_SIZE;
-    function->ip = function->chunk.chunk;
-    function->arity = 0;
-    function->constPos = 0;
+    initFunction(function);
 
     initFunctionUpvalues(function);
     comp->function = function;
@@ -875,7 +876,7 @@ static void declareFunction() {
     Value value = prepareValue(AS_OBJ(function), VAL_FUNCTION);
     addInstructions(OP_CONSTANT, addConstant(value));
     addInstruction(OP_CLOSURE);
-    declareFunctionName(function);  // TODO: pass identifier error message.
+    declareFunctionName(function);
 
     initCompiler(function, isInit(function));
 
