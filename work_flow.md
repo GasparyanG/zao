@@ -103,7 +103,7 @@
 - [x] -:- - -:-          - Fix property setting bug.
 - [x] -:- - -:-          - Implement boolean grouping properly.
 - [x] -:- - -:-          - Implement short circuit.
-- [] -:- - -:-          - Display errors properly.
+- [x] -:- - -:-          - Display errors properly.
 
 ### ZaO Implementation Path
 1) Set Up Virtual Machine

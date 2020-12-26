@@ -1,6 +1,8 @@
 #include "object.h"
 #include "memory.h"
 
+const char* Init_Method_Name = "init";
+
 ObjClosure* newClosure(ObjFunction* function) {
     ObjClosure* closure = (ObjClosure*)allocateObject(OBJ_CLOSURE);
 

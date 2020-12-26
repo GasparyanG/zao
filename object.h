@@ -88,4 +88,6 @@ ObjClosure* newClosure(ObjFunction* function);
 ObjInstance* newObjInstance(ObjClass* objClass);
 ObjClass* newClass();
 
+extern const char* Init_Method_Name;
+
 #endif

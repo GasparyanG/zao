@@ -878,7 +878,7 @@ static void declareFunctionName(ObjFunction* function) {
 
 static bool isInit(ObjFunction* function) {
     if (function->name == NULL) return false;
-    if (strncmp(function->name->value, "init", 4) == 0)
+    if (strncmp(function->name->value, Init_Method_Name, 4) == 0)
         return true;
     return false;
 }

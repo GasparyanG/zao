@@ -254,7 +254,7 @@ static void call(uint8_t arity) {
             value.type = VAL_INSTANCE;
             value.as.obj = AS_OBJ(instance);
 
-            ObjString* string = copyString("init");
+            ObjString* string = copyString(Init_Method_Name);
             Entry* entry = initCall(AS_CLASS(classObj.as.obj), string);
 
             if ((entry == NULL || entry->key == NULL) && arity == 0) {
