@@ -155,7 +155,7 @@ static CallFrame* initCallFrameFromCompiler() {
     callFrame->nextFrame = NULL;
     callFrame->functionLocals = vm.locals;
     callFrame->position = 0;
-    callFrame->ip = callFrame->closure->function->chunk.chunk;
+    callFrame->ip = callFrame->closure->function->ip;
 
     return callFrame;
 }
@@ -166,7 +166,13 @@ static void updatePosition(uint8_t pos) {
         ? pos : vm.callFrame->position;
 }
 
+static void updateIPOfCompiler() {
+    if (vm.callFrame->nextFrame == NULL)
+        compiler->function->ip = vm.callFrame->ip;
+}
+
 static CallFrame* updateCallFrame(uint8_t argCount) {
+    updateIPOfCompiler();
     CallFrame* callFrame = initCallFrame();
 
     callFrame->closure = AS_CLOSURE(peek(argCount + 1)->as.obj);
@@ -201,6 +207,8 @@ static void closeUpValues(ObjClosure* closure) {
 static void changeCallFrameBack() {
     CallFrame* callFrameToFree = vm.callFrame;
     vm.callFrame = vm.callFrame->nextFrame;
+
+    updateIPOfCompiler();
     freeCallFrame(callFrameToFree);
 }
 
@@ -275,7 +283,6 @@ static void call(uint8_t arity) {
             break;
         }
     }
-
 }
 
 static bool invoke(ObjClass* objClass, ObjString* string) {
@@ -287,6 +294,11 @@ static bool invoke(ObjClass* objClass, ObjString* string) {
 
     push(&entry->value);
     return true;
+}
+
+static ExecutionResult exitInterpreter(ExecutionResult exRes) {
+    updateIPOfCompiler();
+    return exRes;
 }
 
 ExecutionResult run() {
@@ -328,7 +340,7 @@ ExecutionResult run() {
             if (vm.callFrame->nextFrame != NULL)
                 opReturn(true);
             else
-                return EXECUTION_SUCCESS;
+                return exitInterpreter(EXECUTION_SUCCESS);
         }
 
         switch(*vm.callFrame->ip++) {
@@ -368,7 +380,7 @@ ExecutionResult run() {
                     push(&value);
                 } else {
                     runtimeError("Can't convert not bool to bool.");
-                    return INTERPRETER_RUNTIME_ERROR;
+                    return exitInterpreter(INTERPRETER_RUNTIME_ERROR);
                 }
                 
                 break;
@@ -424,14 +436,14 @@ ExecutionResult run() {
                 ObjString* str = READ_STRING();
                 if (vm.globals.size == 0) {
                     runtimeError("Undefined variable '%s'.", str->value);
-                    return INTERPRETER_RUNTIME_ERROR;
+                    return exitInterpreter(INTERPRETER_RUNTIME_ERROR);
                 }
 
                 Entry* entry = findEntry(&vm.globals, str);
 
                 if (entry->key == NULL) {
                     runtimeError("Undefined variable '%s'.", str->value);
-                    return INTERPRETER_RUNTIME_ERROR;
+                    return exitInterpreter(INTERPRETER_RUNTIME_ERROR);
                 }
                 
                 push(&entry->value);
@@ -442,14 +454,14 @@ ExecutionResult run() {
                 ObjString* str = READ_STRING();
                 if (vm.globals.size == 0) {
                     runtimeError("Undefined variable '%s'.", str->value);
-                    return INTERPRETER_RUNTIME_ERROR;
+                    return exitInterpreter(INTERPRETER_RUNTIME_ERROR);
                 }
 
                 Entry* entry = findEntry(&vm.globals, str);
 
                 if (entry->key == NULL) {
                     runtimeError("Undefined variable '%s'.", str->value);
-                    return INTERPRETER_RUNTIME_ERROR;
+                    return exitInterpreter(INTERPRETER_RUNTIME_ERROR);
                 }
 
                 entry->value = *pop();
@@ -486,7 +498,7 @@ ExecutionResult run() {
 
                 if (instance->properties.size == 0) {
                     runtimeError("Instance don't have property named '%s'.", string->value);
-                    return INTERPRETER_RUNTIME_ERROR;
+                    return exitInterpreter(INTERPRETER_RUNTIME_ERROR);
                 }
 
                 Entry entry = *findEntry(&instance->properties, string);
@@ -589,7 +601,7 @@ ExecutionResult run() {
                 ObjString* string = READ_STRING();
                 if (!invoke(objClass, string)) {
                     runtimeError("Methods '%s' doesn't exists.", string->value);
-                    return INTERPRETER_RUNTIME_ERROR;
+                    return exitInterpreter(INTERPRETER_RUNTIME_ERROR);
                 }
 
                 break;
@@ -604,7 +616,7 @@ ExecutionResult run() {
                 Value value = *pop();
                 if (!IS_OBJ(value) || value.as.obj->type != OBJ_CLASS) {
                     runtimeError("Can't inherit from non class object.");
-                    return INTERPRETER_RUNTIME_ERROR;
+                    return exitInterpreter(INTERPRETER_RUNTIME_ERROR);
                 }
 
                 ObjClass* objClass = AS_CLASS(value.as.obj);
@@ -621,7 +633,7 @@ ExecutionResult run() {
                 ObjClass* parent = instance->blueprint->parent;
                 if (parent == NULL) {
                     runtimeError("This instance doesn't have parent.");
-                    return INTERPRETER_RUNTIME_ERROR;
+                    return exitInterpreter(INTERPRETER_RUNTIME_ERROR);
                 }
 
                 ObjInstance* parentInstance = AS_INSTANCE(allocateObject(OBJ_INSTANCE));
@@ -644,7 +656,7 @@ ExecutionResult run() {
                 if (vm.callFrame->nextFrame != NULL)
                     opReturn(true);
                 else
-                    return EXECUTION_SUCCESS;            
+                    return exitInterpreter(EXECUTION_SUCCESS);            
             }
         }
 #undef READ_BYTE
