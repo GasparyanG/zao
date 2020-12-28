@@ -163,10 +163,9 @@ void displayInstruction(uint8_t* ip) {
         case OP_POP:
             offset = simpleInstruction("OP_POP");
             break;
-        default:
-            ip -= offset;
-            return;
     } 
+
+    ip -= offset;
 }
 
 

@@ -57,14 +57,14 @@ static void runtimeError(const char* format, ...) {
 
     // Show row.
     uint16_t currentPos 
-        = vm.callFrame->closure->function->ip - vm.callFrame->closure->function->chunk.chunk;
+        = vm.callFrame->ip - vm.callFrame->closure->function->chunk.chunk;
     uint16_t lineNumber 
         = vm.callFrame->closure->function->chunk.lines[currentPos];
     fprintf(stderr, "[Line %d].\n", lineNumber);
 
     // Reset stack and call frame to be able to continue.
     vm.stackTop = vm.stack;
-    vm.callFrame->closure->function->ip 
+    vm.callFrame->ip 
         = &vm.callFrame->closure->function->chunk.chunk[vm.callFrame->closure->function->chunk.size];
 }
 
@@ -155,6 +155,7 @@ static CallFrame* initCallFrameFromCompiler() {
     callFrame->nextFrame = NULL;
     callFrame->functionLocals = vm.locals;
     callFrame->position = 0;
+    callFrame->ip = callFrame->closure->function->chunk.chunk;
 
     return callFrame;
 }
@@ -172,7 +173,7 @@ static CallFrame* updateCallFrame(uint8_t argCount) {
     callFrame->nextFrame = vm.callFrame;
     callFrame->position = (vm.callFrame->position == 0) ? 0: (vm.callFrame->position + 1);
     callFrame->functionLocals = &vm.locals[callFrame->position];
-    callFrame->closure->function->ip = callFrame->closure->function->chunk.chunk;
+    callFrame->ip = callFrame->closure->function->chunk.chunk;
 
     return callFrame;
 }
@@ -182,7 +183,7 @@ static void updateVariables(uint8_t arity) {
         vm.callFrame->functionLocals[j] = *pop();
     
     // Don't handle local variable setting.
-    vm.callFrame->closure->function->ip += 2*arity;
+    vm.callFrame->ip += 2*arity;
 }
 
 static void closeUpValues(ObjClosure* closure) {
@@ -292,11 +293,11 @@ ExecutionResult run() {
     vm.callFrame = initCallFrameFromCompiler();
 
     for (;;) {
-#define READ_BYTE()         *vm.callFrame->closure->function->ip++
+#define READ_BYTE()         *vm.callFrame->ip++
 #define READ_STRING() \
-    AS_STRING(vm.callFrame->closure->function->constants[(*vm.callFrame->closure->function->ip++)].as.obj)
+    AS_STRING(vm.callFrame->closure->function->constants[(*vm.callFrame->ip++)].as.obj)
 #define READ_FUNCTION() \
-    AS_FUNCTION(vm.callFrame->closure->function->constants[(*vm.callFrame->closure->function->ip++)].as.obj)
+    AS_FUNCTION(vm.callFrame->closure->function->constants[(*vm.callFrame->ip++)].as.obj)
 #define BOOL_BINARY_OP(op) \
     do { \
         Value* b = pop(); \
@@ -320,17 +321,17 @@ ExecutionResult run() {
     } while(false)
 
 #ifdef ZAO_DEBUGGER_MODE_ON
-    displayInstruction(vm.callFrame->closure->function->ip);
+    displayInstruction(vm.callFrame->ip);
 #endif 
 
-        if (*vm.callFrame->closure->function->ip == OP_NONE) {
+        if (*vm.callFrame->ip == OP_NONE) {
             if (vm.callFrame->nextFrame != NULL)
                 opReturn(true);
             else
                 return EXECUTION_SUCCESS;
         }
 
-        switch(*vm.callFrame->closure->function->ip++) {
+        switch(*vm.callFrame->ip++) {
             case OP_CONSTANT:
                 push(&vm.callFrame->closure->function->constants[READ_BYTE()]);     
                 break;
@@ -545,33 +546,33 @@ ExecutionResult run() {
 
             case OP_JUMP: {
                 if (AS_BOOL((*peek(1))))
-                    vm.callFrame->closure->function->ip += JUMP_BYTES;       // Go straight to instruction.
+                    vm.callFrame->ip += JUMP_BYTES;       // Go straight to instruction.
                 else
-                    vm.callFrame->closure->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    vm.callFrame->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 break;
             }
 
             case OP_JUMP_BACK: {
-                vm.callFrame->closure->function->ip 
+                vm.callFrame->ip 
                     = &vm.callFrame->closure->function->chunk.chunk[bytesFusion(READ_BYTE(), READ_BYTE())];
                 break;
             }
 
             case OP_JUMP_FOR: {
                 if (AS_BOOL((*peek(1))))
-                    vm.callFrame->closure->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    vm.callFrame->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 else {
-                    vm.callFrame->closure->function->ip += JUMP_BYTES;   // Ignore assignement bytes.
-                    vm.callFrame->closure->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    vm.callFrame->ip += JUMP_BYTES;   // Ignore assignement bytes.
+                    vm.callFrame->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 }
                 break;
             }
 
             case OP_JUMP_IF_TRUE: {
                 if (!AS_BOOL((*peek(1))))
-                    vm.callFrame->closure->function->ip += JUMP_BYTES;       // Go straight to instruction.
+                    vm.callFrame->ip += JUMP_BYTES;       // Go straight to instruction.
                 else
-                    vm.callFrame->closure->function->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                    vm.callFrame->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
                 break;
             }
 

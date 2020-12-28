@@ -21,6 +21,7 @@ typedef struct CallFrame {
     Value* functionLocals;
     ObjClosure* closure;
     uint8_t position;
+    uint8_t* ip;
 } CallFrame;
 
 typedef struct {
