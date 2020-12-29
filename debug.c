@@ -136,6 +136,9 @@ void displayInstruction(uint8_t* ip) {
         case OP_JUMP:
             offset = jumpInstruction("OP_JUMP", OP_JUMP, ip);
             break;
+        case OP_JUST_JUMP:
+            offset = jumpInstruction("OP_JUST_JUMP", OP_JUST_JUMP, ip);
+            break;
         case OP_JUMP_BACK:
             offset = jumpInstruction("OP_JUMP_BACK", OP_JUMP_BACK, ip);
             break;

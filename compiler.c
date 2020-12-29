@@ -410,23 +410,23 @@ static void and_(bool canAssign) {
     addInstruction(OP_AND);
 }
 
-static void condition() {
-    addInstruction(OP_JUMP);
+static size_t emitJump(OpCode jumpCode) {
+    addInstruction(jumpCode);
     size_t currentPosition = compiler->function->chunk.size;   // Position to insert jumping size.
     addInstructions(0x00, 0x00);
-    
-    statement();    // Add bytecode for block statement.
 
+    return currentPosition;
+}
+
+static void patchJump(size_t position) {
     // Add jumping size in bytecode, next to OP_JUMP instruction.
-    uint16_t jumpingSize = compiler->function->chunk.size - currentPosition - JUMP_BYTES - 1;
-    addSizeToJumpPos(currentPosition, jumpingSize);
+    uint16_t jumpingSize = compiler->function->chunk.size - position - JUMP_BYTES - 1;
+    addSizeToJumpPos(position, jumpingSize);   
 }
 
 static void else_(bool canAssign) {
     advance();
-    addInstruction(OP_BANG);    // Negate boolean to consider implemnting block or not.
-    condition();                // Block statement bytecode preparation.
-    addInstruction(OP_POP);     // Remove boolean from stack.
+    statement();
 }
 
 static void if_(bool canAssign) {
@@ -434,12 +434,18 @@ static void if_(bool canAssign) {
     consume(TOKEN_LEFT_PAREN, "'(' is required after 'if' keyword.");
     expression();   // Prepare bytecode for bool expression.
     
-    condition();                // Block statement bytecode preparation.
+    size_t thenJump = emitJump(OP_JUMP);
+    addInstruction(OP_POP);
+
+    statement();
+
+    size_t elseJump = emitJump(OP_JUST_JUMP);
+    patchJump(thenJump);
+    addInstruction(OP_POP);
 
     if (parser.current.type == TOKEN_ELSE)
         else_(canAssign);
-    else
-        addInstruction(OP_POP); // Remove boolean from stack.
+    patchJump(elseJump);
 }
 
 // for statement section.

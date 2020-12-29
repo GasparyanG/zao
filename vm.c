@@ -564,6 +564,11 @@ ExecutionResult run() {
                 break;
             }
 
+            case OP_JUST_JUMP: {
+                vm.callFrame->ip += bytesFusion(READ_BYTE(), READ_BYTE()) + 1;
+                break;
+            }
+
             case OP_JUMP_BACK: {
                 vm.callFrame->ip 
                     = &vm.callFrame->closure->function->chunk.chunk[bytesFusion(READ_BYTE(), READ_BYTE())];
