@@ -13,7 +13,7 @@ ZAO is a multi-paradigm programming language.
     - [Operators](#operators)
         - [Arythmetic](#arythmetic)
         - [Comparision](#comparision)
-        - [Boolean](#boolean)
+        - [Logical](#logical)
     - [Variables](#variables)
     - [Scopes](#scopes)
     - [Statements](#statements)
@@ -30,7 +30,7 @@ ZAO is a multi-paradigm programming language.
 
 ## Instalation and Setup
 ### Instalation
-To clone repository issue this command:
+To clone repository, issue this command:
 ```sh
 git clone https://github.com/GasparyanG/zao.git
 ```
@@ -51,7 +51,7 @@ To be able to compile and execute file of ZAO, issue this command:
 ./zao (file name)
 ```
 
-Here you shold replace `(file name)` with actual file.
+Here you should replace `(file name)` with actual file.
 
 ## Syntax
 ### Comments
@@ -83,10 +83,10 @@ In ZAO string is a collection of characters enclosed in double quotes (`""`).
 ```php
 ""                      // Empty string.
 "c"                     // String containing single character.
-"This is a string.".    // String with multiple characters.
+"This is a string."     // String with multiple characters.
 ```
 #### Bool and `NIL`
-To represent **boolean logic** ZAO uses traditional `true` and `false` while to use **'not a value'** it uses `NIL`.
+To represent **boolean logic**, ZAO uses traditional `true` and `false`, while to use **'not a value'** it uses `NIL`.
 ```php
 true
 false
@@ -103,6 +103,7 @@ To be able to output something to standard output ZAO uses `print` keyword.
 Hello, World!
 
 > print 5;
+// This one will output:
 5
 ```
 
@@ -110,28 +111,28 @@ So far we have covered everything about above code except _semicolon_ (`;`). Thi
 ___
 ### Operators
 #### Arythmetic
-* `+`
+* `+` - **Addition** 
 ```php
 > print 16 + 9;
 25
 ```
-* `-`
+* `-` - **Subtraction**
 ```php
 > print 169 - 25;
 144
 ```
-* `*`
+* `*` - **Multiplication**
 ```php
 > print 11 * 12;
 132
 ```
-* `/`
+* `/` - **Division**
 ```php
 > print 19 / 2;
 9.5
 ```
 #### Comparision
-* `>` and `>=`
+* `>` and `>=` - **Greater than** and **greater than or equal to**
 ```php
 > print 5 > 5;
 false
@@ -139,16 +140,16 @@ false
 print 5 >= 5;
 true
 ```
-* `<` and `<=`
+* `<` and `<=` - **Less than** and **less than or equal to**
 ```php
 > print 5 + 6 < 144 / 12;
 true
 
-> print (12 + 13) <= 625 / 625;
+> print (12 + 13) <= 625 / 25;
 true
 ```
 
-* `==` and `!=`
+* `==` and `!=` - **Equal** and **not equal**
 ```php
 > print (8 + 7)*15 + 2 == 225;
 false
@@ -170,7 +171,7 @@ true
 true
 ```
 
-#### Boolean
+#### Logical
 * `and`
 ```php
 > print false and true;
@@ -186,10 +187,9 @@ true
 > print false or true;
 true
 
-// I know you will struggle to find the difference,
-// so let me meke your life easier. 
-// First expression uses '>' instead of '<'.
-> print (11 + 22 > 33 + 44) and (55 + 66 < 77 + 88);
+// I know you will struggle to find the difference, so let me make your life easier. 
+// First expression uses '>' instead of '<' and 'and' is changed to 'or'.
+> print (11 + 22 > 33 + 44) or (55 + 66 < 77 + 88);
 true
 ```
 ___
@@ -277,12 +277,12 @@ var batMan = "Ben Affleck";
 {
     var batMan = "Christian Bale";  // Local definition.
     print batMan; // Christian Bale
-}   // batMen will be destroyed here.
+}   // This cope's batMen will be destroyed here.
 
 print batMan;     // Ben Affleck
 ```
 
-The second **local** scope doesn't define its own varaible, but instead it uses the **global** scope's varaible, and for that reason our variable is being changed.
+The second **local** scope doesn't define its own varaible, but instead it uses the **global** scope's varaible, and for that reason our variable (**global** scope's _batMan_) is being changed.
 
 ```php
 var batMan = "Ben Affleck"; // Global.
@@ -323,7 +323,7 @@ else is accessed
 ```
 
 #### `while` loop
-Next popular control flow of languages is `whlie` statement, whcih is meant for implementing the same block of code over and over again until `while`'s termination. This termination depends on expression which `while` evaluates at every loop. If expression's result is `true` _continue_ else exit `while` statement.
+Next popular control flow of languages is `whlie` statement, whcih is meant for implementing the same block of code over and over again until `while`'s termination. This termination depends on expression which `while` evaluates at every loop. If expression's result is `true` then implement `while`'s block of code otherwise exit `while` statement.
 
 ```php
 var limit = 10;
@@ -339,7 +339,7 @@ hi  // 'hi' will be printed 10 times.
 
 
 #### `for` loop
-`for` statement found its place in almost all programming languges, but I like to think about it as syntactical sugar over `while` statement. Why do I think like this? Well, lets have a look together.
+`for` statement found its place in almost all programming languges, but I like to think about it as syntactical sugar over `while` statement. Why do I think like that? Well, lets find out together.
 
 ```php
 var limit = 10;
@@ -351,10 +351,10 @@ for (var cycle = 0; cycle < limit; cycle = cycle + 1) {
 hi  // 'hi' will be printed 10 times.
 ```
 
-As you can see this code is shorter(3 lines against 5 lines) and more organized than `while`'s code, but the functionality is the same.
+As you can see this code is shorter(3 lines against 5 lines) and more organized than `while`'s code, but the functionality is exactly the same.
 
 
-**This comparision will show the reason:**
+**This layout of both statements will make it clear:**
 
 >**declaration**
 >
@@ -377,10 +377,10 @@ fun sum(a, b) {
 print sum(5, 6);  // This prints '11'.
 ```
 
-To define function we need to use:
+**To define function we need to use:**
 1) **`fun`**            - this keyword will notify compiler that we intended to define function.
 2) **fucntion name**    - this is required to be able to refer back to piece of code that this function defines.
-3) **argument list**    - function can accept arguments, which will be replaced with parameters, that this function defines in its **local** scope.
+3) **argument list**    - function can accept arguments, which will be replaced with parameters, that this function defines in its **local** scope (in our case _a_ and _b_).
 4) **function block**   - all of this instructions defined in function's block will be implemented once function is called.
 5) **`return`[optional]** - `return` keyword returns result of an expression to caller. If `return` is not used function will return `NIL`.
 
@@ -490,7 +490,7 @@ bird.fly();
 1) **`class`**          - to be able to define _class_ we should say so by using `class` keyword.
 2) **class name**       - like in functions we need to be able to reference to class and to do that we have to specify a class name.
 3) **class methods[optional]** - classes can have their own methods and to define one just use **function**'s syntax.
-4) **Instance propety[optional**  - although I mentioned that classes can have properties, but actually properties only belong to instances created from that classes.
+4) **Instance propety[optional]**  - although I mentioned that classes can have properties, but actually properties only belong to instances created from that classes.
 
 For `this`'s explanation see [`this`](#this-and-init).
 
@@ -532,10 +532,10 @@ class Car {
 }
 
 var ferrari = Car();
-a.speed = 218;
+ferrari.speed = 218;
 
 var lamborghini = Car();
-b.speed = 217;
+lamborghini.speed = 217;
 
 ferrari.showSpeed();        // 'this' will refer to 'ferrari'.
 lamborghini.showSpeed();    // 'this' will refer to 'lamborghini'.
@@ -600,13 +600,13 @@ aug.introduce();        // This will print 'AUG' '8'.
 
 As you can see **Sward** and **Gun** are using methods which is defined in **Weapon**. This can be achieved by using `inherits` keyword which will notify compiler that we are dealing with inheritance.
 
-After method _invokation_ current instance will try to find called method and if it's not found in current class then that method will be searched in _inheritance chain_(classes which is being referenced by their childrens).
+After method _invocation_ current instance will try to find called method and if it's not found in current class then that method will be searched in an _inheritance chain_(classes which is being referenced by their childrens. In this case **Weapon** is being referenced by **Sword** and **Gun**).
 
 **There are two questions left to answer, and after that we are done.**
 
 > What if child class defines method with the same name as its parent does?
->
-> Well, this is called **overriding** and in this scenario child's method will be prioritized.
+
+Well, this is called **overriding** and in this scenario child's method will be prioritized.
 
 ```php
 class A {
@@ -627,8 +627,8 @@ b.foo();    // This prints "B's foo is called.".
 ```
 
 > What if we want to use **overriden** method?
->
-> To be able to access **overriden** method we should use `super` keyword, which will reference to parent's methods.
+
+To be able to access **overriden** method we should use `super` keyword, which will reference to parent's methods.
 
 ```php
 class A {
