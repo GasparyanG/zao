@@ -6,7 +6,7 @@ ZAO is a multi-paradigm programming language.
 * [Syntax](#syntax)
     - [Comments](#comments)
     - [Data Types](#data-types)
-        - [Numbers](#numbers)
+        - [Number](#number)
         - [String](#string)
         - [Bool and `NIL`](#bool-and-nil)
     - [`print`](#print)
@@ -41,12 +41,12 @@ make
 ```
 
 #### Usage
-To be able to use terminal for ZAO, issue this command:
+To use terminal for ZAO, issue this command:
 ```sh
 ./zao
 ```
 
-To be able to compile and execute file of ZAO, issue this command:
+To compile and execute file of ZAO, issue this command:
 ```sh
 ./zao (file name)
 ```
@@ -55,15 +55,15 @@ Here you should replace `(file name)` with actual file.
 
 ## Syntax
 ### Comments
-ZAO only has single-line comments, and to write one we should use double forward slash (`//`). 
+ZAO only has single-line comments, and to write one use double forward slash (`//`). 
 ```php
 // Comments are important part of a good software.
 ```
 
-The above code will not be _processed_, because it's only required to _describe_ and not to affect the program in any way.
+Compiler will not _process (parse)_ the above code, because it's only required to _describe_ and not to affect the program in any way.
 ___
 ### Data Types
-#### Numbers
+#### Number
 ZAO has two type of numbers:
 * **Integers**, which are _whole_ numbers.
 ```php
@@ -79,7 +79,7 @@ ZAO has two type of numbers:
 ```
 
 #### String
-In ZAO string is a collection of characters enclosed in double quotes (`""`).
+ZAO's string is a collection of characters enclosed in double quotes (`""`).
 ```php
 ""                      // Empty string.
 "c"                     // String containing single character.
@@ -95,7 +95,7 @@ NIL
 
 
 ### `print`
-To be able to output something to standard output ZAO uses `print` keyword.
+To _print_ something to standard output, use `print` keyword.
 ```php
 > print "Hello, World!";
 
@@ -195,7 +195,7 @@ true
 ___
 
 ### Variables
-To define a variable we should use `var` keyword.
+For variable declaration use `var` keyword.
 ```php
 > var myFirstVariable = "Finally, I'm alive!";
 
@@ -203,7 +203,7 @@ To define a variable we should use `var` keyword.
 Finally, I'm alive!
 ```
 
-ZAO is a dynamic language, which means that we can store any data type we want in a variable without specifying its type.
+ZAO is a dynamic language, which means that you can store any data type you want in a variable without specifying its type.
 ```php
 > var universal = 15;
 > print universal;
@@ -215,19 +215,19 @@ pictures
 
 **_NOTE_**
 > ZAO has three ways to deal with variables:
-> 1) **declaration:** just use `var` and variable name. After declaration variabl's value will be `NIL`.
+> 1) **declaration:** use `var` and variable name. After declaration variabl's value will be `NIL`.
 >```php
 >> var age;
 >> print age;
 >NIL
 >```
-> 2) **definition:** use `var`, variable name, initializer.
+> 2) **definition:** use `var`, variable name, and initializer.
 >```php
 >> var age = 24;
 >> print age;
 >24
 >```
->3) **assignement:** after variable _declaration or defintion_ you can _assign_ new value to it by just using variable name without `var` keyword.
+>3) **assignement:** use variable name without `var` keyword. After variable _declaration or defintion_ you can _assign_ new value to it without using `var`.
 >```php
 >> var age = 24;
 >> print age;
@@ -242,7 +242,7 @@ pictures
 
 ___
 ### Scopes
-In ZAO scopes are being defined via curly braces (`{}`).
+Define scopes via curly braces (`{}`).
 ```php
 var batMan = "Ben Affleck";
 
@@ -266,11 +266,11 @@ At this point scopes worth explaining because of varibles, and to do that lets u
 
 Variables can _"live forever"_(untill the end of the program) or their _"life"_ can be short depending on the scope they are defined in.
 
-If varible is defined in a **global** scope (i.e. not bounded with `{}`), then it will _"live forever"_, but if it's defined in a **local** scope (i.e. bounded with `{}`), then it will be destroyed at the end of that scope(measured by _scope depth_).
+If varible is defined in a **global** scope (i.e. not bounded with `{}`), then it will _"live forever"_, but if variable is defined in a **local** scope (i.e. bounded with `{}`), then it will be destroyed at the end of the scope it is defined in.
 
 **Now lets have a look at above code.**
 
-First variable declaration is being overriden by **local** scope's variable definition, but fortunately for us that definition is using **local** scope's storage. That's why **global** scope's variable is not changed.
+First variable is being overriden by **local** scope's variable definition, but fortunately for us that variable is using **local** scope's storage, and for that reason **global** scope's variable is not changed.
 ```php
 var batMan = "Ben Affleck";
 
@@ -282,7 +282,7 @@ var batMan = "Ben Affleck";
 print batMan;     // Ben Affleck
 ```
 
-The second **local** scope doesn't define its own varaible, but instead it uses the **global** scope's varaible, and for that reason our variable (**global** scope's _batMan_) is being changed.
+The second **local** scope doesn't define its own varaible, instead that scope uses the **global** scope's varaible, and for that reason **first _batMan_** is being changed.
 
 ```php
 var batMan = "Ben Affleck"; // Global.
@@ -298,7 +298,7 @@ print batMan;     // Adam West
 ___
 ### Statements
 #### `if` and `else`
-To be able to control flow of a program we can use conditional statements.
+To be able to control flow of a program use conditional statements.
 ```php
 if (true) {
     print "this statement is true";
@@ -323,7 +323,7 @@ else is accessed
 ```
 
 #### `while` loop
-Next popular control flow of languages is `whlie` statement, whcih is meant for implementing the same block of code over and over again until `while`'s termination. This termination depends on expression which `while` evaluates at every loop. If expression's result is `true` then implement `while`'s block of code otherwise exit `while` statement.
+Next popular control flow of languages is `whlie` statement, whcih is meant for implementing the same block of code over and over again until `while`'s termination. This termination depends on expression that `while` evaluates at every loop. If expression's result is `true`, then implement `while`'s block of code, otherwise exit `while` statement.
 
 ```php
 var limit = 10;
@@ -339,7 +339,7 @@ hi  // 'hi' will be printed 10 times.
 
 
 #### `for` loop
-`for` statement found its place in almost all programming languges, but I like to think about it as syntactical sugar over `while` statement. Why do I think like that? Well, lets find out together.
+`for` statement found its place in almost all programming languges, but you can think about `for` as syntactical sugar over `while` statement. How is it so? Well, lets find out together.
 
 ```php
 var limit = 10;
@@ -351,7 +351,7 @@ for (var cycle = 0; cycle < limit; cycle = cycle + 1) {
 hi  // 'hi' will be printed 10 times.
 ```
 
-As you can see this code is shorter(3 lines against 5 lines) and more organized than `while`'s code, but the functionality is exactly the same.
+As you can see this code is shorter(3 lines against 5 lines) and more organized than `while`'s code, but at the same time the functionality is exactly the same.
 
 
 **This layout of both statements will make it clear:**
@@ -377,16 +377,17 @@ fun sum(a, b) {
 print sum(5, 6);  // This prints '11'.
 ```
 
-**To define function we need to use:**
-1) **`fun`**            - this keyword will notify compiler that we intended to define function.
-2) **fucntion name**    - this is required to be able to refer back to piece of code that this function defines.
-3) **argument list**    - function can accept arguments, which will be replaced with parameters, that this function defines in its **local** scope (in our case _a_ and _b_).
-4) **function block**   - all of this instructions defined in function's block will be implemented once function is called.
-5) **`return`[optional]** - `return` keyword returns result of an expression to caller. If `return` is not used function will return `NIL`.
+**The following is a `fun` declaration syntax and semantics:**
+1) **`fun`** keyword will notify compiler that you are intended to define function.
+2) **fucntion name** is required to refer back to piece of a code, which this function defines.
+3) **argument list** of a function will be replaced with parameters, which function defines in its **local** scope (in our case _a_ and _b_).
+4) **function block**'s instructions will be implemented once function is called.
+5) **`return`[optional]** keyword returns result of an expression to caller. If `return` is not used function will return `NIL`.
 
 > `fun` **function name**( **argument list** ) { **function block** }
 
-We can define neasted functions.
+**Other usages of functions:**
+* You can define neasted functions.
 ```php
 fun multAndSum(a, b, c, d) {
     fun mult(e, f) {
@@ -403,7 +404,7 @@ fun multAndSum(a, b, c, d) {
 multAndSum(1,2,3,4); // This prints '14'.
 ```
 
-We can assign function to variable.
+* You can assign a function to a variable.
 ```php
 fun sum(a, b) {
     print a + b;
@@ -413,7 +414,7 @@ var addition = sum;
 addition(1,2);      // This prints '3'.
 ```
 
-We can call function recursively.
+* You can call a function recursively.
 ```php
 fun fib(n) {
     if (n <= 1) {
@@ -443,10 +444,10 @@ fun foo() {
 foo(); // This prints 'foo'.
 ```
 
-This is a normal case, when we define function inside of another one and call neasted function, which uses "parent" function's **local** variable.
+This is a normal case, when you define function inside of another one and call it. As you can see this neasted function uses "parent" function's **local** variable.
 
 
-Now imagine that we need to use that same neasted function outside of its "parent".
+Now imagine that you need to use that same neasted function outside of its "parent".
 ```php
 fun foo() {
     var callerName = "foo";
@@ -461,7 +462,7 @@ var fuu = foo();
 fuu(); // This prints 'foo'.
 ```
 
-Returned function is called **closure**, and as you can see there is no problem to use "parent's" variable outside of its _declaration scope_. We are able to do this because neasted function _"closes"_ (thus **closure**) parents variable within itself (for more info search of **closure upvalues**.).
+Returned function is called **closure**, and as you can see there is no problem to use "parent's" variable outside of its _declaration scope_. We are able to do this, because neasted function _"closes"_ (thus **closure**) parents variable within itself (for more info search of **closure upvalues**.).
 
 ___
 ### Classes
@@ -486,22 +487,22 @@ bird.gender = "female";
 bird.fly();
 ```
 
-**Explanation time**
-1) **`class`**          - to be able to define _class_ we should say so by using `class` keyword.
-2) **class name**       - like in functions we need to be able to reference to class and to do that we have to specify a class name.
-3) **class methods[optional]** - classes can have their own methods and to define one just use **function**'s syntax.
-4) **Instance propety[optional]**  - although I mentioned that classes can have properties, but actually properties only belong to instances created from that classes.
+**The following is a `class` declaration syntax and semantics:**
+1) **`class`** keyword will notify compiler that you are intended to define a _class_.
+2) **class name** is required to refer back to it.
+3) **class methods[optional]** is a "behavior" of a class. To define one you sould use **function**'s syntax.
+4) **Instance property[optional]** is a field of an instnace(see below). Proviously properties was mentioned as a part of a class, but actually properties belong to instances created from classes.
 
 For `this`'s explanation see [`this`](#this-and-init).
 
-To be able to create instance we just need to use **call** syntax.
+To create instance use **call** syntax.
 ```php
 class Human {}
 var doctor = Human();   // Create 'doctor' instance from Human.
 var driver = Human();   // Create 'driver' instance from Human.
 ```
 
-Once instance is created it can have its own properties by using **dot** syntax.
+Once instance is created it can have its own _properties_. To add _properties_ use **dot** syntax.
 ```php
 class Human {
     fun sayName() {
@@ -522,7 +523,7 @@ driver.sayName();   // This prints 'Michael Schumacher'.
 As you can see after _instantiation_ these instances are using the same method, but the values of their properties are different.
 
 #### `this` and `init`
-Once we define our properties we would like to use them inside methods without having to specify property's instance. Fortunately for us we have `this` keyword which will **point** to desired instance (instance which is calling method).
+Once you define your properties you would like to use them inside methods without having to specify property's instance. To deal with that ZAO introduces `this` keyword, which will **point** to desired instance (instance which is calling method).
 
 ```php
 class Car {
@@ -541,7 +542,7 @@ ferrari.showSpeed();        // 'this' will refer to 'ferrari'.
 lamborghini.showSpeed();    // 'this' will refer to 'lamborghini'.
 ```
 
-Now that we have properties it's logical to be able to initialize them at the instantiation phase rether that after it. For that in ZAO we are using `init` "magic" method, which will be called implicitly once we instantiate some object.
+Now that instances can have properties, it's logical to be able to initialize them at the instantiation phase. For that you can use `init` "magic" method, which will be called implicitly once you instantiate some object.
 
 ```php
 class Teacher {
@@ -570,9 +571,9 @@ philosopher.introduce();    // This prints 'philosophy'.
 ```
 
 #### Inheritance and `super`
-Saying that programming language supports OO paradigm, but leaving it without inheritance, is one of 7 sins, so here we are.
+Saying that programming language supports OO paradigm, but leave it without inheritance, is one of 7 sins :D, so here we are.
 
-To be able to inherit from _parent class_ use this syntax:
+For inheritance use the following syntax:
 > `class` **class name** `inherits` **parent name** { ... }
 
 ```php
@@ -598,9 +599,7 @@ katana.introduce();     // This will print 'katana' '5'.
 aug.introduce();        // This will print 'AUG' '8'.
 ```
 
-As you can see **Sward** and **Gun** are using methods which is defined in **Weapon**. This can be achieved by using `inherits` keyword which will notify compiler that we are dealing with inheritance.
-
-After method _invocation_ current instance will try to find called method and if it's not found in current class then that method will be searched in an _inheritance chain_(classes which is being referenced by their childrens. In this case **Weapon** is being referenced by **Sword** and **Gun**).
+As you can see **Sward** and **Gun** are using methods which is defined in **Weapon**. This can be achieved by using `inherits` keyword, which will notify compiler that you are dealing with inheritance.
 
 **There are two questions left to answer, and after that we are done.**
 
@@ -626,9 +625,9 @@ var b = B();
 b.foo();    // This prints "B's foo is called.".
 ```
 
-> What if we want to use **overriden** method?
+> What if you want to use **overriden** method?
 
-To be able to access **overriden** method we should use `super` keyword, which will reference to parent's methods.
+To access **overriden** method you should use `super` keyword, which will reference to parent's methods.
 
 ```php
 class A {
@@ -654,6 +653,6 @@ b.foo();
 ```
 
 ## The End
-Programming languages are very interesting to use but I found myself more exited to implement them, so if you think that this kind of stuff interests you, then you should definitely checkout [CRAFTING INTERPRETERS](http://craftinginterpreters.com/), which was a huge motivation for me to create my own programming language.
+Programming languages are very interesting to use, but I found myself more exited to implement them, so if you think that this kind of stuff interests you, then you should definitely checkout [CRAFTING INTERPRETERS](http://craftinginterpreters.com/), which was a huge motivation for ZAO.
 
 I hope, that you learnt something and I wish you the best, bye.
